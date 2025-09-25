@@ -88,13 +88,13 @@ function GasSlipPrint({ slip }) {
                         margin-top: 25px;
                     }
                     .admin-slip {
-                        margin-top: 120px;
+                        margin-top: 85px;
                     }
                     .cut-line {
                         position: absolute;
                         left: 0;
                         right: 0;
-                        bottom: -80px;
+                        bottom: -50px;
                         border-bottom: 1px dashed #999;
                         text-align: center;
                     }
