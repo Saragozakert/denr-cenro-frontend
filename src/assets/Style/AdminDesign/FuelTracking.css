@@ -1,0 +1,160 @@
+/* Fuel Tracking Container */
+.fuel-tracking-container {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+  margin: 20px 0;
+}
+
+/* Fuel Tracking Management Header */
+.fuel-tracking-management-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+  gap: 20px;
+}
+
+/* Search Container */
+.fuel-tracking-search-container {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.fuel-tracking-search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 0 16px;
+  height: 50px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.fuel-tracking-search-box:focus-within {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+}
+
+.fuel-tracking-search-icon {
+  width: 20px;
+  height: 20px;
+  color: #9ca3af;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.fuel-tracking-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 0.95rem;
+  color: #1f2937;
+  background: transparent;
+  height: 100%;
+}
+
+.fuel-tracking-search-input::placeholder {
+  color: #9ca3af;
+}
+
+.fuel-tracking-clear-search {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  transition: all 0.2s ease;
+}
+
+.fuel-tracking-clear-search:hover {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+.fuel-tracking-clear-search svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Fuel Tracking Content */
+.fuel-tracking-content {
+  margin-top: 20px;
+}
+
+/* Animation for search focus */
+@keyframes fuel-tracking-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.15); }
+  70% { box-shadow: 0 0 0 6px rgba(139, 92, 246, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+}
+
+.fuel-tracking-search-box:focus-within {
+  animation: fuel-tracking-pulse 1.5s infinite;
+}
+
+/* Responsive adjustments */
+@media (max-width: 968px) {
+  .fuel-tracking-management-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .fuel-tracking-search-container {
+    margin-right: 0;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .fuel-tracking-container {
+    padding: 16px;
+  }
+  
+  .fuel-tracking-management-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+}
+
+/* Edit amount styles */
+.amount-edit-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.amount-edit-input {
+    width: 80px;
+    padding: 4px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    text-align: right;
+}
+
+.amount-edit-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+
+
+
+.fuel-tracking-table-icon-edit,
+.fuel-tracking-table-icon-save,
+.fuel-tracking-table-icon-cancel {
+    width: 16px;
+    height: 16px;
+}

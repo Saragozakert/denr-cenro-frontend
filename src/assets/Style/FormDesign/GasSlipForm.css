@@ -1,0 +1,254 @@
+/* Gas Slip Modal Styles - Reusing AddEmployee design */
+.gas-slip-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: gas-slip-fadeIn 0.3s ease;
+}
+
+.gas-slip-add-modal {
+  background: white;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto; /* Keep scrolling enabled */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  animation: gas-slip-slideUp 0.3s ease;
+  
+  /* Hide scrollbar for WebKit browsers (Chrome, Safari, Edge) */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Hide scrollbar for WebKit browsers */
+.gas-slip-add-modal::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.gas-slip-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
+}
+
+.gas-slip-modal-header h2 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.gas-slip-close-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.gas-slip-close-btn:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.gas-slip-close-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+.gas-slip-modal-content {
+  padding: 24px;
+}
+
+/* Form Styles */
+.gas-slip-add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.gas-slip-form-section {
+  display: flex;
+  gap: 16px;
+}
+
+.gas-slip-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.gas-slip-form-group label {
+  font-weight: 500;
+  color: #374151;
+  font-size: 0.9rem;
+}
+
+.gas-slip-form-input {
+  padding: 12px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background: white;
+  color: #2d3748;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.gas-slip-form-input:focus {
+  outline: none;
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+  transform: translateY(-1px);
+}
+
+.gas-slip-form-input::placeholder {
+  color: #9ca3af;
+}
+
+.gas-slip-form-input:disabled {
+  background-color: #f3f4f6;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+.gas-slip-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+  position: sticky;
+  bottom: 0;
+  background: white;
+  z-index: 10;
+}
+
+.gas-slip-cancel-btn {
+  padding: 10px 20px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: white;
+  color: #374151;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gas-slip-cancel-btn:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.gas-slip-submit-btn {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 8px;
+  background: #4C6EF5;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(76, 110, 245, 0.3);
+}
+
+.gas-slip-submit-btn:hover {
+  background: #3b5bdb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(76, 110, 245, 0.4);
+}
+
+/* Animations */
+@keyframes gas-slip-fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes gas-slip-slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Error Styles */
+.gas-slip-error {
+  border-color: #ff4757 !important;
+}
+
+.gas-slip-error-text {
+  color: #ff4757;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .gas-slip-form-section {
+    flex-direction: column;
+  }
+  
+  .gas-slip-add-modal {
+    margin: 0;
+    border-radius: 0;
+    max-height: 100vh;
+  }
+  
+  .gas-slip-form-actions {
+    flex-direction: column;
+  }
+  
+  .gas-slip-cancel-btn,
+  .gas-slip-submit-btn {
+    width: 100%;
+  }
+}
+
+/* For very small screens */
+@media (max-width: 480px) {
+  .gas-slip-modal-content {
+    padding: 16px;
+  }
+  
+  .gas-slip-modal-header {
+    padding: 16px;
+  }
+}
+
+.optional-field {
+    color: #6c757d;
+    font-size: 0.8rem;
+    font-weight: normal;
+    font-style: italic;
+}

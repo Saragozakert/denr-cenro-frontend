@@ -1,0 +1,365 @@
+/* Conservative Table Styles - Enhanced */
+.conservative-table-container {
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+.conservative-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #2d3748;
+  font-size: 0.9rem;
+}
+
+.conservative-table th {
+  background: #f7fafc;
+  padding: 16px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #4a5568;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.conservative-table td {
+  padding: 16px 12px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.conservative-table tr:last-child td {
+  border-bottom: none;
+}
+
+.conservative-table tr:hover {
+  background: #f8f9fa;
+}
+
+.conservative-table-id {
+  font-weight: 500;
+  color: #718096;
+}
+
+.conservative-table-name {
+  font-weight: 500;
+  color: #2d3748;
+}
+
+.conservative-table-department,
+.conservative-table-position {
+  color: #4a5568;
+}
+
+/* Enhanced Table Controls */
+.conservative-table-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.conservative-table-results {
+  color: #6c757d;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.conservative-table-items-per-page {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.conservative-table-select {
+  padding: 6px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: white;
+  color: #4a5568;
+  font-size: 14px;
+}
+
+.conservative-table-select:focus {
+  outline: none;
+  border-color: #4C6EF5;
+  box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.1);
+}
+
+.conservative-table-wrapper {
+  overflow-x: auto;
+}
+
+/* Sortable Headers */
+.conservative-table-sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+  position: relative;
+  padding-right: 24px !important;
+}
+
+.conservative-table-sortable:hover {
+  background-color: #edf2f7;
+}
+
+.conservative-table-sortable span {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+}
+
+/* Enhanced Action Buttons */
+.conservative-table-action-group {
+  display: flex;
+  gap: 6px;
+}
+
+.conservative-table-action-btn {
+  background: transparent;
+  border: 1.5px solid #e2e8f0;
+  cursor: pointer;
+  padding: 7px 7px;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+}
+
+.conservative-table-action-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s;
+}
+
+.conservative-table-action-btn:hover::before {
+  left: 100%;
+}
+
+.conservative-table-action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.conservative-table-edit-btn {
+  color: #4C6EF5;
+  border-color: #4C6EF5;
+  background: rgba(76, 110, 245, 0.04);
+}
+
+.conservative-table-edit-btn:hover {
+  background: #4C6EF5;
+  color: white;
+  border-color: #4C6EF5;
+}
+
+.conservative-table-delete-btn {
+  color: #e53e3e;
+  border-color: #e53e3e;
+  background: rgba(229, 62, 62, 0.04);
+}
+
+.conservative-table-delete-btn:hover {
+  background: #e53e3e;
+  color: white;
+  border-color: #e53e3e;
+}
+
+.conservative-table-icon-edit,
+.conservative-table-icon-delete {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s ease;
+}
+
+.conservative-table-action-btn:hover .conservative-table-icon-edit,
+.conservative-table-action-btn:hover .conservative-table-icon-delete {
+  transform: scale(1.1);
+}
+
+/* Enhanced Footer and Pagination */
+.conservative-table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  color: #718096;
+  font-size: 0.9rem;
+}
+
+.conservative-table-rows-info {
+  color: #6c757d;
+  font-size: 14px;
+}
+
+.conservative-table-pagination {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.conservative-table-pagination-btn {
+  background: transparent;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  color: #4a5568;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.conservative-table-pagination-btn:hover:not(.conservative-table-pagination-disabled) {
+  background: #f7fafc;
+  border-color: #cbd5e0;
+}
+
+.conservative-table-pagination-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.conservative-table-pagination-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.conservative-table-pagination-info {
+  font-size: 0.9rem;
+  color: #4a5568;
+  margin: 0 12px;
+}
+
+/* Loading and Empty States */
+.conservative-table-loading,
+.conservative-table-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.conservative-table-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid #f1f3f5;
+  border-top: 3px solid #7367f0;
+  border-radius: 50%;
+  animation: conservative-table-spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes conservative-table-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.conservative-table-empty-icon {
+  width: 64px;
+  height: 64px;
+  color: #dee2e6;
+  margin-bottom: 16px;
+}
+
+.conservative-table-empty h3 {
+  margin: 0 0 8px;
+  color: #495057;
+  font-weight: 600;
+}
+
+.conservative-table-empty p {
+  margin: 0;
+  color: #6c757d;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .conservative-table-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+  }
+  
+  .conservative-table-items-per-page {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .conservative-table-select {
+    width: 80px;
+  }
+  
+  .conservative-table-pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .conservative-table-pagination-info {
+    margin: 0 8px;
+  }
+  
+  .conservative-table-action-btn {
+    padding: 6px 8px;
+    font-size: 0.75rem;
+  }
+  
+  .conservative-table-action-text {
+    display: none;
+  }
+}
+
+/* Responsive table adjustments */
+@media (max-width: 1024px) {
+  .conservative-table {
+    min-width: 900px;
+  }
+}
+
+@media (max-width: 768px) {
+  .conservative-table {
+    min-width: 1000px;
+  }
+}
+
+/* Print styles */
+@media print {
+  .conservative-table-actions {
+    display: none;
+  }
+  
+  .conservative-table-controls,
+  .conservative-table-footer {
+    display: none;
+  }
+}

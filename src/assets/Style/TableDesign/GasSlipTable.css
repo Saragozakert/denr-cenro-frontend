@@ -1,0 +1,432 @@
+/* Gas Slip Table Styles */
+.gas-slip-table-container {
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  overflow: auto;
+  margin-top: 20px;
+}
+
+.gas-slip-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #2d3748;
+  font-size: 0.9rem;
+  min-width: 1200px;
+}
+
+.gas-slip-table th {
+  background: #f7fafc;
+  padding: 16px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #4a5568;
+  border-bottom: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.gas-slip-table td {
+  padding: 16px 12px;
+  border-bottom: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.gas-slip-table tr:last-child td {
+  border-bottom: none;
+}
+
+.gas-slip-table tr:hover {
+  background: #f8f9fa;
+}
+
+.gas-slip-table-number {
+  font-weight: 500;
+  color: #718096;
+}
+
+/* Highlight for Date column */
+.gas-slip-table-date {
+  color: #4a5568;
+  font-weight: 600;
+  background-color: rgba(59, 130, 246, 0.1);
+  border-radius: 4px;
+  padding: 12px 16px;
+  text-align: center;
+}
+
+.gas-slip-table-model,
+.gas-slip-table-plate,
+.gas-slip-table-section,
+.gas-slip-table-office,
+.gas-slip-table-purpose,
+.gas-slip-table-fuel-type,
+.gas-slip-table-amount,
+.gas-slip-table-withdrawn,
+.gas-slip-table-approved {
+  color: #4a5568;
+}
+
+.gas-slip-table-amount {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.gas-slip-table-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.gas-slip-table-action-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #718096;
+}
+
+.gas-slip-table-action-btn:hover {
+  background: #f1f3f5;
+  color: #4a5568;
+}
+
+.gas-slip-table-edit-btn:hover {
+  color: #4C6EF5;
+}
+
+.gas-slip-table-decline-btn:hover {
+  color: #dc3545;
+}
+
+.gas-slip-table-icon-edit,
+.gas-slip-table-icon-decline {
+  width: 18px;
+  height: 18px;
+}
+
+.gas-slip-table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  color: #718096;
+  font-size: 0.9rem;
+}
+
+.gas-slip-table-rows-info {
+  color: #6c757d;
+  font-size: 14px;
+}
+
+.gas-slip-table-loading,
+.gas-slip-table-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.gas-slip-table-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid #f1f3f5;
+  border-top: 3px solid #7367f0;
+  border-radius: 50%;
+  animation: gas-slip-table-spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes gas-slip-table-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.gas-slip-table-empty-icon {
+  width: 64px;
+  height: 64px;
+  color: #dee2e6;
+  margin-bottom: 16px;
+}
+
+.gas-slip-table-empty h3 {
+  margin: 0 0 8px;
+  color: #495057;
+  font-weight: 600;
+}
+
+.gas-slip-table-empty p {
+  margin: 0;
+  color: #6c757d;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .gas-slip-table th,
+  .gas-slip-table td {
+    padding: 12px 8px;
+    font-size: 0.8rem;
+  }
+
+  .gas-slip-table-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .gas-slip-table-actions {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+/* Status badges */
+.gas-slip-status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+  display: inline-block;
+  min-width: 80px;
+  text-align: center;
+}
+
+.gas-slip-status-badge.pending {
+  background: rgba(255, 193, 7, 0.15);
+  color: #ffc107;
+  border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.gas-slip-status-badge.approved {
+  background: rgba(40, 167, 69, 0.15);
+  color: #28a745;
+  border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+.gas-slip-status-badge.declined {
+  background: rgba(220, 53, 69, 0.15);
+  color: #dc3545;
+  border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+/* Status column alignment */
+.gas-slip-table-status {
+  text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .gas-slip-status-badge {
+    padding: 4px 8px;
+    font-size: 10px;
+    min-width: 60px;
+  }
+}
+
+/* Add these styles to your existing CSS */
+
+.gas-slip-table-view-btn:hover {
+  color: #4C6EF5;
+}
+
+.gas-slip-table-icon-view {
+  width: 18px;
+  height: 18px;
+}
+
+/* Purpose Button Styles */
+.gas-slip-table-purpose-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #718096;
+}
+
+.gas-slip-table-purpose-btn:hover {
+  background: #f1f3f5;
+  color: #4C6EF5;
+}
+
+.gas-slip-table-icon-purpose {
+  width: 18px;
+  height: 18px;
+}
+
+/* Purpose Modal Styles */
+.gas-slip-purpose-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.gas-slip-purpose-modal {
+  background: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.gas-slip-purpose-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f7fafc;
+}
+
+.gas-slip-purpose-modal-header h3 {
+  margin: 0;
+  color: #2d3748;
+  font-size: 1.25rem;
+}
+
+.gas-slip-purpose-modal-close {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #718096;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gas-slip-purpose-modal-close:hover {
+  background: #edf2f7;
+  color: #4a5568;
+}
+
+.gas-slip-purpose-modal-content {
+  padding: 20px;
+  overflow-y: auto;
+  max-height: calc(80vh - 73px);
+}
+
+.gas-slip-purpose-modal-content p {
+  margin: 0;
+  line-height: 1.6;
+  color: #4a5568;
+  white-space: pre-wrap;
+}
+
+/* Purpose Column Styles */
+.gas-slip-table-purpose {
+  max-width: 250px;
+  min-width: 200px;
+}
+
+.gas-slip-purpose-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+}
+
+.gas-slip-purpose-text {
+  flex: 1;
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-word;
+  line-height: 1.4;
+  max-height: 60px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  text-align: left;
+}
+
+.gas-slip-purpose-empty {
+  color: #718096;
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+/* Remove white-space: nowrap from purpose column */
+.gas-slip-table td.gas-slip-table-purpose {
+  white-space: normal;
+}
+
+/* Update table cell alignment for better text display */
+.gas-slip-table td {
+  padding: 12px 8px;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: top; /* Change from default to top for better text alignment */
+}
+
+/* Specific styling for purpose column cells */
+.gas-slip-table-purpose {
+  padding: 12px 8px !important;
+}
+
+/* Ensure the purpose column has proper spacing */
+.gas-slip-table th:nth-child(7) { /* Purpose column is 7th */
+  min-width: 200px;
+}
+
+/* Responsive adjustments for purpose column */
+@media (max-width: 768px) {
+  .gas-slip-purpose-text {
+    max-height: 40px;
+    -webkit-line-clamp: 2;
+    font-size: 0.8rem;
+  }
+  
+  .gas-slip-table-purpose {
+    max-width: 150px;
+    min-width: 120px;
+  }
+}
+
+/* Keep the existing styles below, but ensure they don't conflict */
+.gas-slip-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #2d3748;
+  font-size: 0.9rem;
+  min-width: 1200px;
+}
+
+.gas-slip-table th {
+  background: #f7fafc;
+  padding: 16px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #4a5568;
+  border-bottom: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+

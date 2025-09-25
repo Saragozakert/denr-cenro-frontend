@@ -1,0 +1,550 @@
+/* Fuel Tracking Table Styles */
+.fuel-tracking-table-container {
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  overflow: auto;
+  margin-top: 20px;
+}
+
+.fuel-tracking-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #2d3748;
+  font-size: 0.9rem;
+  min-width: 1200px;
+}
+
+.fuel-tracking-table th {
+  background: #f7fafc;
+  padding: 16px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #4a5568;
+  border-bottom: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.fuel-tracking-table td {
+  padding: 16px 12px;
+  border-bottom: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.fuel-tracking-table tr:last-child td {
+  border-bottom: none;
+}
+
+.fuel-tracking-table tr:hover {
+  background: #f8f9fa;
+}
+
+.fuel-tracking-table-number {
+  font-weight: 500;
+  color: #718096;
+}
+
+.fuel-tracking-table-date,
+.fuel-tracking-table-model,
+.fuel-tracking-table-plate,
+.fuel-tracking-table-section,
+.fuel-tracking-table-office,
+.fuel-tracking-table-purpose,
+.fuel-tracking-table-fuel-type,
+.fuel-tracking-table-amount,
+.fuel-tracking-table-withdrawn,
+.fuel-tracking-table-approved {
+  color: #4a5568;
+}
+
+.fuel-tracking-table-amount {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.fuel-tracking-table-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.fuel-tracking-table-action-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #718096;
+}
+
+.fuel-tracking-table-action-btn:hover {
+  background: #f1f3f5;
+  color: #4a5568;
+}
+
+.fuel-tracking-table-accept-btn:hover {
+  color: #28a745;
+}
+
+.fuel-tracking-table-reject-btn:hover {
+  color: #dc3545;
+}
+
+.fuel-tracking-table-icon-accept,
+.fuel-tracking-table-icon-reject {
+  width: 18px;
+  height: 18px;
+}
+
+.fuel-tracking-table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  color: #718096;
+  font-size: 0.9rem;
+}
+
+.fuel-tracking-table-rows-info {
+  color: #6c757d;
+  font-size: 14px;
+}
+
+.fuel-tracking-table-pagination {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fuel-tracking-table-pagination-btn {
+  background: transparent;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  color: #4a5568;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.fuel-tracking-table-pagination-btn:hover:not(.fuel-tracking-table-pagination-disabled) {
+  background: #f7fafc;
+  border-color: #cbd5e0;
+}
+
+.fuel-tracking-table-pagination-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.fuel-tracking-table-pagination-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.fuel-tracking-table-pagination-page {
+  font-size: 0.85rem;
+}
+
+.fuel-tracking-table-loading,
+.fuel-tracking-table-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.fuel-tracking-table-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid #f1f3f5;
+  border-top: 3px solid #7367f0;
+  border-radius: 50%;
+  animation: fuel-tracking-table-spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes fuel-tracking-table-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.fuel-tracking-table-empty-icon {
+  width: 64px;
+  height: 64px;
+  color: #dee2e6;
+  margin-bottom: 16px;
+}
+
+.fuel-tracking-table-empty h3 {
+  margin: 0 0 8px;
+  color: #495057;
+  font-weight: 600;
+}
+
+.fuel-tracking-table-empty p {
+  margin: 0;
+  color: #6c757d;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .fuel-tracking-table th,
+  .fuel-tracking-table td {
+    padding: 12px 8px;
+    font-size: 0.8rem;
+  }
+
+  .fuel-tracking-table-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .fuel-tracking-table-actions {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+/* Status badges */
+.fuel-tracking-status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.fuel-tracking-status-badge.pending {
+  background: rgba(255, 193, 7, 0.15);
+  color: #ffc107;
+}
+
+.fuel-tracking-status-badge.approved {
+  background: rgba(40, 167, 69, 0.15);
+  color: #28a745;
+}
+
+.fuel-tracking-status-badge.rejected {
+  background: rgba(220, 53, 69, 0.15);
+  color: #dc3545;
+}
+
+/* Status indicators */
+.fuel-tracking-status-indicator.pending {
+  background: #ffc107;
+}
+
+.fuel-tracking-status-indicator.approved {
+  background: #28a745;
+}
+
+.fuel-tracking-status-indicator.rejected {
+  background: #dc3545;
+}
+
+
+/* Status badges styles */
+.fuel-tracking-table-status {
+    text-align: center;
+}
+
+.fuel-tracking-status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+    display: inline-block;
+    min-width: 80px;
+    text-align: center;
+}
+
+.fuel-tracking-status-badge.pending {
+    background: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.fuel-tracking-status-badge.approved {
+    background: rgba(40, 167, 69, 0.15);
+    color: #28a745;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+.fuel-tracking-status-badge.rejected {
+    background: rgba(220, 53, 69, 0.15);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+/* No actions text */
+.fuel-tracking-table-no-actions {
+    color: #6c757d;
+    font-size: 0.8rem;
+    font-style: italic;
+}
+
+/* Adjust table layout for the new column */
+.fuel-tracking-table th:nth-child(12),
+.fuel-tracking-table td:nth-child(12) {
+    text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .fuel-tracking-status-badge {
+        padding: 4px 8px;
+        font-size: 10px;
+        min-width: 60px;
+    }
+    
+    .fuel-tracking-table-no-actions {
+        font-size: 0.7rem;
+    }
+}
+
+/* Purpose Column Styles for Fuel Tracking Table */
+.fuel-tracking-table-purpose {
+  max-width: 250px;
+  min-width: 200px;
+}
+
+.fuel-tracking-purpose-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+}
+
+.fuel-tracking-purpose-text {
+  flex: 1;
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-word;
+  line-height: 1.4;
+  max-height: 60px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  text-align: left;
+}
+
+.fuel-tracking-purpose-empty {
+  color: #718096;
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+/* Remove white-space: nowrap from purpose column */
+.fuel-tracking-table td.fuel-tracking-table-purpose {
+  white-space: normal;
+}
+
+/* Update table cell alignment for better text display */
+.fuel-tracking-table td {
+  padding: 12px 8px;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: top; /* Change from default to top for better text alignment */
+}
+
+/* Specific styling for purpose column cells */
+.fuel-tracking-table-purpose {
+  padding: 12px 8px !important;
+}
+
+/* Ensure the purpose column has proper spacing */
+.fuel-tracking-table th:nth-child(7) { /* Purpose column is 7th */
+  min-width: 200px;
+}
+
+/* Purpose Button Styles */
+.fuel-tracking-table-purpose-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #718096;
+  flex-shrink: 0;
+}
+
+.fuel-tracking-table-purpose-btn:hover {
+  background: #f1f3f5;
+  color: #4C6EF5;
+}
+
+.fuel-tracking-table-icon-purpose {
+  width: 16px;
+  height: 16px;
+}
+
+/* Responsive adjustments for purpose column */
+@media (max-width: 768px) {
+  .fuel-tracking-purpose-text {
+    max-height: 40px;
+    -webkit-line-clamp: 2;
+    font-size: 0.8rem;
+  }
+  
+  .fuel-tracking-table-purpose {
+    max-width: 150px;
+    min-width: 120px;
+  }
+  
+  .fuel-tracking-table-purpose-btn {
+    padding: 4px;
+  }
+  
+  .fuel-tracking-table-icon-purpose {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* Purpose Modal Styles */
+.fuel-tracking-purpose-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.fuel-tracking-purpose-modal {
+  background: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.fuel-tracking-purpose-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f7fafc;
+}
+
+.fuel-tracking-purpose-modal-header h3 {
+  margin: 0;
+  color: #2d3748;
+  font-size: 1.25rem;
+}
+
+.fuel-tracking-purpose-modal-close {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #718096;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fuel-tracking-purpose-modal-close:hover {
+  background: #edf2f7;
+  color: #4a5568;
+}
+
+.fuel-tracking-purpose-modal-content {
+  padding: 20px;
+  overflow-y: auto;
+  max-height: calc(80vh - 73px);
+}
+
+.fuel-tracking-purpose-modal-content p {
+  margin: 0;
+  line-height: 1.6;
+  color: #4a5568;
+  white-space: pre-wrap;
+}
+
+/* Amount Edit Styles */
+.amount-edit-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.amount-edit-input {
+  width: 80px;
+  padding: 6px 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.amount-edit-input:focus {
+  outline: none;
+  border-color: #4C6EF5;
+  box-shadow: 0 0 0 2px rgba(76, 110, 245, 0.1);
+}
+
+/* Edit action buttons */
+.fuel-tracking-table-save-btn:hover {
+  color: #28a745 !important;
+}
+
+.fuel-tracking-table-cancel-btn:hover {
+  color: #dc3545 !important;
+}
+
+.fuel-tracking-table-icon-save,
+.fuel-tracking-table-icon-cancel {
+  width: 18px;
+  height: 18px;
+}
+
+
+.fuel-tracking-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #2d3748;
+  font-size: 0.9rem;
+  min-width: 1200px;
+}
+
+.fuel-tracking-table th {
+  background: #f7fafc;
+  padding: 16px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #4a5568;
+  border-bottom: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+
