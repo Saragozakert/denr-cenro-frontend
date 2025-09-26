@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../assets/Style/LandingDesign/Homepage.css";
+import "../../assets/Style/NavigationStyle/Navbar.css";
 import DENRLogo from "../../assets/images/DENR.png";
 
 function Navbar({ isScrolled, showLoginModal, setShowLoginModal, showUserModal, setShowUserModal }) {

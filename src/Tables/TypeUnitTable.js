@@ -9,7 +9,7 @@ function TypeUnitTable({
   handleEditUnit
 }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const itemsPerPage = 5; // Fixed value instead of state
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
   // Filter and sort units
@@ -52,11 +52,6 @@ function TypeUnitTable({
     setCurrentPage(1);
   };
 
-  const handleItemsPerPageChange = (e) => {
-    setItemsPerPage(Number(e.target.value));
-    setCurrentPage(1);
-  };
-
   const goToPage = (page) => {
     setCurrentPage(Math.max(1, Math.min(page, totalPages)));
   };
@@ -89,27 +84,6 @@ function TypeUnitTable({
 
   return (
     <div className="type-unit-table-container">
-      {/* Table Controls */}
-      <div className="type-unit-table-controls">
-        <div className="type-unit-table-results">
-          Showing {Math.min(processedUnits.length, currentPage * itemsPerPage)} of {processedUnits.length} units
-        </div>
-        <div className="type-unit-table-items-per-page">
-          <label htmlFor="itemsPerPage">Items per page:</label>
-          <select
-            id="itemsPerPage"
-            value={itemsPerPage}
-            onChange={handleItemsPerPageChange}
-            className="type-unit-table-select"
-          >
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="50">50</option>
-          </select>
-        </div>
-      </div>
-
       <div className="type-unit-table-wrapper">
         <table className="type-unit-table">
           <thead>

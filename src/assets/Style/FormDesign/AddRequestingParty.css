@@ -1,0 +1,204 @@
+/* Add Requesting Party Modal Styles */
+.add-requesting-party-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: add-requesting-party-fadeIn 0.3s ease;
+}
+
+.add-requesting-party-add-modal {
+  background: white;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  animation: add-requesting-party-slideUp 0.3s ease;
+}
+
+.add-requesting-party-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.add-requesting-party-modal-header h2 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.add-requesting-party-close-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.add-requesting-party-close-btn:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.add-requesting-party-close-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+.add-requesting-party-modal-content {
+  padding: 24px;
+}
+
+/* Form Styles */
+.add-requesting-party-add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.add-requesting-party-form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.add-requesting-party-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.add-requesting-party-form-group label {
+  font-weight: 500;
+  color: #374151;
+  font-size: 0.9rem;
+}
+
+.add-requesting-party-form-input {
+  padding: 12px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background: white;
+  color: #2d3748;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.add-requesting-party-form-input:focus {
+  outline: none;
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+  transform: translateY(-1px);
+}
+
+.add-requesting-party-form-input::placeholder {
+  color: #9ca3af;
+}
+
+.add-requesting-party-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.add-requesting-party-cancel-btn {
+  padding: 10px 20px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: white;
+  color: #374151;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-requesting-party-cancel-btn:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.add-requesting-party-submit-btn {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 8px;
+  background: #4C6EF5;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(76, 110, 245, 0.3);
+}
+
+.add-requesting-party-submit-btn:hover {
+  background: #3b5bdb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(76, 110, 245, 0.4);
+}
+
+@keyframes add-requesting-party-fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes add-requesting-party-slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.add-requesting-party-error {
+  border-color: #ff4757 !important;
+}
+
+.add-requesting-party-error-text {
+  color: #ff4757;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .add-requesting-party-add-modal {
+    margin: 0;
+    border-radius: 0;
+    max-height: 100vh;
+    overflow-y: auto;
+  }
+  
+  .add-requesting-party-form-actions {
+    flex-direction: column;
+  }
+  
+  .add-requesting-party-cancel-btn,
+  .add-requesting-party-submit-btn {
+    width: 100%;
+  }
+}

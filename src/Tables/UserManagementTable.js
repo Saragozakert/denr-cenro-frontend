@@ -52,6 +52,7 @@ function UserManagementTable({
     setCurrentPage(1);
   };
 
+  // eslint-disable-next-line no-unused-vars
   const handleItemsPerPageChange = (e) => {
     setItemsPerPage(Number(e.target.value));
     setCurrentPage(1);
@@ -107,7 +108,8 @@ function UserManagementTable({
 
   return (
     <div className="user-management-table-container">
-      {/* Table Controls */}
+
+      {/* Table Controls 
       <div className="user-management-table-controls">
         <div className="user-management-table-results">
           Showing {Math.min(processedUsers.length, currentPage * itemsPerPage)} of {processedUsers.length} users
@@ -126,7 +128,7 @@ function UserManagementTable({
             <option value="50">50</option>
           </select>
         </div>
-      </div>
+      </div>*/}
 
       <div className="user-management-table-wrapper">
         <table className="user-management-table">

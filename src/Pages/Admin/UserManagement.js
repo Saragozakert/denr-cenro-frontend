@@ -258,7 +258,6 @@ function UserManagement() {
             loading={loading}
           />
         </div>
-        
       </main>
     </AdminSidebar>
   );

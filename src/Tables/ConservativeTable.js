@@ -88,27 +88,6 @@ function ConservativeTable({
 
   return (
     <div className="conservative-table-container">
-      {/* Table Controls */}
-      <div className="conservative-table-controls">
-        <div className="conservative-table-results">
-          Showing {Math.min(processedEmployees.length, currentPage * itemsPerPage)} of {processedEmployees.length} employees
-        </div>
-        <div className="conservative-table-items-per-page">
-          <label htmlFor="itemsPerPage">Items per page:</label>
-          <select
-            id="itemsPerPage"
-            value={itemsPerPage}
-            onChange={handleItemsPerPageChange}
-            className="conservative-table-select"
-          >
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="50">50</option>
-          </select>
-        </div>
-      </div>
-
       <div className="conservative-table-wrapper">
         <table className="conservative-table">
           <thead>
