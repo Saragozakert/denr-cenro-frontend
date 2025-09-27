@@ -7,7 +7,7 @@ function FuelTrackingTable({
     searchTerm = "",
     handleAcceptRecord,
     handleRejectRecord,
-    handleUpdateAmount 
+    handleUpdateAmount
 }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(5);
@@ -20,7 +20,7 @@ function FuelTrackingTable({
 
     // Filter and sort records (only pending records)
     const processedRecords = useMemo(() => {
-        let filtered = fuelRecords.filter(record => 
+        let filtered = fuelRecords.filter(record =>
             record.status === 'pending' && (
                 record.model_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 record.plate_no?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -77,7 +77,7 @@ function FuelTrackingTable({
 
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
-        
+
         try {
             if (dateString.includes('T')) {
                 const date = new Date(dateString);
@@ -86,10 +86,10 @@ function FuelTrackingTable({
                 const year = date.getFullYear();
                 return `${month}-${day}-${year}`;
             }
-            return dateString; 
+            return dateString;
         } catch (error) {
             console.error('Error formatting date:', error);
-            return dateString; 
+            return dateString;
         }
     };
 
@@ -176,7 +176,6 @@ function FuelTrackingTable({
 
     return (
         <div className="fuel-tracking-table-container">
-            {/* Table Controls */}
             <div className="fuel-tracking-table-wrapper">
                 <table className="fuel-tracking-table">
                     <thead>
@@ -193,6 +192,9 @@ function FuelTrackingTable({
                             <th onClick={() => handleSort('plate_no')} className="fuel-tracking-table-sortable">
                                 Plate No. <SortIcon columnKey="plate_no" />
                             </th>
+                            {/*<th onClick={() => handleSort('requesting_party')} className="fuel-tracking-table-sortable">
+                                Requesting Party <SortIcon columnKey="requesting_party" />
+                            </th>*/}
                             <th onClick={() => handleSort('section')} className="fuel-tracking-table-sortable">
                                 Section <SortIcon columnKey="section" />
                             </th>
@@ -222,6 +224,7 @@ function FuelTrackingTable({
                                 </td>
                                 <td className="fuel-tracking-table-model">{record.model_name}</td>
                                 <td className="fuel-tracking-table-plate">{record.plate_no}</td>
+                                {/*<td className="fuel-tracking-table-requesting-party">{record.requesting_party}</td>*/}
                                 <td className="fuel-tracking-table-section">{record.section}</td>
                                 <td className="fuel-tracking-table-fuel-type">{record.fuel_type}</td>
                                 <td className="fuel-tracking-table-amount">
@@ -241,12 +244,15 @@ function FuelTrackingTable({
                                         `${record.gasoline_amount}`
                                     )}
                                 </td>
+
+
                                 <td className="fuel-tracking-table-withdrawn">{record.withdrawn_by}</td>
                                 <td className="fuel-tracking-table-status">
                                     <span className={getStatusBadgeClass(record.status)}>
                                         {getStatusText(record.status)}
                                     </span>
                                 </td>
+
                                 <td className="fuel-tracking-table-actions">
                                     <div className="fuel-tracking-table-action-group">
                                         {editingId === record.id ? (

@@ -467,3 +467,26 @@
   color: #4a5568;
   white-space: pre-wrap;
 }
+
+/* Print button styles */
+.gas-slip-table-print-btn {
+  color: #20c997;
+  border-color: #20c997;
+  background: rgba(32, 201, 151, 0.04);
+}
+
+.gas-slip-table-print-btn:hover {
+  background: #20c997;
+  color: white;
+  border-color: #20c997;
+}
+
+.gas-slip-table-icon-print {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s ease;
+}
+
+.gas-slip-table-action-btn:hover .gas-slip-table-icon-print {
+  transform: scale(1.1);
+}

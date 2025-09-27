@@ -110,6 +110,9 @@ function GasSlipTable({
                             <th onClick={() => handleSort('plate_no')} className="gas-slip-table-sortable">
                                 Plate No. <SortIcon columnKey="plate_no" />
                             </th>
+                            {/*<th onClick={() => handleSort('requesting_party')} className="gas-slip-table-sortable">
+                                Requesting Party <SortIcon columnKey="requesting_party" />
+                            </th>*/}
                             <th onClick={() => handleSort('fuel_type')} className="gas-slip-table-sortable">
                                 Type of Fuel <SortIcon columnKey="fuel_type" />
                             </th>
@@ -136,6 +139,7 @@ function GasSlipTable({
                                 </td>
                                 <td className="gas-slip-table-model">{slip.model_name}</td>
                                 <td className="gas-slip-table-plate">{slip.plate_no}</td>
+                                {/*<td className="gas-slip-table-requesting-party">{slip.requesting_party}</td>*/}
                                 <td className="gas-slip-table-fuel-type">{slip.fuel_type}</td>
                                 <td className="gas-slip-table-amount">{slip.gasoline_amount}</td>
                                 <td className="gas-slip-table-approved">{slip.approved_by}</td>
@@ -144,6 +148,7 @@ function GasSlipTable({
                                         {getStatusText(slip.status)}
                                     </span>
                                 </td>
+                              
                                 <td className="gas-slip-table-actions">
                                     <div className="gas-slip-table-action-group">
                                         {slip.status === 'pending' ? (
@@ -158,12 +163,12 @@ function GasSlipTable({
                                             </button>
                                         ) : (
                                             <button
-                                                className="gas-slip-table-action-btn gas-slip-table-view-btn"
+                                                className="gas-slip-table-action-btn gas-slip-table-print-btn"
                                                 onClick={() => handleViewWithPrint(slip)}
-                                                title="View Gas Slip"
+                                                title="Print Gas Slip"
                                             >
-                                                <svg className="gas-slip-table-icon-view" viewBox="0 0 24 24">
-                                                    <path fill="currentColor" d="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z" />
+                                                <svg className="gas-slip-table-icon-print" viewBox="0 0 24 24">
+                                                    <path fill="currentColor" d="M18,3H6V7H18M19,12A1,1 0 0,1 18,11A1,1 0 0,1 19,10A1,1 0 0,1 20,11A1,1 0 0,1 19,12M16,19H8V14H16M19,8H5A3,3 0 0,0 2,11V17H6V21H18V17H22V11A3,3 0 0,0 19,8Z" />
                                                 </svg>
                                             </button>
                                         )}

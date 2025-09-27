@@ -146,8 +146,9 @@ function FuelTracking() {
 
   // Filter fuel records based on search term
   const filteredFuelRecords = fuelRecords.filter(record =>
-    record.model?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    record.model_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     record.plate_no?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    record.requesting_party?.toLowerCase().includes(searchTerm.toLowerCase()) || // Add this line
     record.withdrawn_by?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     record.office?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     record.date?.toLowerCase().includes(searchTerm.toLowerCase())

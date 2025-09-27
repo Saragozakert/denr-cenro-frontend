@@ -252,3 +252,11 @@
     font-weight: normal;
     font-style: italic;
 }
+
+.gas-slip-loading-text {
+    color: #6b7280;
+    font-size: 12px;
+    font-style: italic;
+    margin-top: 4px;
+    display: block;
+}

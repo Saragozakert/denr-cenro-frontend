@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import UserSidebar from "../../components/Sidebars/UserSidebar";
 import UserHeader from "../../components/Headers/UserHeader";
 import GasSlipForm from "../../Forms/GasSlipForm";
-import GasSlipTable from "../../Tables/GasSlipTable"; // Import the table
+import GasSlipTable from "../../Tables/GasSlipTable";
 import '../../assets/Style/UserDesign/GasSlip.css';
 
 function GasSlip() {
@@ -17,6 +17,7 @@ function GasSlip() {
         modelName: '',
         modelNameDisplay: '',
         plateNo: '',
+        requestingParty: '', // Add this line
         section: '',
         office: '',
         purchasedNo: '',
@@ -30,8 +31,9 @@ function GasSlip() {
     const [formErrors, setFormErrors] = useState({});
     const [loading, setLoading] = useState(false);
     const [approvedByOptions, setApprovedByOptions] = useState([]);
-    const [gasSlips, setGasSlips] = useState([]); // State for gas slips
-    const [isLoading, setIsLoading] = useState(false); // Loading state for table
+    const [requestingPartyOptions, setRequestingPartyOptions] = useState([]); // Add this line
+    const [gasSlips, setGasSlips] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -62,7 +64,8 @@ function GasSlip() {
 
         checkAuth();
         fetchEmployees();
-        fetchGasSlips(); // Fetch gas slips on component mount
+        fetchRequestingParties(); // Add this function call
+        fetchGasSlips();
     }, [navigate]);
 
     // Fetch gas slips from API
@@ -112,6 +115,37 @@ function GasSlip() {
         }
     };
 
+    // Add this function to fetch requesting parties
+    const fetchRequestingParties = async () => {
+        try {
+            const token = localStorage.getItem("userToken");
+            const response = await axios.get("http://localhost:8000/api/user/requesting-parties", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: "application/json",
+                },
+            });
+
+            if (response.data.success) {
+                const requestingParties = response.data.requestingParties || [];
+                const options = requestingParties.map(party => ({
+                    value: party.id,
+                    label: party.full_name
+                }));
+                setRequestingPartyOptions(options);
+            }
+        } catch (error) {
+            console.error("Error fetching requesting parties:", error);
+            // Fallback options in case of error
+            setRequestingPartyOptions([
+                { value: 'admin', label: 'Admin' },
+                { value: 'operations', label: 'Operations' },
+                { value: 'logistics', label: 'Logistics' },
+                { value: 'maintenance', label: 'Maintenance' }
+            ]);
+        }
+    };
+
     const handleMenuItemClick = (itemName, path) => {
         setActiveItem(itemName);
         if (path && path !== "#") {
@@ -141,10 +175,17 @@ function GasSlip() {
             );
             const approvedByName = selectedEmployee ? selectedEmployee.label : gasSlipFormData.approvedBy;
 
+            // Find the selected requesting party name
+            const selectedRequestingParty = requestingPartyOptions.find(
+                option => option.value.toString() === gasSlipFormData.requestingParty
+            );
+            const requestingPartyName = selectedRequestingParty ? selectedRequestingParty.label : gasSlipFormData.requestingParty;
+
             const response = await axios.post("http://localhost:8000/api/user/fuel-requests", {
                 vehicle_type: gasSlipFormData.vehicleType,
                 model_name: gasSlipFormData.modelNameDisplay || gasSlipFormData.modelName,
                 plate_no: gasSlipFormData.plateNo,
+                requesting_party: requestingPartyName,
                 section: gasSlipFormData.section,
                 office: gasSlipFormData.office,
                 purchased_no: gasSlipFormData.purchasedNo,
@@ -171,6 +212,7 @@ function GasSlip() {
                     modelName: '',
                     modelNameDisplay: '',
                     plateNo: '',
+                    requestingParty: '',
                     section: '',
                     office: '',
                     purchasedNo: '',
@@ -201,7 +243,6 @@ function GasSlip() {
 
     // Handle edit gas slip
     const handleEditSlip = (slip) => {
-        // You can implement edit functionality here
         console.log('Edit slip:', slip);
         alert('Edit functionality will be implemented here');
     };
@@ -220,7 +261,7 @@ function GasSlip() {
 
                 if (response.data.success) {
                     alert("Gas slip declined successfully!");
-                    fetchGasSlips(); // Refresh the list
+                    fetchGasSlips();
                 }
             } catch (error) {
                 alert("Error declining gas slip: " + (error.response?.data?.message || error.message));
@@ -228,10 +269,11 @@ function GasSlip() {
         }
     };
 
-    // Filter gas slips based on search term
+    // Update search filter to include requesting_party
     const filteredGasSlips = gasSlips.filter(slip =>
         slip.model_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         slip.plate_no?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        slip.requesting_party?.toLowerCase().includes(searchTerm.toLowerCase()) || // Add this line
         slip.withdrawn_by?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         slip.office?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         slip.date?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -255,7 +297,7 @@ function GasSlip() {
                                 </svg>
                                 <input
                                     type="text"
-                                    placeholder="Search gas slips by model, plate number, driver, or date..."
+                                    placeholder="Search gas slips by model, plate number, requesting party, driver, or date..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     className="gas-slip-search-input"
@@ -300,6 +342,7 @@ function GasSlip() {
                     formErrors={formErrors}
                     loading={loading}
                     approvedByOptions={approvedByOptions}
+                    requestingPartyOptions={requestingPartyOptions} // Pass this prop
                     currentUserName={user ? user.full_name : "Current User"}
                 />
             </main>

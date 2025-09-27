@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, forwardRef } from "react";
 import './../assets/Style/TableDesign/RequestingPartyTable.css';
 
 function RequestingPartyTable({
@@ -11,7 +11,6 @@ function RequestingPartyTable({
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
-  // Filter and sort requestingParties
   const processedRequestingParties = useMemo(() => {
     let filtered = requestingParties.filter(party =>
       party.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -19,7 +18,7 @@ function RequestingPartyTable({
       party.position?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // Sorting
+
     if (sortConfig.key) {
       filtered.sort((a, b) => {
         const aValue = a[sortConfig.key] || '';
@@ -34,7 +33,7 @@ function RequestingPartyTable({
     return filtered;
   }, [requestingParties, searchTerm, sortConfig]);
 
-  // Pagination
+ 
   const totalPages = Math.ceil(processedRequestingParties.length / itemsPerPage);
   const currentRequestingParties = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -108,9 +107,6 @@ function RequestingPartyTable({
                 </td>
                 <td className="requesting-party-table-name">
                   <div className="requesting-party-table-user-info">
-                    <div className="requesting-party-table-avatar">
-                      {party.full_name?.charAt(0) || 'U'}
-                    </div>
                     {party.full_name}
                   </div>
                 </td>
@@ -140,7 +136,6 @@ function RequestingPartyTable({
         </table>
       </div>
 
-      {/* Pagination */}
       <div className="requesting-party-table-footer">
         <div className="requesting-party-table-rows-info">
           Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, processedRequestingParties.length)} of {processedRequestingParties.length} requesting parties

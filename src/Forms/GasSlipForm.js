@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import './../assets/Style/FormDesign/GasSlipForm.css';
 
@@ -17,25 +17,31 @@ function GasSlipForm({
     const [modelOptions, setModelOptions] = useState([]);
     const [allUnits, setAllUnits] = useState([]);
     const [isLoadingUnits, setIsLoadingUnits] = useState(false);
+    const [requestingPartyOptions, setRequestingPartyOptions] = useState([]);
+    const [isLoadingRequestingParties, setIsLoadingRequestingParties] = useState(false);
 
-    // Fetch units from the API
+   
     useEffect(() => {
-        const fetchUnits = async () => {
+        const fetchData = async () => {
             setIsLoadingUnits(true);
+            setIsLoadingRequestingParties(true);
+
             try {
                 const token = localStorage.getItem("userToken");
-                const response = await axios.get("http://localhost:8000/api/user/units", {
+
+                
+                const unitsResponse = await axios.get("http://localhost:8000/api/user/units", {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         Accept: "application/json",
                     },
                 });
 
-                if (response.data.success) {
-                    const units = response.data.units;
+                if (unitsResponse.data.success) {
+                    const units = unitsResponse.data.units;
                     setAllUnits(units);
 
-                    // Extract unique vehicle types
+                    
                     const uniqueVehicleTypes = [...new Set(units.map(unit => unit.type))];
                     const vehicleOptions = uniqueVehicleTypes.map(type => ({
                         value: type,
@@ -43,25 +49,54 @@ function GasSlipForm({
                     }));
                     setVehicleOptions(vehicleOptions);
 
-                    // Extract models based on selected vehicle type if one is already selected
+                    
                     if (formData.vehicleType) {
                         updateModelOptions(units, formData.vehicleType);
                     }
                 }
+
+               
+                const requestingPartiesResponse = await axios.get("http://localhost:8000/api/user/requesting-parties", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: "application/json",
+                    },
+                });
+
+                if (requestingPartiesResponse.data.success) {
+                    const requestingParties = requestingPartiesResponse.data.requestingParties;                
+                    const options = requestingParties.map(party => ({
+                        value: party.id, // Use ID as value
+                        label: party.full_name, 
+                        division: party.division_section,
+                        position: party.position
+                    }));
+                    setRequestingPartyOptions(options);
+                }
             } catch (error) {
-                console.error("Error fetching units:", error);
-                // Fallback to default options if API fails
+                console.error("Error fetching data:", error);
+
+                
                 setVehicleOptions([
                     { value: 'Vehicle', label: 'Vehicle' },
                     { value: 'Motorcycle', label: 'Motorcycle' }
                 ]);
+
+                setRequestingPartyOptions([
+                    { value: 'admin', label: 'Admin' },
+                    { value: 'operations', label: 'Operations' },
+                    { value: 'logistics', label: 'Logistics' },
+                    { value: 'maintenance', label: 'Maintenance' },
+                    { value: 'other', label: 'Other' }
+                ]);
             } finally {
                 setIsLoadingUnits(false);
+                setIsLoadingRequestingParties(false);
             }
         };
 
         if (showGasSlipForm) {
-            fetchUnits();
+            fetchData();
         }
     }, [showGasSlipForm, formData.vehicleType]);
 
@@ -226,6 +261,28 @@ function GasSlipForm({
                                     </div>
 
                                     <div className="gas-slip-form-group">
+                                        <label htmlFor="requestingParty">Requesting Party</label>
+                                        <select
+                                            id="requestingParty"
+                                            className={`gas-slip-form-input ${formErrors.requestingParty ? 'gas-slip-error' : ''}`}
+                                            value={formData.requestingParty}
+                                            onChange={handleInputChange}
+                                            required
+                                            disabled={isLoadingRequestingParties}
+                                        >
+                                            <option value="">Select Requesting Party</option>
+                                            {requestingPartyOptions.map(option => (
+                                                <option key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        {formErrors.requestingParty && <span className="gas-slip-error-text">{formErrors.requestingParty[0]}</span>}
+                                    </div>
+                                </div>
+
+                                <div className="gas-slip-form-section">
+                                    <div className="gas-slip-form-group">
                                         <label htmlFor="section">Section</label>
                                         <input
                                             type="text"
@@ -238,9 +295,7 @@ function GasSlipForm({
                                         />
                                         {formErrors.section && <span className="gas-slip-error-text">{formErrors.section[0]}</span>}
                                     </div>
-                                </div>
 
-                                <div className="gas-slip-form-section">
                                     <div className="gas-slip-form-group">
                                         <label htmlFor="office">Office</label>
                                         <input
@@ -254,7 +309,9 @@ function GasSlipForm({
                                         />
                                         {formErrors.office && <span className="gas-slip-error-text">{formErrors.office[0]}</span>}
                                     </div>
+                                </div>
 
+                                <div className="gas-slip-form-section">
                                     <div className="gas-slip-form-group">
                                         <label htmlFor="purchasedNo">Purchased No. <span className="optional-field">(Optional)</span></label>
                                         <input

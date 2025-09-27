@@ -9,10 +9,10 @@ function TypeUnitTable({
   handleEditUnit
 }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Fixed value instead of state
+  const itemsPerPage = 5; 
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
-  // Filter and sort units
+
   const processedUnits = useMemo(() => {
     let filtered = units.filter(unit =>
       unit.type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -22,7 +22,7 @@ function TypeUnitTable({
       unit.office?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // Sorting
+ 
     if (sortConfig.key) {
       filtered.sort((a, b) => {
         const aValue = a[sortConfig.key] || '';
@@ -37,7 +37,7 @@ function TypeUnitTable({
     return filtered;
   }, [units, searchTerm, sortConfig]);
 
-  // Pagination
+
   const totalPages = Math.ceil(processedUnits.length / itemsPerPage);
   const currentUnits = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -150,7 +150,6 @@ function TypeUnitTable({
         </table>
       </div>
 
-      {/* Pagination */}
       <div className="type-unit-table-footer">
         <div className="type-unit-table-rows-info">
           Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, processedUnits.length)} of {processedUnits.length} units
