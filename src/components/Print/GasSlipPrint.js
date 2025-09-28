@@ -156,9 +156,7 @@ const GasSlipPrintContent = ({ slip }) => {
       </div>
       
       {!isAdminCopy && (
-        <div className="cut-line">
-          <span className="cut-line-text">Cut Here</span>
-        </div>
+        <div className="cut-line"></div>
       )}
     </div>
   );

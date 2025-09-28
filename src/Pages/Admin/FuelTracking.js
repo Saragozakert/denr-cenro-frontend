@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AdminSidebar from '../../components/Sidebars/AdminSidebar';
 import AdminHeader from '../../components/Headers/AdminHeader';
-import FuelTrackingTable from '../../Tables/FuelTrackingTable'; // Import the table
+import FuelTrackingTable from '../../Tables/FuelTrackingTable'; 
 import '../../assets/Style/AdminDesign/AdminDashboard.css';
 import '../../assets/Style/AdminDesign/FuelTracking.css';
 
@@ -13,6 +13,7 @@ function FuelTracking() {
   const [searchTerm, setSearchTerm] = useState("");
   const [fuelRecords, setFuelRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [statusFilter, setStatusFilter] = useState('pending'); 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,7 +40,7 @@ function FuelTracking() {
     };
 
     checkAuth();
-    fetchFuelRecords(); // Fetch fuel records on component mount
+    fetchFuelRecords(); 
   }, [navigate]);
 
   const handleUpdateAmount = async (recordId, newAmount) => {
@@ -148,7 +149,7 @@ function FuelTracking() {
   const filteredFuelRecords = fuelRecords.filter(record =>
     record.model_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     record.plate_no?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    record.requesting_party?.toLowerCase().includes(searchTerm.toLowerCase()) || // Add this line
+    record.requesting_party?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     record.withdrawn_by?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     record.office?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     record.date?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -169,30 +170,31 @@ function FuelTracking() {
 
       <main className="dashboard-content">
         <div className="fuel-tracking-container">
-          <div className="fuel-tracking-management-header">
-            <div className="fuel-tracking-search-container">
-              <div className="fuel-tracking-search-box">
-                <svg className="fuel-tracking-search-icon" viewBox="0 0 24 24">
-                  <path fill="currentColor" d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12,7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
-                </svg>
-                <input
-                  type="text"
-                  placeholder="Search fuel records by unit, driver, date, or location..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="fuel-tracking-search-input"
-                />
-                {searchTerm && (
-                  <button
-                    className="fuel-tracking-clear-search"
-                    onClick={() => setSearchTerm("")}
-                  >
-                    <svg viewBox="0 0 24 24">
-                      <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
-                    </svg>
-                  </button>
-                )}
-              </div>
+          
+          {/* Status Filter Controls - Moved here from table */}
+          <div className="fuel-tracking-filters">
+            <div className="search-filter-container">
+              <input
+                type="text"
+                placeholder="Search fuel records..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-input"
+              />
+            </div>
+            <div className="status-filter-container">
+              <label htmlFor="status-filter">Filter by Status:</label>
+              <select 
+                id="status-filter"
+                value={statusFilter} 
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="status-filter-select"
+              >
+                <option value="all">All Requests</option>
+                <option value="pending">Pending Only</option>
+                <option value="approved">Approved Only</option>
+                <option value="rejected">Rejected Only</option>
+              </select>
             </div>
           </div>
 
@@ -201,6 +203,7 @@ function FuelTracking() {
             fuelRecords={filteredFuelRecords}
             isLoading={isLoading}
             searchTerm={searchTerm}
+            statusFilter={statusFilter} // Pass status filter as prop
             handleAcceptRecord={handleAcceptRecord}
             handleRejectRecord={handleRejectRecord}
             handleUpdateAmount={handleUpdateAmount}

@@ -8,7 +8,7 @@ import {
   TbUserShield,
   TbCar,
   TbSettingsAutomation,
-  TbFolderCog
+  TbFolderCog,
 } from "react-icons/tb";
 import '../../assets/Style/Sidebars/AdminSidebar.css';
 
@@ -20,7 +20,7 @@ const AdminSidebar = ({ children, admin, activeItem, onMenuItemClick }) => {
   const menuItems = [
     {
       name: "dashboard",
-      icon: <TbLayoutDashboard size={20} />, 
+      icon: <TbLayoutDashboard size={20} />,
       label: "Dashboard",
       path: "/admin/dashboard"
     },
@@ -32,15 +32,6 @@ const AdminSidebar = ({ children, admin, activeItem, onMenuItemClick }) => {
       label: "Trip Ticket",
       path: ""
     },
-
-    /*
-    {
-      name: "enforcement",
-      icon: <TbKey size={20} />,
-      label: "Enforcement Section",
-      path: "#"
-    },
-    */
 
     {
       name: "fuel",
@@ -155,7 +146,7 @@ const AdminSidebar = ({ children, admin, activeItem, onMenuItemClick }) => {
         </div>
       </div>
 
-      
+
       <div className="admin-main-content">
         {children}
       </div>

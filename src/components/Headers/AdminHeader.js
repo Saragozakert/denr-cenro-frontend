@@ -154,7 +154,7 @@ function AdminHeader({ admin, notifications = 3 }) {
                     ref={dropdownRef}
                 >
                     <div className="user-info">
-                        <span className="username">{admin?.username || "loading..."}</span>
+                        <span className="username">{admin?.username || "Loading..."}</span>
                         <span className="user-role">
                             Administrator
                             <FiChevronDown size={14} className="dropdown-chevron" />
