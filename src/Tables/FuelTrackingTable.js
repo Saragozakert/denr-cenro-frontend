@@ -163,6 +163,14 @@ function FuelTrackingTable({
         handlePrint();
     };
 
+    // Handle trip ticket function
+    const handleTripTicket = (record) => {
+        // Add your trip ticket logic here
+        console.log('Trip Ticket for record:', record);
+        // You can implement trip ticket generation, modal, or other functionality
+        alert(`Trip Ticket functionality for ${record.model_name} - ${record.plate_no}`);
+    };
+
     if (isLoading) {
         return (
             <div className="fuel-tracking-table-loading">
@@ -311,16 +319,27 @@ function FuelTrackingTable({
                                                 )}
                                             </>
                                         ) : record.status === 'approved' ? (
-                                            // Show print button for approved records - using same design as GasSlipTable
-                                            <button
-                                                className="fuel-tracking-table-action-btn fuel-tracking-table-print-btn"
-                                                onClick={() => handlePrint(record)}
-                                                title="Print Gas Slip"
-                                            >
-                                                <svg className="fuel-tracking-table-icon-print" viewBox="0 0 24 24">
-                                                    <path fill="currentColor" d="M18,3H6V7H18M19,12A1,1 0 0,1 18,11A1,1 0 0,1 19,10A1,1 0 0,1 20,11A1,1 0 0,1 19,12M16,19H8V14H16M19,8H5A3,3 0 0,0 2,11V17H6V21H18V17H22V11A3,3 0 0,0 19,8Z" />
-                                                </svg>
-                                            </button>
+                                            // Show print and trip ticket buttons for approved records
+                                            <>
+                                                <button
+                                                    className="fuel-tracking-table-action-btn fuel-tracking-table-print-btn"
+                                                    onClick={() => handlePrint(record)}
+                                                    title="Print Gas Slip"
+                                                >
+                                                    <svg className="fuel-tracking-table-icon-print" viewBox="0 0 24 24">
+                                                        <path fill="currentColor" d="M18,3H6V7H18M19,12A1,1 0 0,1 18,11A1,1 0 0,1 19,10A1,1 0 0,1 20,11A1,1 0 0,1 19,12M16,19H8V14H16M19,8H5A3,3 0 0,0 2,11V17H6V21H18V17H22V11A3,3 0 0,0 19,8Z" />
+                                                    </svg>
+                                                </button>
+                                                <button
+                                                    className="fuel-tracking-table-action-btn fuel-tracking-table-trip-ticket-btn"
+                                                    onClick={() => handleTripTicket(record)}
+                                                    title="Trip Ticket"
+                                                >
+                                                    <svg className="fuel-tracking-table-icon-trip-ticket" viewBox="0 0 24 24">
+                                                        <path fill="currentColor" d="M12,2C8.13,2 5,5.13 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9C19,5.13 15.87,2 12,2M12,11.5C10.62,11.5 9.5,10.38 9.5,9C9.5,7.62 10.62,6.5 12,6.5C13.38,6.5 14.5,7.62 14.5,9C14.5,10.38 13.38,11.5 12,11.5Z" />
+                                                    </svg>
+                                                </button>
+                                            </>
                                         ) : (
                                             // For rejected records, show no actions
                                             <span className="no-actions-available">

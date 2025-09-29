@@ -17,7 +17,7 @@ function GasSlip() {
         modelName: '',
         modelNameDisplay: '',
         plateNo: '',
-        requestingParty: '', // Add this line
+        requestingParty: '',
         section: '',
         office: '',
         purchasedNo: '',
@@ -31,7 +31,7 @@ function GasSlip() {
     const [formErrors, setFormErrors] = useState({});
     const [loading, setLoading] = useState(false);
     const [approvedByOptions, setApprovedByOptions] = useState([]);
-    const [requestingPartyOptions, setRequestingPartyOptions] = useState([]); // Add this line
+    const [requestingPartyOptions, setRequestingPartyOptions] = useState([]);
     const [gasSlips, setGasSlips] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
@@ -64,11 +64,10 @@ function GasSlip() {
 
         checkAuth();
         fetchEmployees();
-        fetchRequestingParties(); // Add this function call
+        fetchRequestingParties();
         fetchGasSlips();
     }, [navigate]);
 
-    // Fetch gas slips from API
     const fetchGasSlips = async () => {
         try {
             setIsLoading(true);
@@ -91,7 +90,6 @@ function GasSlip() {
         }
     };
 
-    // Fetch employees for Approved By dropdown
     const fetchEmployees = async () => {
         try {
             const token = localStorage.getItem("userToken");
@@ -115,7 +113,6 @@ function GasSlip() {
         }
     };
 
-    // Add this function to fetch requesting parties
     const fetchRequestingParties = async () => {
         try {
             const token = localStorage.getItem("userToken");
@@ -136,7 +133,6 @@ function GasSlip() {
             }
         } catch (error) {
             console.error("Error fetching requesting parties:", error);
-            // Fallback options in case of error
             setRequestingPartyOptions([
                 { value: 'admin', label: 'Admin' },
                 { value: 'operations', label: 'Operations' },
@@ -169,13 +165,11 @@ function GasSlip() {
         try {
             const token = localStorage.getItem("userToken");
 
-            // Find the selected employee name
             const selectedEmployee = approvedByOptions.find(
                 option => option.value.toString() === gasSlipFormData.approvedBy
             );
             const approvedByName = selectedEmployee ? selectedEmployee.label : gasSlipFormData.approvedBy;
 
-            // Find the selected requesting party name
             const selectedRequestingParty = requestingPartyOptions.find(
                 option => option.value.toString() === gasSlipFormData.requestingParty
             );
@@ -206,7 +200,6 @@ function GasSlip() {
                 setShowGasSlipForm(false);
                 alert('Fuel request submitted successfully!');
 
-                // Reset form
                 setGasSlipFormData({
                     vehicleType: '',
                     modelName: '',
@@ -224,7 +217,6 @@ function GasSlip() {
                     issuedBy: ''
                 });
 
-                // Refresh the gas slips list
                 fetchGasSlips();
             }
         } catch (error) {
@@ -241,13 +233,11 @@ function GasSlip() {
         }
     };
 
-    // Handle edit gas slip
     const handleEditSlip = (slip) => {
         console.log('Edit slip:', slip);
         alert('Edit functionality will be implemented here');
     };
 
-    // Handle decline gas slip
     const handleDeclineSlip = async (slipId) => {
         if (window.confirm("Are you sure you want to decline this gas slip?")) {
             try {
@@ -269,11 +259,10 @@ function GasSlip() {
         }
     };
 
-    // Update search filter to include requesting_party
     const filteredGasSlips = gasSlips.filter(slip =>
         slip.model_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         slip.plate_no?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        slip.requesting_party?.toLowerCase().includes(searchTerm.toLowerCase()) || // Add this line
+        slip.requesting_party?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         slip.withdrawn_by?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         slip.office?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         slip.date?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -323,7 +312,6 @@ function GasSlip() {
                         </button>
                     </div>
 
-                    {/* Gas Slip Table */}
                     <GasSlipTable
                         gasSlips={filteredGasSlips}
                         isLoading={isLoading}
@@ -342,7 +330,7 @@ function GasSlip() {
                     formErrors={formErrors}
                     loading={loading}
                     approvedByOptions={approvedByOptions}
-                    requestingPartyOptions={requestingPartyOptions} // Pass this prop
+                    requestingPartyOptions={requestingPartyOptions}
                     currentUserName={user ? user.full_name : "Current User"}
                 />
             </main>
