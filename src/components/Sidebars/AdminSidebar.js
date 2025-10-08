@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { FiBell } from "react-icons/fi";
 import {
@@ -37,7 +37,7 @@ const AdminSidebar = ({ children, admin, activeItem, onMenuItemClick }) => {
       name: "fuel",
       icon: <TbGasStation size={20} />,
       label: "Gas Slip Request",
-      path: "/admin/dashboard/fuel-tracking"
+      path: "/admin/dashboard/gas-slip-request"
     },
 
     {

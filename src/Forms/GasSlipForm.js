@@ -360,6 +360,38 @@ function GasSlipForm({
                                     {formErrors.purpose && <span className="enhanced-error-text">{formErrors.purpose[0]}</span>}
                                 </div>
 
+                                {/* NEW FIELD: Places to be visited/inspected */}
+                                <div className="enhanced-form-group full-width">
+                                    <label htmlFor="placesToVisit">
+                                        Places to be visited/inspected <span className="optional-field">(Optional)</span>
+                                    </label>
+                                    <textarea
+                                        id="placesToVisit"
+                                        placeholder="Enter places to be visited or inspected"
+                                        className={`enhanced-form-input ${formErrors.placesToVisit ? 'enhanced-error' : ''}`}
+                                        value={formData.placesToVisit}
+                                        onChange={handleInputChange}
+                                        rows="3"
+                                    />
+                                    {formErrors.placesToVisit && <span className="enhanced-error-text">{formErrors.placesToVisit[0]}</span>}
+                                </div>
+
+                                {/* NEW FIELD: Name of authorized passengers */}
+                                <div className="enhanced-form-group full-width">
+                                    <label htmlFor="authorizedPassengers">
+                                        Name of authorized passengers <span className="optional-field">(Optional)</span>
+                                    </label>
+                                    <textarea
+                                        id="authorizedPassengers"
+                                        placeholder="Enter names of authorized passengers"
+                                        className={`enhanced-form-input ${formErrors.authorizedPassengers ? 'enhanced-error' : ''}`}
+                                        value={formData.authorizedPassengers}
+                                        onChange={handleInputChange}
+                                        rows="3"
+                                    />
+                                    {formErrors.authorizedPassengers && <span className="enhanced-error-text">{formErrors.authorizedPassengers[0]}</span>}
+                                </div>
+
                                 <div className="enhanced-form-group">
                                     <label htmlFor="fuelType">
                                         Type of Fuel <span className="required-field">*</span>

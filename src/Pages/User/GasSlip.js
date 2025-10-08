@@ -12,6 +12,7 @@ function GasSlip() {
     const [activeItem, setActiveItem] = useState("gasSlip");
     const [searchTerm, setSearchTerm] = useState("");
     const [showGasSlipForm, setShowGasSlipForm] = useState(false);
+
     const [gasSlipFormData, setGasSlipFormData] = useState({
         vehicleType: '',
         modelName: '',
@@ -22,6 +23,8 @@ function GasSlip() {
         office: '',
         purchasedNo: '',
         purpose: '',
+        placesToVisit: '', // Add this
+        authorizedPassengers: '', // Add this
         fuelType: '',
         gasolineAmount: '',
         withdrawnBy: '',
@@ -184,6 +187,8 @@ function GasSlip() {
                 office: gasSlipFormData.office,
                 purchased_no: gasSlipFormData.purchasedNo,
                 purpose: gasSlipFormData.purpose,
+                places_to_visit: gasSlipFormData.placesToVisit, // Add this
+                authorized_passengers: gasSlipFormData.authorizedPassengers, // Add this
                 fuel_type: gasSlipFormData.fuelType,
                 gasoline_amount: gasSlipFormData.gasolineAmount,
                 withdrawn_by: user ? user.full_name : "Current User",
@@ -200,6 +205,7 @@ function GasSlip() {
                 setShowGasSlipForm(false);
                 alert('Fuel request submitted successfully!');
 
+                // Reset form data including new fields
                 setGasSlipFormData({
                     vehicleType: '',
                     modelName: '',
@@ -210,6 +216,8 @@ function GasSlip() {
                     office: '',
                     purchasedNo: '',
                     purpose: '',
+                    placesToVisit: '', // Add this
+                    authorizedPassengers: '', // Add this
                     fuelType: '',
                     gasolineAmount: '',
                     withdrawnBy: '',

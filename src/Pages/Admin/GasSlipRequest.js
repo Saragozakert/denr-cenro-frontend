@@ -3,11 +3,11 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AdminSidebar from '../../components/Sidebars/AdminSidebar';
 import AdminHeader from '../../components/Headers/AdminHeader';
-import FuelTrackingTable from '../../Tables/FuelTrackingTable'; 
+import GasSlipRequestTable from '../../Tables/GasSlipRequestTable'; 
 import '../../assets/Style/AdminDesign/AdminDashboard.css';
 import '../../assets/Style/AdminDesign/FuelTracking.css';
 
-function FuelTracking() {
+function GasSlipRequest() {
   const [admin, setAdmin] = useState(null);
   const [activeItem, setActiveItem] = useState("fuel");
   const [searchTerm, setSearchTerm] = useState("");
@@ -59,15 +59,15 @@ function FuelTracking() {
 
       if (response.data.success) {
         alert("Gasoline amount updated successfully!");
-        fetchFuelRecords(); // Refresh the records
+        fetchFuelRecords(); 
       }
     } catch (error) {
       alert("Error updating gasoline amount: " + (error.response?.data?.message || error.message));
-      throw error; // Re-throw to handle in the table component
+      throw error; 
     }
   };
 
-  // Fetch fuel records from API
+
   const fetchFuelRecords = async () => {
     try {
       setIsLoading(true);
@@ -97,7 +97,7 @@ function FuelTracking() {
     }
   };
 
-  // Handle accept record
+
   const handleAcceptRecord = async (recordId) => {
     try {
       const token = localStorage.getItem("adminToken");
@@ -121,7 +121,7 @@ function FuelTracking() {
     }
   };
 
-  // Handle reject record
+
   const handleRejectRecord = async (recordId) => {
     try {
       const token = localStorage.getItem("adminToken");
@@ -145,7 +145,7 @@ function FuelTracking() {
     }
   };
 
-  // Filter fuel records based on search term
+  
   const filteredFuelRecords = fuelRecords.filter(record =>
     record.model_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     record.plate_no?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -171,7 +171,7 @@ function FuelTracking() {
       <main className="dashboard-content">
         <div className="fuel-tracking-container">
           
-          {/* Status Filter Controls - Moved here from table */}
+          
           <div className="fuel-tracking-filters">
             <div className="search-filter-container">
               <input
@@ -198,12 +198,12 @@ function FuelTracking() {
             </div>
           </div>
 
-          {/* Fuel Tracking Table */}
-          <FuelTrackingTable
+    
+          <GasSlipRequestTable
             fuelRecords={filteredFuelRecords}
             isLoading={isLoading}
             searchTerm={searchTerm}
-            statusFilter={statusFilter} // Pass status filter as prop
+            statusFilter={statusFilter} 
             handleAcceptRecord={handleAcceptRecord}
             handleRejectRecord={handleRejectRecord}
             handleUpdateAmount={handleUpdateAmount}
@@ -214,4 +214,4 @@ function FuelTracking() {
   );
 }
 
-export default FuelTracking;
+export default GasSlipRequest;

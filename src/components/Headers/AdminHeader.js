@@ -43,7 +43,7 @@ function AdminHeader({ admin, notifications = 3 }) {
             return "User Management";
         } else if (path.includes('/admin/dashboard/requesting-party')) {
             return "Requesting Party";
-        } else if (path.includes('/admin/dashboard/fuel-tracking')) {
+        } else if (path.includes('/admin/dashboard/gas-slip-request')) {
             return "Gas Slip Request";
         } else if (path.includes('/admin/dashboard/type-of-unit')) {
             return "Type of Unit";
@@ -62,7 +62,7 @@ function AdminHeader({ admin, notifications = 3 }) {
             return "Manage user accounts, permissions and status";
         } else if (path.includes('/admin/dashboard/requesting-party')) {
             return "All Employees";
-        } else if (path.includes('/admin/dashboard/fuel-tracking')) {
+        } else if (path.includes('/admin/dashboard/gas-slip-request')) {
             return "Track Incoming Requests";
         } else if (path.includes('/admin/dashboard/type-of-unit')) {
             return "Manage different types of units in the system";

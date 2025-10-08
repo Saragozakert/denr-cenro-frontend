@@ -8,6 +8,7 @@ import AdminHeader from "../../components/Headers/AdminHeader";
 function AdminDashboard() {
   const [admin, setAdmin] = useState(null);
   const [totalUsers, setTotalUsers] = useState(0);
+  const [totalApprovers, setTotalApprovers] = useState(0);
   const [statsLoading, setStatsLoading] = useState(true);
   const [activeItem, setActiveItem] = useState("dashboard");
   const navigate = useNavigate();
@@ -37,6 +38,7 @@ function AdminDashboard() {
 
     checkAuth();
     fetchUserStats();
+    fetchApproverStats();
   }, [navigate]);
 
   const fetchUserStats = async () => {
@@ -55,6 +57,24 @@ function AdminDashboard() {
       console.error("Error fetching user stats:", error);
     } finally {
       setStatsLoading(false);
+    }
+  };
+
+  const fetchApproverStats = async () => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await axios.get("http://localhost:8000/api/admin/employees", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+
+      if (response.data.success) {
+        setTotalApprovers(response.data.employees?.length || 0);
+      }
+    } catch (error) {
+      console.error("Error fetching approver stats:", error);
     }
   };
 
@@ -99,7 +119,21 @@ function AdminDashboard() {
             </div>
           </div>
           
-          {/* You can add more cards here later */}
+          {/* Approval Officers Card */}
+          <div className="stat-card">
+            <div className="stat-card-icon approval-icon">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" 
+                      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <div className="stat-card-content">
+              <h3>Approval Officers</h3>
+              <span className="stat-number">{totalApprovers}</span>
+              <p className="stat-description">Employees who can approve tickets</p>
+            </div>
+          </div>
+          
           <div className="stat-card">
             <div className="stat-card-icon active-icon">
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -112,24 +146,6 @@ function AdminDashboard() {
               <p className="stat-description">Currently active users</p>
             </div>
           </div>
-          
-          <div className="stat-card">
-            <div className="stat-card-icon inactive-icon">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM4 12C4 11.39 4.08 10.79 4.21 10.22L8.99 15V16C8.99 17.1 9.89 18 10.99 18V19.93C7.06 19.43 4 16.07 4 12ZM17.89 17.4C17.63 16.59 16.89 16 15.99 16H14.99V13C14.99 12.45 14.54 12 13.99 12H7.99V10H9.99C10.54 10 10.99 9.55 10.99 9V7H12.99C14.09 7 14.99 6.1 14.99 5V4.59C17.92 5.77 20 8.65 20 12C20 14.08 19.19 15.98 17.89 17.4Z" fill="currentColor"/>
-              </svg>
-            </div>
-            <div className="stat-card-content">
-              <h3>Inactive Users</h3>
-              <span className="stat-number">0</span>
-              <p className="stat-description">Users with inactive status</p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="dashboard-content-main">
-          <p>You have successfully logged in to the admin dashboard.</p>
-          {/* Your main content will go here */}
         </div>
       </main>
     </AdminSidebar>

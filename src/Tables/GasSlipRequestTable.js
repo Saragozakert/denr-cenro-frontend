@@ -1,8 +1,9 @@
 import '../assets/Style/TableDesign/FuelTrackingTable.css';
 import { useState, useMemo } from 'react';
 import GasSlipPrint from '../components/Print/GasSlipPrint';
+import TripTicketPrint from '../components/Print/TripTicketPrint'; // Import TripTicketPrint
 
-function FuelTrackingTable({
+function GasSlipRequestTable({
     fuelRecords = [],
     isLoading = false,
     searchTerm = "",
@@ -19,6 +20,8 @@ function FuelTrackingTable({
     const [isUpdating, setIsUpdating] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedPurpose, setSelectedPurpose] = useState('');
+    const [selectedPlaces, setSelectedPlaces] = useState('');
+    const [selectedPassengers, setSelectedPassengers] = useState('');
 
     // Filter and sort records
     const processedRecords = useMemo(() => {
@@ -29,7 +32,9 @@ function FuelTrackingTable({
                 record.section?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 record.fuel_type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 record.withdrawn_by?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                record.date?.toLowerCase().includes(searchTerm.toLowerCase());
+                record.date?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                record.places_to_visit?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                record.authorized_passengers?.toLowerCase().includes(searchTerm.toLowerCase());
 
             const matchesStatus = statusFilter === 'all' || record.status === statusFilter;
 
@@ -102,9 +107,21 @@ function FuelTrackingTable({
         setIsModalOpen(true);
     };
 
+    const openPlacesModal = (places) => {
+        setSelectedPlaces(places);
+        setIsModalOpen(true);
+    };
+
+    const openPassengersModal = (passengers) => {
+        setSelectedPassengers(passengers);
+        setIsModalOpen(true);
+    };
+
     const closePurposeModal = () => {
         setIsModalOpen(false);
         setSelectedPurpose('');
+        setSelectedPlaces('');
+        setSelectedPassengers('');
     };
 
     const handleEditStart = (record) => {
@@ -157,18 +174,16 @@ function FuelTrackingTable({
         }
     };
 
-    // Handle print function
+    // Handle print function for Gas Slip
     const handlePrint = (record) => {
         const { handlePrint } = GasSlipPrint({ slip: record });
         handlePrint();
     };
 
-    // Handle trip ticket function
+    // Handle print function for Trip Ticket - NOW FUNCTIONAL
     const handleTripTicket = (record) => {
-        // Add your trip ticket logic here
-        console.log('Trip Ticket for record:', record);
-        // You can implement trip ticket generation, modal, or other functionality
-        alert(`Trip Ticket functionality for ${record.model_name} - ${record.plate_no}`);
+        const { handlePrint } = TripTicketPrint({ slip: record });
+        handlePrint();
     };
 
     if (isLoading) {
@@ -216,6 +231,12 @@ function FuelTrackingTable({
                             <th onClick={() => handleSort('gasoline_amount')} className="fuel-tracking-table-sortable">
                                 Gasoline Amount <SortIcon columnKey="gasoline_amount" />
                             </th>
+
+                            {/*
+                            <th>Places to Visit</th> 
+                            <th>Authorized Passengers</th> 
+                            */}
+
                             <th onClick={() => handleSort('withdrawn_by')} className="fuel-tracking-table-sortable">
                                 Withdrawn By <SortIcon columnKey="withdrawn_by" />
                             </th>
@@ -253,6 +274,48 @@ function FuelTrackingTable({
                                         `${record.gasoline_amount}`
                                     )}
                                 </td>
+
+                                {/*
+                                <td className="fuel-tracking-table-places">
+                                    {record.places_to_visit ? (
+                                        <button 
+                                            className="text-view-btn"
+                                            onClick={() => openPlacesModal(record.places_to_visit)}
+                                            title="Click to view full text"
+                                        >
+                                            <div className="truncate-text">
+                                                {record.places_to_visit.length > 20 
+                                                    ? `${record.places_to_visit.substring(0, 20)}...` 
+                                                    : record.places_to_visit
+                                                }
+                                            </div>
+                                        </button>
+                                    ) : (
+                                        <span className="no-data">-</span>
+                                    )}
+                                </td>        
+
+                                {/*
+                                <td className="fuel-tracking-table-passengers">
+                                    {record.authorized_passengers ? (
+                                        <button 
+                                            className="text-view-btn"
+                                            onClick={() => openPassengersModal(record.authorized_passengers)}
+                                            title="Click to view full text"
+                                        >
+                                            <div className="truncate-text">
+                                                {record.authorized_passengers.length > 20 
+                                                    ? `${record.authorized_passengers.substring(0, 20)}...` 
+                                                    : record.authorized_passengers
+                                                }
+                                            </div>
+                                        </button>
+                                    ) : (
+                                        <span className="no-data">-</span>
+                                    )}
+                                </td>
+                                */}
+
                                 <td className="fuel-tracking-table-withdrawn">{record.withdrawn_by}</td>
                                 <td className="fuel-tracking-table-status">
                                     <span className={getStatusBadgeClass(record.status)}>
@@ -332,8 +395,8 @@ function FuelTrackingTable({
                                                 </button>
                                                 <button
                                                     className="fuel-tracking-table-action-btn fuel-tracking-table-trip-ticket-btn"
-                                                    onClick={() => handleTripTicket(record)}
-                                                    title="Trip Ticket"
+                                                    onClick={() => handleTripTicket(record)} // Now functional
+                                                    title="Print Trip Ticket"
                                                 >
                                                     <svg className="fuel-tracking-table-icon-trip-ticket" viewBox="0 0 24 24">
                                                         <path fill="currentColor" d="M12,2C8.13,2 5,5.13 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9C19,5.13 15.87,2 12,2M12,11.5C10.62,11.5 9.5,10.38 9.5,9C9.5,7.62 10.62,6.5 12,6.5C13.38,6.5 14.5,7.62 14.5,9C14.5,10.38 13.38,11.5 12,11.5Z" />
@@ -353,8 +416,32 @@ function FuelTrackingTable({
                     </tbody>
                 </table>
             </div>
+
+            {/* Modal for viewing full text */}
+            {isModalOpen && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h3>
+                                {selectedPurpose ? 'Purpose' : selectedPlaces ? 'Places to Visit' : 'Authorized Passengers'}
+                            </h3>
+                            <button className="modal-close" onClick={closePurposeModal}>
+                                ×
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            <p>{selectedPurpose || selectedPlaces || selectedPassengers}</p>
+                        </div>
+                        <div className="modal-footer">
+                            <button className="modal-ok-btn" onClick={closePurposeModal}>
+                                OK
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
 
-export default FuelTrackingTable;
+export default GasSlipRequestTable;

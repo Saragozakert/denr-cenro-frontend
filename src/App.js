@@ -9,7 +9,7 @@ import Homepage from "./Pages/HomeLayout/Homepage";
 
 // Admin Pages
 import AdminDashboard from "./Pages/Admin/AdminDashboard";
-import FuelTracking from "./Pages/Admin/FuelTracking";
+import GasSlipRequest from "./Pages/Admin/GasSlipRequest";
 import UserManagement from "./Pages/Admin/UserManagement";
 import RequestingParty from "./Pages/Admin/RequestingParty";
 import ApprovedSlip from "./Pages/Admin/ApprovedSlip";
@@ -23,6 +23,7 @@ import UserDashboard from "./Pages/User/UserDashboard";
 import GasSlip from "./Pages/User/GasSlip";
 
 
+
 function App() {
   return (
     <Router>
@@ -34,7 +35,7 @@ function App() {
         <Route element={<AdminProtectedRoute/>}>
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/dashboard/requesting-party" element={<RequestingParty />} />
-          <Route path="/admin/dashboard/fuel-tracking" element={<FuelTracking />} />
+          <Route path="/admin/dashboard/gas-slip-request" element={< GasSlipRequest />} />
           <Route path="/admin/dashboard/user-management" element={<UserManagement />} />
           <Route path="/admin/dashboard/type-unit" element={<TypeUnit />} />
           <Route path="/admin/dashboard/approve-section" element={<ApproveSection />} />
