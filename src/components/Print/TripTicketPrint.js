@@ -5,6 +5,35 @@ import BagongPilipinasLogo from "../../assets/images/bagongpilipinas.png";
 
 // React Component for the Print Content
 const TripTicketPrintContent = ({ slip }) => {
+    // Format date to "Month Day, Year" format (e.g., "October 8, 2025")
+    const formatDate = (dateString) => {
+        if (!dateString) return '';
+        
+        try {
+            const date = new Date(dateString);
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        } catch (error) {
+            console.error('Error formatting date:', error);
+            return dateString;
+        }
+    };
+
+    // Combine model name and plate number for the vehicle display
+    const getVehicleDisplay = () => {
+        const model = slip.model_name || '';
+        const plate = slip.plate_no || '';
+        
+        if (model && plate) {
+            return `${model}/${plate}`;
+        } else if (model) {
+            return model;
+        } else if (plate) {
+            return plate;
+        }
+        return '';
+    };
+
     return (
         <div className="slip">
             <div className="header">
@@ -21,7 +50,9 @@ const TripTicketPrintContent = ({ slip }) => {
             </div>
 
             <div className="date-section">
-                <div className="dash-line"><span className="underline-field long"></span></div>
+                <div className="dash-line">
+                    <span className="date-field">{formatDate(slip.date)}</span>
+                </div>
                 <div className="date-label">Date</div>
             </div>
 
@@ -29,24 +60,35 @@ const TripTicketPrintContent = ({ slip }) => {
                 TO BE FILED BY THE ADMINISTRATIVE OFFICIAL AUTHORIZING THE TRAVEL
             </div>
 
-            <div className="car-plate-section">
-                1. Name of the Driver: <span className="underline-field extra-long left-align"></span>
+            <div className="driver-section">
+                1. Name of the Driver: <span className="driver-field">{slip.withdrawn_by || ''}</span>
             </div>
 
             <div className="car-plate-section">
-                2. Gov't car to be used, Plate No.: <span className="underline-field extra-long"></span>
+                2. Gov't car to be used, Plate No.: <span className="car-field">{getVehicleDisplay()}</span>
             </div>
 
             <div className="car-plate-section">
-                3. Name of authorized passenger/s: <span className="underline-field extra-long"></span>
+                3. Name of authorized passenger/s: <span className="passenger-field">{slip.authorized_passengers || ''}</span>
             </div>
 
             <div className="car-plate-section">
-                4. Place/s to be visited/inspected: <span className="underline-field extra-long"></span>
+                4. Place/s to be visited/inspected: <span className="place-field">{slip.places_to_visit || ''}</span>
             </div>
 
             <div className="car-plate-section">
-                5. Purpose: <span className="underline-field extra-long"></span>
+                5. Purpose: <span className="purpose-field">{slip.purpose || ''}</span>
+            </div>
+
+            <div className="signature-section">
+                <div className="requesting-party">
+                    REQUESTING PARTY:
+                    <div className="requesting-line"></div>
+                </div>
+                <div className="approved">
+                    APPROVED:
+                    <div className="approved-line"></div>
+                </div>
             </div>
         </div>
     );
@@ -156,6 +198,13 @@ function TripTicketPrint({ slip }) {
                       letter-spacing: 1px;
                       margin-bottom: 2px;
                   }
+                  .date-field {
+                      border-bottom: 1px solid #000;
+                      display: inline-block;
+                      min-width: 150px;
+                      text-align: center;
+                      padding: 0 5px;
+                  }
                   .date-label {
                       font-size: 11px;
                       font-weight: bold;
@@ -171,12 +220,102 @@ function TripTicketPrint({ slip }) {
                         text-transform: uppercase;
                     }
                 
-                    .car-plate-section {
+                    .driver-section {
                         text-align: left;
-                        margin-top: 7px;
+                        margin-top: 15px;
                         margin-left: 50px;
                         font-size: 12px;
                     }
+                    .driver-field {
+                        border-bottom: 1px solid #000;
+                        display: inline-block;
+                        margin-left: 100px;
+                        width: 250px;
+                        vertical-align: bottom; 
+                        margin-bottom: 2px;  
+                        padding: 0 5px;
+                    }
+
+                    .car-field {
+                        border-bottom: 1px solid #000;
+                        display: inline-block;
+                        margin-left: 38px;
+                        width: 250px;
+                        vertical-align: bottom; 
+                        margin-bottom: 2px;
+                        padding: 0 5px;
+                    }
+
+                    .passenger-field {
+                        border-bottom: 1px solid #000;
+                        display: inline-block;
+                        margin-left: 27px;
+                        width: 250px;
+                        vertical-align: bottom; 
+                        margin-bottom: 2px;
+                        padding: 0 5px;
+                    }
+
+                    .place-field {
+                        border-bottom: 1px solid #000;
+                        display: inline-block;
+                        margin-left: 38px;
+                        width: 250px;
+                        vertical-align: bottom; 
+                        margin-bottom: 2px;
+                        padding: 0 5px;
+                    }
+
+                    .purpose-field {
+                        border-bottom: 1px solid #000;
+                        display: inline-block;
+                        margin-left: 155px;
+                        width: 250px;
+                        vertical-align: bottom; 
+                        margin-bottom: 2px;
+                        padding: 0 5px;
+                    }
+                        
+                    .car-plate-section {
+                        text-align: left;
+                        margin-top: 15px;
+                        margin-left: 50px;
+                        font-size: 12px;
+                    }
+
+                    .signature-section {
+                        display: flex;
+                        justify-content: space-between;
+                        margin-top: 40px;
+                        margin-left: 50px;
+                        margin-right: 50px;
+                        font-size: 12px;
+                        font-weight: bold;
+                    }
+
+                    .requesting-party {
+                        text-align: left;
+                    }
+
+                    .approved {
+                        text-align: right;
+                        margin-right: 155px;
+                        margin-top: 3px;         
+                    }
+
+                    .requesting-line {
+                        border-bottom: 1px solid #000;
+                        width: 200px;
+                        margin-top: 50px;
+                    }
+
+                    .approved-line {
+                        border-bottom: 1px solid #000;
+                        width: 200px;
+                        margin-top: 50px;
+                        margin-right: -150px;
+                    }
+                    
                     .underline-field {
                         border-bottom: 1px solid #000;
                         display: inline-block;

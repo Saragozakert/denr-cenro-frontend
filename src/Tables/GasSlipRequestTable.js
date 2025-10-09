@@ -1,7 +1,7 @@
 import '../assets/Style/TableDesign/FuelTrackingTable.css';
 import { useState, useMemo } from 'react';
 import GasSlipPrint from '../components/Print/GasSlipPrint';
-import TripTicketPrint from '../components/Print/TripTicketPrint'; // Import TripTicketPrint
+import TripTicketPrint from '../components/Print/TripTicketPrint';
 
 function GasSlipRequestTable({
     fuelRecords = [],
@@ -12,16 +12,10 @@ function GasSlipRequestTable({
     handleRejectRecord,
     handleUpdateAmount
 }) {
-    const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(5);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
     const [editingId, setEditingId] = useState(null);
     const [editedAmount, setEditedAmount] = useState('');
     const [isUpdating, setIsUpdating] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedPurpose, setSelectedPurpose] = useState('');
-    const [selectedPlaces, setSelectedPlaces] = useState('');
-    const [selectedPassengers, setSelectedPassengers] = useState('');
 
     // Filter and sort records
     const processedRecords = useMemo(() => {
@@ -55,28 +49,11 @@ function GasSlipRequestTable({
         return filtered;
     }, [fuelRecords, searchTerm, sortConfig, statusFilter]);
 
-    // Pagination
-    const totalPages = Math.ceil(processedRecords.length / itemsPerPage);
-    const currentRecords = useMemo(() => {
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        return processedRecords.slice(startIndex, startIndex + itemsPerPage);
-    }, [processedRecords, currentPage, itemsPerPage]);
-
     const handleSort = (key) => {
         setSortConfig(current => ({
             key,
             direction: current.key === key && current.direction === 'asc' ? 'desc' : 'asc'
         }));
-        setCurrentPage(1);
-    };
-
-    const handleItemsPerPageChange = (e) => {
-        setItemsPerPage(Number(e.target.value));
-        setCurrentPage(1);
-    };
-
-    const goToPage = (page) => {
-        setCurrentPage(Math.max(1, Math.min(page, totalPages)));
     };
 
     const SortIcon = ({ columnKey }) => {
@@ -100,28 +77,6 @@ function GasSlipRequestTable({
             console.error('Error formatting date:', error);
             return dateString;
         }
-    };
-
-    const openPurposeModal = (purpose) => {
-        setSelectedPurpose(purpose);
-        setIsModalOpen(true);
-    };
-
-    const openPlacesModal = (places) => {
-        setSelectedPlaces(places);
-        setIsModalOpen(true);
-    };
-
-    const openPassengersModal = (passengers) => {
-        setSelectedPassengers(passengers);
-        setIsModalOpen(true);
-    };
-
-    const closePurposeModal = () => {
-        setIsModalOpen(false);
-        setSelectedPurpose('');
-        setSelectedPlaces('');
-        setSelectedPassengers('');
     };
 
     const handleEditStart = (record) => {
@@ -180,7 +135,7 @@ function GasSlipRequestTable({
         handlePrint();
     };
 
-    // Handle print function for Trip Ticket - NOW FUNCTIONAL
+    // Handle print function for Trip Ticket
     const handleTripTicket = (record) => {
         const { handlePrint } = TripTicketPrint({ slip: record });
         handlePrint();
@@ -231,12 +186,6 @@ function GasSlipRequestTable({
                             <th onClick={() => handleSort('gasoline_amount')} className="fuel-tracking-table-sortable">
                                 Gasoline Amount <SortIcon columnKey="gasoline_amount" />
                             </th>
-
-                            {/*
-                            <th>Places to Visit</th> 
-                            <th>Authorized Passengers</th> 
-                            */}
-
                             <th onClick={() => handleSort('withdrawn_by')} className="fuel-tracking-table-sortable">
                                 Withdrawn By <SortIcon columnKey="withdrawn_by" />
                             </th>
@@ -248,7 +197,7 @@ function GasSlipRequestTable({
                     </thead>
                     
                     <tbody>
-                        {currentRecords.map((record, index) => (
+                        {processedRecords.map((record, index) => (
                             <tr key={record.id}>
                                 <td className="fuel-tracking-table-date highlight-date">
                                     {formatDate(record.date)}
@@ -274,48 +223,6 @@ function GasSlipRequestTable({
                                         `${record.gasoline_amount}`
                                     )}
                                 </td>
-
-                                {/*
-                                <td className="fuel-tracking-table-places">
-                                    {record.places_to_visit ? (
-                                        <button 
-                                            className="text-view-btn"
-                                            onClick={() => openPlacesModal(record.places_to_visit)}
-                                            title="Click to view full text"
-                                        >
-                                            <div className="truncate-text">
-                                                {record.places_to_visit.length > 20 
-                                                    ? `${record.places_to_visit.substring(0, 20)}...` 
-                                                    : record.places_to_visit
-                                                }
-                                            </div>
-                                        </button>
-                                    ) : (
-                                        <span className="no-data">-</span>
-                                    )}
-                                </td>        
-
-                                {/*
-                                <td className="fuel-tracking-table-passengers">
-                                    {record.authorized_passengers ? (
-                                        <button 
-                                            className="text-view-btn"
-                                            onClick={() => openPassengersModal(record.authorized_passengers)}
-                                            title="Click to view full text"
-                                        >
-                                            <div className="truncate-text">
-                                                {record.authorized_passengers.length > 20 
-                                                    ? `${record.authorized_passengers.substring(0, 20)}...` 
-                                                    : record.authorized_passengers
-                                                }
-                                            </div>
-                                        </button>
-                                    ) : (
-                                        <span className="no-data">-</span>
-                                    )}
-                                </td>
-                                */}
-
                                 <td className="fuel-tracking-table-withdrawn">{record.withdrawn_by}</td>
                                 <td className="fuel-tracking-table-status">
                                     <span className={getStatusBadgeClass(record.status)}>
@@ -382,7 +289,6 @@ function GasSlipRequestTable({
                                                 )}
                                             </>
                                         ) : record.status === 'approved' ? (
-                                            // Show print and trip ticket buttons for approved records
                                             <>
                                                 <button
                                                     className="fuel-tracking-table-action-btn fuel-tracking-table-print-btn"
@@ -395,7 +301,7 @@ function GasSlipRequestTable({
                                                 </button>
                                                 <button
                                                     className="fuel-tracking-table-action-btn fuel-tracking-table-trip-ticket-btn"
-                                                    onClick={() => handleTripTicket(record)} // Now functional
+                                                    onClick={() => handleTripTicket(record)}
                                                     title="Print Trip Ticket"
                                                 >
                                                     <svg className="fuel-tracking-table-icon-trip-ticket" viewBox="0 0 24 24">
@@ -404,7 +310,6 @@ function GasSlipRequestTable({
                                                 </button>
                                             </>
                                         ) : (
-                                            // For rejected records, show no actions
                                             <span className="no-actions-available">
                                                 No actions available
                                             </span>
@@ -416,30 +321,6 @@ function GasSlipRequestTable({
                     </tbody>
                 </table>
             </div>
-
-            {/* Modal for viewing full text */}
-            {isModalOpen && (
-                <div className="modal-overlay">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h3>
-                                {selectedPurpose ? 'Purpose' : selectedPlaces ? 'Places to Visit' : 'Authorized Passengers'}
-                            </h3>
-                            <button className="modal-close" onClick={closePurposeModal}>
-                                ×
-                            </button>
-                        </div>
-                        <div className="modal-body">
-                            <p>{selectedPurpose || selectedPlaces || selectedPassengers}</p>
-                        </div>
-                        <div className="modal-footer">
-                            <button className="modal-ok-btn" onClick={closePurposeModal}>
-                                OK
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }

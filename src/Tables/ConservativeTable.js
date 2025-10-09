@@ -9,10 +9,10 @@ function ConservativeTable({
   handleEditEmployee
 }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const itemsPerPage = 5;
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
-  // Filter and sort employees
+
   const processedEmployees = useMemo(() => {
     let filtered = employees.filter(employee =>
       employee.employee_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -51,11 +51,7 @@ function ConservativeTable({
     setCurrentPage(1);
   };
 
-  const handleItemsPerPageChange = (e) => {
-    setItemsPerPage(Number(e.target.value));
-    setCurrentPage(1);
-  };
-
+  
   const goToPage = (page) => {
     setCurrentPage(Math.max(1, Math.min(page, totalPages)));
   };
@@ -149,30 +145,33 @@ function ConservativeTable({
           Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, processedEmployees.length)} of {processedEmployees.length} employees
         </div>
 
-        <div className="conservative-table-pagination">
-          <button
-            className={`conservative-table-pagination-btn ${currentPage === 1 ? 'conservative-table-pagination-disabled' : ''}`}
-            onClick={() => goToPage(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            <svg className="conservative-table-pagination-icon" viewBox="0 0 24 24">
-              <path fill="currentColor" d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
-            </svg>
-          </button>
+        <div className="conservative-table-pagination-controls">
+          
+          <div className="conservative-table-pagination">
+            <button
+              className={`conservative-table-pagination-btn ${currentPage === 1 ? 'conservative-table-pagination-disabled' : ''}`}
+              onClick={() => goToPage(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              <svg className="conservative-table-pagination-icon" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
+              </svg>
+            </button>
 
-          <span className="conservative-table-pagination-info">
-            Page <strong>{currentPage}</strong> of <strong>{totalPages}</strong>
-          </span>
+            <span className="conservative-table-pagination-info">
+              Page <strong>{currentPage}</strong> of <strong>{totalPages}</strong>
+            </span>
 
-          <button
-            className={`conservative-table-pagination-btn ${currentPage === totalPages ? 'conservative-table-pagination-disabled' : ''}`}
-            onClick={() => goToPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            <svg className="conservative-table-pagination-icon" viewBox="0 0 24 24">
-              <path fill="currentColor" d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />
-            </svg>
-          </button>
+            <button
+              className={`conservative-table-pagination-btn ${currentPage === totalPages ? 'conservative-table-pagination-disabled' : ''}`}
+              onClick={() => goToPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              <svg className="conservative-table-pagination-icon" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>

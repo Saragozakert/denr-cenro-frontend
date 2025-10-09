@@ -1,4 +1,4 @@
-import React, { useState, useMemo, forwardRef } from "react";
+import React, { useState, useMemo } from "react";
 import './../assets/Style/TableDesign/RequestingPartyTable.css';
 
 function RequestingPartyTable({
@@ -8,7 +8,7 @@ function RequestingPartyTable({
   handleDeleteRequestingParty
 }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [itemsPerPage] = useState(5);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
   const processedRequestingParties = useMemo(() => {
@@ -17,7 +17,6 @@ function RequestingPartyTable({
       party.division_section?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       party.position?.toLowerCase().includes(searchTerm.toLowerCase())
     );
-
 
     if (sortConfig.key) {
       filtered.sort((a, b) => {
@@ -33,7 +32,6 @@ function RequestingPartyTable({
     return filtered;
   }, [requestingParties, searchTerm, sortConfig]);
 
- 
   const totalPages = Math.ceil(processedRequestingParties.length / itemsPerPage);
   const currentRequestingParties = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
