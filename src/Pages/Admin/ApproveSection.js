@@ -5,7 +5,7 @@ import AdminSidebar from "../../components/Sidebars/AdminSidebar";
 import AdminHeader from "../../components/Headers/AdminHeader";
 import "../../assets/Style/AdminDesign/AdminDashboard.css";
 import "../../assets/Style/AdminDesign/ConservativeSection.css";
-import ConservativeTable from "../../Tables/ConservativeTable";
+import ApproveSectionTable from "../../Tables/ApproveSectionTable";
 import AddEmployee from "../../Forms/AddEmployee";
 
 function ApproveSection() {
@@ -185,7 +185,7 @@ function ApproveSection() {
             </button>
           </div>
 
-          <ConservativeTable 
+          <ApproveSectionTable 
             employees={filteredEmployees}
             isLoading={isLoading}
             searchTerm={searchTerm}

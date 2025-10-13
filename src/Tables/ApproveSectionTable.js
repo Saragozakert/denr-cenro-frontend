@@ -1,7 +1,7 @@
 import './../assets/Style/TableDesign/ConservativeTable.css';
 import { useState, useMemo } from 'react';
 
-function ConservativeTable({ 
+function ApproveSectionTable({ 
   employees = [],
   isLoading = false,
   searchTerm = "",
@@ -178,4 +178,4 @@ function ConservativeTable({
   );
 }
 
-export default ConservativeTable;
+export default ApproveSectionTable;

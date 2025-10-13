@@ -12,6 +12,8 @@ function GasSlipRequest() {
   const [activeItem, setActiveItem] = useState("fuel");
   const [searchTerm, setSearchTerm] = useState("");
   const [fuelRecords, setFuelRecords] = useState([]);
+  const [requestingParties, setRequestingParties] = useState([]);
+  const [employees, setEmployees] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [statusFilter, setStatusFilter] = useState('pending'); 
   const navigate = useNavigate();
@@ -40,8 +42,73 @@ function GasSlipRequest() {
     };
 
     checkAuth();
-    fetchFuelRecords(); 
+    fetchFuelRecords();
+    fetchRequestingParties();
+    fetchEmployees();
   }, [navigate]);
+
+  const fetchRequestingParties = async () => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await axios.get("http://localhost:8000/api/admin/requesting-parties", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+
+      if (response.data.success) {
+        setRequestingParties(response.data.requestingParties || []);
+      }
+    } catch (error) {
+      console.error("Error fetching requesting parties:", error);
+    }
+  };
+
+  const fetchEmployees = async () => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await axios.get("http://localhost:8000/api/admin/employees", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+
+      if (response.data.success) {
+        setEmployees(response.data.employees || []);
+      }
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    }
+  };
+
+  // FIXED: Enhanced fuel records with correct position data
+  const enhancedFuelRecords = fuelRecords.map(record => {
+    // For requesting party position
+    let requestingPosition = record.position;
+    if (!requestingPosition) {
+      const requestingParty = requestingParties.find(
+        party => party.full_name === record.requesting_party
+      );
+      requestingPosition = requestingParty ? requestingParty.position : 'N/A';
+    }
+
+    // FIXED: For approve section position - find by approved_by name instead of withdrawn_by
+    let approveSectionPosition = record.approve_section_position;
+    if (!approveSectionPosition || approveSectionPosition === 'N/A') {
+      const employee = employees.find(
+        emp => emp.name === record.approved_by
+      );
+      approveSectionPosition = employee ? employee.position : 'N/A';
+    }
+
+    return {
+      ...record,
+      position: requestingPosition,
+      approve_section_position: approveSectionPosition
+    };
+  });
 
   const handleUpdateAmount = async (recordId, newAmount) => {
     try {
@@ -66,7 +133,6 @@ function GasSlipRequest() {
       throw error; 
     }
   };
-
 
   const fetchFuelRecords = async () => {
     try {
@@ -97,7 +163,6 @@ function GasSlipRequest() {
     }
   };
 
-
   const handleAcceptRecord = async (recordId) => {
     try {
       const token = localStorage.getItem("adminToken");
@@ -120,7 +185,6 @@ function GasSlipRequest() {
       alert("Error approving fuel request: " + (error.response?.data?.message || error.message));
     }
   };
-
 
   const handleRejectRecord = async (recordId) => {
     try {
@@ -145,14 +209,15 @@ function GasSlipRequest() {
     }
   };
 
-  
-  const filteredFuelRecords = fuelRecords.filter(record =>
+  const filteredFuelRecords = enhancedFuelRecords.filter(record =>
     record.model_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     record.plate_no?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     record.requesting_party?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     record.withdrawn_by?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     record.office?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    record.date?.toLowerCase().includes(searchTerm.toLowerCase())
+    record.date?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    record.position?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    record.approve_section_position?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -170,8 +235,6 @@ function GasSlipRequest() {
 
       <main className="dashboard-content">
         <div className="fuel-tracking-container">
-          
-          
           <div className="fuel-tracking-filters">
             <div className="search-filter-container">
               <input
@@ -198,7 +261,6 @@ function GasSlipRequest() {
             </div>
           </div>
 
-    
           <GasSlipRequestTable
             fuelRecords={filteredFuelRecords}
             isLoading={isLoading}

@@ -28,7 +28,9 @@ function GasSlipRequestTable({
                 record.withdrawn_by?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 record.date?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 record.places_to_visit?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                record.authorized_passengers?.toLowerCase().includes(searchTerm.toLowerCase());
+                record.authorized_passengers?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                record.position?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                record.approve_section_position?.toLowerCase().includes(searchTerm.toLowerCase());
 
             const matchesStatus = statusFilter === 'all' || record.status === statusFilter;
 
@@ -180,6 +182,16 @@ function GasSlipRequestTable({
                             <th onClick={() => handleSort('section')} className="fuel-tracking-table-sortable">
                                 Section <SortIcon columnKey="section" />
                             </th>
+ 
+                            {/*
+                            <th onClick={() => handleSort('position')} className="fuel-tracking-table-sortable">
+                                Position (Requesting) <SortIcon columnKey="position" />
+                            </th>
+                            <th onClick={() => handleSort('approve_section_position')} className="fuel-tracking-table-sortable">
+                                Position (Approve Section) <SortIcon columnKey="approve_section_position" />
+                            </th>
+                            */}        
+
                             <th onClick={() => handleSort('fuel_type')} className="fuel-tracking-table-sortable">
                                 Type of Fuel <SortIcon columnKey="fuel_type" />
                             </th>
@@ -205,6 +217,10 @@ function GasSlipRequestTable({
                                 <td className="fuel-tracking-table-model">{record.model_name}</td>
                                 <td className="fuel-tracking-table-plate">{record.plate_no}</td>
                                 <td className="fuel-tracking-table-section">{record.section}</td>
+                                {/*
+                                <td className="fuel-tracking-table-position">{record.position || 'N/A'}</td>
+                                <td className="fuel-tracking-table-position">{record.approve_section_position || 'N/A'}</td>
+                                */}               
                                 <td className="fuel-tracking-table-fuel-type">{record.fuel_type}</td>
                                 <td className="fuel-tracking-table-amount">
                                     {editingId === record.id ? (

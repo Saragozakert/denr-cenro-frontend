@@ -1,4 +1,3 @@
-import React from 'react';
 import { createRoot } from 'react-dom/client';
 import DENRLogo from "../../assets/images/DENR.png";
 import BagongPilipinasLogo from "../../assets/images/bagongpilipinas.png";
@@ -8,7 +7,7 @@ const TripTicketPrintContent = ({ slip }) => {
     // Format date to "Month Day, Year" format (e.g., "October 8, 2025")
     const formatDate = (dateString) => {
         if (!dateString) return '';
-        
+
         try {
             const date = new Date(dateString);
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -23,7 +22,7 @@ const TripTicketPrintContent = ({ slip }) => {
     const getVehicleDisplay = () => {
         const model = slip.model_name || '';
         const plate = slip.plate_no || '';
-        
+
         if (model && plate) {
             return `${model}/${plate}`;
         } else if (model) {
@@ -61,33 +60,37 @@ const TripTicketPrintContent = ({ slip }) => {
             </div>
 
             <div className="driver-section">
-                1. Name of the Driver: <span className="driver-field">{slip.withdrawn_by || ''}</span>
+                1. Name of the Driver: <span className="driver-field">{(slip.withdrawn_by || '').toUpperCase()}</span>
             </div>
 
             <div className="car-plate-section">
-                2. Gov't car to be used, Plate No.: <span className="car-field">{getVehicleDisplay()}</span>
+                2. Gov't car to be used, Plate No.: <span className="car-field">{getVehicleDisplay().toUpperCase()}</span>
             </div>
 
             <div className="car-plate-section">
-                3. Name of authorized passenger/s: <span className="passenger-field">{slip.authorized_passengers || ''}</span>
+                3. Name of authorized passenger/s: <span className="passenger-field">{(slip.authorized_passengers || '').toUpperCase()}</span>
             </div>
 
             <div className="car-plate-section">
-                4. Place/s to be visited/inspected: <span className="place-field">{slip.places_to_visit || ''}</span>
+                4. Place/s to be visited/inspected: <span className="place-field">{(slip.places_to_visit || '').toUpperCase()}</span>
             </div>
 
             <div className="car-plate-section">
-                5. Purpose: <span className="purpose-field">{slip.purpose || ''}</span>
+                5. Purpose: <span className="purpose-field">{(slip.purpose || '').toUpperCase()}</span>
             </div>
 
             <div className="signature-section">
                 <div className="requesting-party">
                     REQUESTING PARTY:
+                    <div className="requesting-name">{(slip.requesting_party || '').toUpperCase()}</div>            
                     <div className="requesting-line"></div>
+                    <div className="requesting-position">{(slip.position || '').toUpperCase()}</div>
                 </div>
                 <div className="approved">
-                    APPROVED:
+                    APPROVED:        
+                    <div className="approved-name">{(slip.approved_by || '').toUpperCase()}</div>
                     <div className="approved-line"></div>
+                    <div className="approved-position">{(slip.approve_section_position || '').toUpperCase()}</div>
                 </div>
             </div>
         </div>
@@ -97,7 +100,6 @@ const TripTicketPrintContent = ({ slip }) => {
 // Main component function
 function TripTicketPrint({ slip }) {
     const handlePrint = () => {
-        // Create a hidden iframe instead of a new window
         const iframe = document.createElement('iframe');
         iframe.style.position = 'fixed';
         iframe.style.right = '0';
@@ -112,11 +114,11 @@ function TripTicketPrint({ slip }) {
 
         // Write the basic HTML structure with styles
         iframeDoc.write(`
-      <!DOCTYPE html>
-      <html>
-      <head>
-          <title>Trip Ticket - ${slip.model_name}</title>
-          <style>
+        <!DOCTYPE html>
+            <html>
+                    <head>
+                <title>Trip Ticket - ${slip.model_name}</title>
+                <style>
                  @media print {
                     @page {
                         size: A4 portrait;
@@ -293,27 +295,20 @@ function TripTicketPrint({ slip }) {
                         font-weight: bold;
                     }
 
-                    .requesting-party {
-                        text-align: left;
-                    }
+               
 
                     .approved {
                         text-align: right;
                         margin-right: 155px;
                         margin-top: 3px;         
+                        position: relative;
                     }
 
                     .requesting-line {
                         border-bottom: 1px solid #000;
                         width: 200px;
-                        margin-top: 50px;
-                    }
-
-                    .approved-line {
-                        border-bottom: 1px solid #000;
-                        width: 200px;
-                        margin-top: 50px;
-                        margin-right: -150px;
+                        margin-top: 35px; /* Increased from 25px to 35px */
+                        margin-bottom: 5px;
                     }
                     
                     .underline-field {
@@ -334,24 +329,160 @@ function TripTicketPrint({ slip }) {
                         text-align: left;
                         margin-left: 0;
                     }
+
+                    /* Requesting party styles - ADJUSTED POSITIONING */
+                    .requesting-name {
+                        font-weight: normal;
+                        font-size: 12px;
+                        text-align: center;
+                        width: 200px;
+                        padding: 0 5px;
+                        position: absolute;
+                        top: 35px; /* Increased from 20px to 30px */
+                        left: 0;
+                    }
+
+                    .requesting-position {
+                        font-weight: normal;
+                        font-size: 11px;
+                        text-align: center;
+                        width: 200px;
+                        padding: 0 5px;
+                        font-style: italic;
+                        margin-top: 5px;
+                    }
+
+                
+
+                    /* ADDED: Approved position styles */
+                    .approved-position {
+                        font-weight: normal;
+                        font-size: 11px;
+                        text-align: center;
+                        width: 200px;
+                        padding: 0 5px;
+                        font-style: italic;
+                        margin-top: 5px;
+                    }
+
+                    .approved-label {
+                        font-weight: normal;
+                        font-size: 11px;
+                        text-align: center;
+                        width: 200px;
+                        padding: 0 5px;
+                        font-style: italic;
+                        margin-top: 5px;
+                    }
               }
               
-              /* Remove screen styles to prevent window flash */
-              body {
-                  visibility: hidden;
-              }
               
-              @media print {
-                  body {
-                      visibility: visible;
-                  }
-              }
-          </style>
-      </head>
-      <body>
-          <div id="print-root"></div>
-      </body>
-      </html>
+                body {
+                    visibility: hidden;
+                }
+                
+                @media print {
+                    body {
+                        visibility: visible;
+                    }
+                }
+
+                .signature-section {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: 40px;
+                    margin-left: 50px;
+                    margin-right: 50px;
+                    font-size: 12px;
+                    font-weight: bold;
+                }
+
+                .requesting-party {
+                    text-align: left;
+                    position: relative;
+                    min-height: 95px; /* Increased from 80px to 90px */
+                }
+
+                .requesting-name {
+                    font-weight: normal;
+                    font-size: 12px;
+                    text-align: center;
+                    width: 200px;
+                    padding: 0 5px;
+                    position: absolute;
+                    top: 30px; /* Increased from 20px to 30px */
+                    left: 0;
+                }
+
+                .requesting-line {
+                    border-bottom: 1px solid #000;
+                    width: 200px;
+                    margin-top: 35px; /* Increased from 25px to 35px */
+                    margin-bottom: 5px;
+                }
+
+                .requesting-position {
+                    font-weight: normal;
+                    font-size: 11px;
+                    text-align: center;
+                    width: 200px;
+                    padding: 0 5px;
+                    font-style: italic;
+                    margin-top: 5px;
+                }
+
+                .approved {
+                    text-align: right;
+                    margin-right: 155px;
+                    margin-top: 3px;
+                    position: relative;
+                    min-height: 90px; /* Increased from 80px to 90px */
+                }
+
+                .approved-name {
+                    font-weight: normal;
+                    font-size: 12px;
+                    text-align: center;
+                    width: 200px;
+                    padding: 0 5px;
+                    position: absolute;
+                    top: 28px; /* Increased from 20px to 30px */
+                    margin-left: 150px;
+                }
+
+                .approved-line {
+                    border-bottom: 1px solid #000;
+                    width: 200px;
+                    margin-top: 31.5px; 
+                    margin-bottom: 5px;
+                }
+
+                /* ADDED: Approved position styles for non-print */
+                .approved-position {
+                    font-weight: normal;
+                    font-size: 11px;
+                    text-align: center;
+                    width: 200px;
+                    padding: 0 5px;
+                    font-style: italic;
+                    margin-top: 5px;
+                }
+
+                .approved-label {
+                    font-weight: normal;
+                    font-size: 11px;
+                    text-align: center;
+                    width: 200px;
+                    padding: 0 5px;
+                    font-style: italic;
+                    margin-top: 5px;
+                }
+                    </style>
+            </head>
+            <body>
+                <div id="print-root"></div>
+            </body>
+        </html>
     `);
 
         iframeDoc.close();

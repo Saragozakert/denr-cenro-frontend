@@ -719,3 +719,8 @@
 .modal-ok-btn:hover {
     background: #2563eb;
 }
+
+.fuel-tracking-table-position {
+    min-width: 120px;
+    text-align: left;
+}
