@@ -97,8 +97,151 @@ const TripTicketPrintContent = ({ slip }) => {
             
             {/* Cut line and driver note */}
             <div className="cut-line"></div>
-            <div className="driver-note">
-                TO BE FILED BY THE DRIVER:
+            <div className="driver-section-fields">
+                <div className="driver-note">
+                    TO BE FILED BY THE DRIVER:
+                </div>
+
+                <div className="time-departure">
+                    1. Time of Departure from the office/garage: 
+                    <span className="time-field underline-field long"></span>
+                    <span className="am-pm-checkbox">
+                        <span className="checkbox">□ AM</span>
+                        <span className="checkbox">□ PM</span>
+                    </span>
+                </div>
+                <div className="time-arrival">
+                    2. Time of arrival at Item No. 4 above: 
+                    <span className="time-field underline-field long"></span>
+                    <span className="am-pm-checkbox">
+                        <span className="checkbox">□ AM</span>
+                        <span className="checkbox">□ PM</span>
+                    </span>
+                </div>
+
+                <div className="time-departure-item4">
+                    3. Time of departure from Item No. 4 above: 
+                    <span className="time-field underline-field long"></span>
+                    <span className="am-pm-checkbox">
+                        <span className="checkbox">□ AM</span>
+                        <span className="checkbox">□ PM</span>
+                    </span>
+                </div>
+
+                <div className="time-arrival-back">
+                    4. Time of arrival back to the office/garage: 
+                    <span className="time-field underline-field long"></span>
+                    <span className="am-pm-checkbox">
+                        <span className="checkbox">□ AM</span>
+                        <span className="checkbox">□ PM</span>
+                    </span>
+                </div>
+
+                <div className="distance-traveled">
+                    5. Approximate distance traveled to & from: 
+                    <span className="distance-field underline-field long"></span>
+                    <span className="distance-unit">
+                        <span className="checkbox">□ km</span>
+                        <span className="checkbox">□ m</span>
+                    </span>
+                </div>
+
+                <div className="gasoline-diesel">
+                    6. Gasoline/Diesel issued/purchased and used: 
+                    <span className="fuel-field underline-field long"></span>
+                    <span className="fuel-unit">
+                        <span className="checkbox">Liters</span>
+                    </span>
+                </div>
+
+                <div className="balance-tank">
+                    7. Balance in Tank: 
+                    <span className="balance-field underline-field long"></span>
+                    <span className="balance-unit">
+                        <span className="checkbox">Liters</span>
+                    </span>
+                </div>
+
+                <div className="issued-office">
+                    a. Issued by the office from stock: 
+                    <span className="issued-field underline-field long"></span>
+                    <span className="issued-unit">
+                        <span className="checkbox">Liters</span>
+                    </span>
+                </div>
+
+                <div className="purchased-trip">
+                    b. Add: purchased during the trip (to from): 
+                    <span className="purchased-field underline-field long"></span>
+                    <span className="purchased-unit">
+                        <span className="checkbox">Liters</span>
+                    </span>
+                </div>
+
+                <div className="gear-oil">
+                    8. Gear oil used: 
+                    <span className="gear-field underline-field long"></span>
+                    <span className="gear-unit">
+                        <span className="checkbox">Liters</span>
+                    </span>
+                </div>
+
+                <div className="lubricating-oils">
+                    9. Lubricating oils used: 
+                    <span className="lubricating-field underline-field long"></span>
+                    <span className="lubricating-unit">
+                        <span className="checkbox">Liters</span>
+                    </span>
+                </div>
+                
+                <div className="grease">
+                    10. Grease issued/purchased: 
+                    <span className="grease-field underline-field long"></span>
+                    <span className="grease-unit">
+                        <span className="checkbox">Liters</span>
+                    </span>
+                </div>
+
+                <div className="odometer-reading">
+                    11. Odometer reading, if any: 
+                    <span className="odometer-field underline-field long"></span>
+                    <span className="odometer-unit">
+                        <span className="checkbox">□ km</span>
+                        <span className="checkbox">□ m</span>
+                    </span>
+                </div>
+
+                <div className="odometer-beginning">
+                    - At the beginning of the trip: 
+                    <span className="beginning-field underline-field long"></span>
+                    <span className="beginning-unit">
+                        <span className="checkbox">□ km</span>
+                        <span className="checkbox">□ m</span>
+                    </span>
+                </div>
+
+                <div className="odometer-end">
+                    - At the end of the trip: 
+                    <span className="end-field underline-field long"></span>
+                    <span className="end-unit">
+                        <span className="checkbox">□ km</span>
+                        <span className="checkbox">□ m</span>
+                    </span>
+                </div>
+            </div>
+
+            <div className="remarks-section">
+                <div className="remarks-note">
+                    REMARKS:
+                </div>
+                <div className="remarks-line"></div>
+                <div className="certification-text">
+                    I hereby certify to the correctness of the above stated records of travel.
+                </div>
+                <div className="driver-signature-container">
+                    <div className="driver-signature-line"></div>
+                    <div className="driver-label">Driver</div>
+                </div>
             </div>
         </div>
     );
@@ -227,8 +370,6 @@ function TripTicketPrint({ slip }) {
                         text-transform: uppercase;
                     }
 
-                   
-
                     .driver-field,
                     .car-field,
                     .passenger-field,
@@ -278,7 +419,6 @@ function TripTicketPrint({ slip }) {
                         font-weight: normal !important;
                     }
 
-                    
                     .cut-line {
                         margin-top: -45px; 
                         border-bottom: 1px dashed #999;
@@ -288,13 +428,242 @@ function TripTicketPrint({ slip }) {
                         margin-right: auto;
                     }
 
+                    .driver-section-fields {
+                        margin-top: 10px;
+                        margin-left: 50px;
+                    }
+
                     .driver-note {
                         text-align: left;
-                        margin-top: 5px; 
-                        margin-left: 50px;
+                        margin-bottom: 10px;
                         font-size: 10px;
                         font-weight: bold;
                         text-transform: uppercase;
+                    }
+
+                    .time-departure {
+                        text-align: left;
+                        margin-top: -5px;
+                        font-size: 12px;
+                        margin-left: 0;
+                    }
+
+                    .time-arrival {
+                        text-align: left;
+                        margin-top: 5px;
+                        font-size: 12px;
+                        margin-left: 0;
+                    }
+
+                    .time-departure-item4 {
+                        text-align: left;
+                        margin-top: 3px;
+                        font-size: 12px;
+                        margin-left: 0;
+                    }
+
+                    .time-arrival-back {
+                        text-align: left;
+                        margin-top: 3px;
+                        font-size: 12px;
+                        margin-left: 0;
+                    }
+
+                    .distance-traveled {
+                        text-align: left;
+                        margin-top: 3px;
+                        font-size: 12px;
+                        margin-left: 0;
+                    }
+
+                    .gasoline-diesel {
+                        text-align: left;
+                        margin-top: 3px;
+                        font-size: 12px;
+                        margin-left: 0;
+                    }
+
+                    .balance-tank {
+                        text-align: left;
+                        margin-top: 3px;
+                        font-size: 12px;
+                        margin-left: 0;
+                    }
+
+                    .issued-office {
+                        text-align: left;
+                        margin-top: 3px;
+                        font-size: 12px;
+                        margin-left: 14px; /* Indent for sub-item */
+                    }
+
+                    .purchased-trip {
+                        text-align: left;
+                        margin-top: 3px;
+                        font-size: 12px;
+                        margin-left: 14px; /* Indent for sub-item */
+                    }
+
+                    .gear-oil {
+                        text-align: left;
+                        margin-top: 3px;
+                        font-size: 12px;
+                        margin-left: 0;
+                    }
+
+                    .lubricating-oils {
+                        text-align: left;
+                        margin-top: 3px;
+                        font-size: 12px;
+                        margin-left: 0;
+                    }
+
+                    .grease {
+                        text-align: left;
+                        margin-top: 3px;
+                        font-size: 12px;
+                        margin-left: -7px;
+                    }
+
+                    .odometer-reading {
+                        text-align: left;
+                        margin-top: 3px;
+                        font-size: 12px;
+                        margin-left: -6px;
+                    }
+
+                    .odometer-beginning {
+                        text-align: left;
+                        margin-top: 3px;
+                        font-size: 12px;
+                        margin-left: 14px; /* Indent for sub-item */
+                    }
+
+                    .odometer-end {
+                        text-align: left;
+                        margin-top: 3px;
+                        font-size: 12px;
+                        margin-left: 14px; /* Indent for sub-item */
+                    }
+
+                    .remarks-section {
+                        margin-top: 20px;
+                        margin-left: 50px;
+                    }
+
+                    .remarks-note {
+                        text-align: left;
+                        margin-bottom: 5px;
+                        font-size: 10px;
+                        font-weight: bold;
+                        text-transform: uppercase;
+                    }
+
+                    .remarks-line {
+                        border-bottom: 1px solid #000;
+                        width: 90%;
+                        margin-left: 0;
+                    }
+
+                    .certification-text {
+                        text-align: left;
+                        margin-top: 10px;
+                        font-size: 11px;
+                        font-style: italic;
+                        width: 90%;
+                    }
+
+                    .driver-signature-container {
+                        margin-top: 30px;
+                        display: inline-block;
+                        text-align: right;
+                    }
+
+                    .driver-signature-line {
+                        border-bottom: 1px solid #000;
+                        width: 200px;
+                        margin-bottom: 5px;
+                        margin-left: 390px; 
+                    }
+
+                    .driver-label {
+                        text-align: center;
+                        font-size: 11px;
+                        font-weight: bold;
+                        margin-top: 2px;
+                        width: 200px;
+                        margin-left: 390px; 
+                    }
+
+                    .time-arrival .time-field {
+                        margin-left: 112px !important; 
+                    }
+
+                    .time-departure-item4 .time-field {
+                        margin-left: 80px !important; 
+                    }
+
+                    .time-arrival-back .time-field {
+                        margin-left: 85px !important; 
+                    }
+
+                    .distance-traveled .distance-field {
+                        margin-left: 83px !important; 
+                    }
+
+                    .gasoline-diesel .fuel-field {
+                        margin-left: 61px !important; 
+                    }
+
+                    .balance-tank .balance-field {
+                        margin-left: 210px !important; 
+                    }
+
+                    .issued-office .issued-field {
+                        margin-left: 118px !important; 
+                    }
+
+                    .purchased-trip .purchased-field {
+                        margin-left: 73px !important; 
+                    }
+
+                    .gear-oil .gear-field {
+                        margin-left: 225px !important; 
+                    }
+
+                    .lubricating-oils .lubricating-field {
+                        margin-left: 185px !important; 
+                    }
+
+                    .grease .grease-field {
+                        margin-left: 158px !important; 
+                    }
+
+                    .odometer-reading .odometer-field {
+                        margin-left: 162px !important; 
+                    }
+
+                    .odometer-beginning .beginning-field {
+                        margin-left: 140px !important; 
+                    }
+
+                    .odometer-end .end-field {
+                        margin-left: 173px !important; 
+                    }
+
+                    .time-field, .distance-field, .fuel-field, .balance-field, .issued-field, .purchased-field, .gear-field, .lubricating-field, .grease-field, .odometer-field, .beginning-field, .end-field {
+                        width: 60px !important; 
+                        min-width: 60px !important;
+                        margin-left: 80px;
+                    }
+
+                    .am-pm-checkbox, .distance-unit, .fuel-unit, .balance-unit, .issued-unit, .purchased-unit, .gear-unit, .lubricating-unit, .grease-unit, .odometer-unit, .beginning-unit, .end-unit {
+                        margin-left: -5px;
+                    }
+
+                    .checkbox {
+                        margin-left: 10px;
+                        font-size: 11px;
                     }
                       
                     .cut-line-text {
@@ -541,24 +910,21 @@ function TripTicketPrint({ slip }) {
 
         iframeDoc.close();
 
-        // Wait for the DOM to be ready
         setTimeout(() => {
             const printRoot = iframeDoc.getElementById('print-root');
 
             if (printRoot) {
-                // Use React DOM to render the component
                 const root = createRoot(printRoot);
                 root.render(<TripTicketPrintContent slip={slip} />);
 
-                // Wait for React to render then print
+               
                 setTimeout(() => {
                     const iframeWindow = iframe.contentWindow;
 
-                    // Focus and print
+                  
                     iframeWindow.focus();
                     iframeWindow.print();
 
-                    // Clean up after printing
                     iframeWindow.onafterprint = () => {
                         setTimeout(() => {
                             document.body.removeChild(iframe);
