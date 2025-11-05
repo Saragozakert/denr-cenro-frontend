@@ -149,7 +149,7 @@ function UserManagementTable({
               <th onClick={() => handleSort('username')} className="user-management-table-sortable">
                 Username <SortIcon columnKey="username" />
               </th>
-              <th>Password</th>
+              {/*<th>Password</th>*/}
               <th onClick={() => handleSort('status')} className="user-management-table-sortable">
                 Status <SortIcon columnKey="status" />
               </th>
@@ -173,7 +173,7 @@ function UserManagementTable({
                 <td className="user-management-table-age">{user.age}</td>
                 <td className="user-management-table-birthday">{formatDate(user.birthday)}</td>
                 <td className="user-management-table-username">@{user.username}</td>
-                <td className="user-management-table-password">••••••••</td>
+                {/*<td className="user-management-table-password">••••••••</td>*/}
                 <td>
                   <span className={`user-management-table-status-badge ${user.status.toLowerCase()}`}>
                     {user.status}

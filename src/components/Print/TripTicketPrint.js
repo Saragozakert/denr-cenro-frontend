@@ -30,6 +30,16 @@ const TripTicketPrintContent = ({ slip }) => {
         return '';
     };
 
+    // Get driver name in uppercase for the signature section
+    const getDriverName = () => {
+        return (slip.withdrawn_by || '').toUpperCase();
+    };
+
+    // Get authorized passengers for the signature section
+    const getAuthorizedPassengers = () => {
+        return (slip.authorized_passengers || '').toUpperCase();
+    };
+
     return (
         <div className="slip">
             <div className="header">
@@ -46,10 +56,10 @@ const TripTicketPrintContent = ({ slip }) => {
             </div>
 
             <div className="date-section">
-                <div className="dash-line">
-                    <span className="date-field">{formatDate(slip.date)}</span>
+                <div className="date-content-wrapper">
+                    <div className="date-field">{formatDate(slip.date)}</div>
+                    <div className="date-label">Date</div>
                 </div>
-                <div className="date-label">Date</div>
             </div>
 
             <div className="admin-note">
@@ -57,7 +67,7 @@ const TripTicketPrintContent = ({ slip }) => {
             </div>
 
             <div className="driver-section">
-                1. Name of the Driver: <span className="driver-field">{(slip.withdrawn_by || '').toUpperCase()}</span>
+                1. Name of the Driver: <span className="driver-field">{getDriverName()}</span>
             </div>
 
             <div className="car-plate-section">
@@ -65,7 +75,7 @@ const TripTicketPrintContent = ({ slip }) => {
             </div>
 
             <div className="car-plate-section">
-                3. Name of authorized passenger/s: <span className="passenger-field">{(slip.authorized_passengers || '').toUpperCase()}</span>
+                3. Name of authorized passenger/s: <span className="passenger-field">{getAuthorizedPassengers()}</span>
             </div>
 
             <div className="car-plate-section">
@@ -94,7 +104,7 @@ const TripTicketPrintContent = ({ slip }) => {
                     </div>
                 </div>
             </div>
-            
+
             {/* Cut line and driver note */}
             <div className="cut-line"></div>
             <div className="driver-section-fields">
@@ -103,7 +113,7 @@ const TripTicketPrintContent = ({ slip }) => {
                 </div>
 
                 <div className="time-departure">
-                    1. Time of Departure from the office/garage: 
+                    1. Time of Departure from the office/garage:
                     <span className="time-field underline-field long"></span>
                     <span className="am-pm-checkbox">
                         <span className="checkbox">□ AM</span>
@@ -111,7 +121,7 @@ const TripTicketPrintContent = ({ slip }) => {
                     </span>
                 </div>
                 <div className="time-arrival">
-                    2. Time of arrival at Item No. 4 above: 
+                    2. Time of arrival at Item No. 4 above:
                     <span className="time-field underline-field long"></span>
                     <span className="am-pm-checkbox">
                         <span className="checkbox">□ AM</span>
@@ -120,7 +130,7 @@ const TripTicketPrintContent = ({ slip }) => {
                 </div>
 
                 <div className="time-departure-item4">
-                    3. Time of departure from Item No. 4 above: 
+                    3. Time of departure from Item No. 4 above:
                     <span className="time-field underline-field long"></span>
                     <span className="am-pm-checkbox">
                         <span className="checkbox">□ AM</span>
@@ -129,7 +139,7 @@ const TripTicketPrintContent = ({ slip }) => {
                 </div>
 
                 <div className="time-arrival-back">
-                    4. Time of arrival back to the office/garage: 
+                    4. Time of arrival back to the office/garage:
                     <span className="time-field underline-field long"></span>
                     <span className="am-pm-checkbox">
                         <span className="checkbox">□ AM</span>
@@ -138,7 +148,7 @@ const TripTicketPrintContent = ({ slip }) => {
                 </div>
 
                 <div className="distance-traveled">
-                    5. Approximate distance traveled to & from: 
+                    5. Approximate distance traveled to & from:
                     <span className="distance-field underline-field long"></span>
                     <span className="distance-unit">
                         <span className="checkbox">□ km</span>
@@ -147,7 +157,7 @@ const TripTicketPrintContent = ({ slip }) => {
                 </div>
 
                 <div className="gasoline-diesel">
-                    6. Gasoline/Diesel issued/purchased and used: 
+                    6. Gasoline/Diesel issued/purchased and used:
                     <span className="fuel-field underline-field long"></span>
                     <span className="fuel-unit">
                         <span className="checkbox">Liters</span>
@@ -155,7 +165,7 @@ const TripTicketPrintContent = ({ slip }) => {
                 </div>
 
                 <div className="balance-tank">
-                    7. Balance in Tank: 
+                    7. Balance in Tank:
                     <span className="balance-field underline-field long"></span>
                     <span className="balance-unit">
                         <span className="checkbox">Liters</span>
@@ -163,7 +173,7 @@ const TripTicketPrintContent = ({ slip }) => {
                 </div>
 
                 <div className="issued-office">
-                    a. Issued by the office from stock: 
+                    a. Issued by the office from stock:
                     <span className="issued-field underline-field long"></span>
                     <span className="issued-unit">
                         <span className="checkbox">Liters</span>
@@ -171,7 +181,7 @@ const TripTicketPrintContent = ({ slip }) => {
                 </div>
 
                 <div className="purchased-trip">
-                    b. Add: purchased during the trip (to from): 
+                    b. Add: purchased during the trip (to from):
                     <span className="purchased-field underline-field long"></span>
                     <span className="purchased-unit">
                         <span className="checkbox">Liters</span>
@@ -179,7 +189,7 @@ const TripTicketPrintContent = ({ slip }) => {
                 </div>
 
                 <div className="gear-oil">
-                    8. Gear oil used: 
+                    8. Gear oil used:
                     <span className="gear-field underline-field long"></span>
                     <span className="gear-unit">
                         <span className="checkbox">Liters</span>
@@ -187,15 +197,15 @@ const TripTicketPrintContent = ({ slip }) => {
                 </div>
 
                 <div className="lubricating-oils">
-                    9. Lubricating oils used: 
+                    9. Lubricating oils used:
                     <span className="lubricating-field underline-field long"></span>
                     <span className="lubricating-unit">
                         <span className="checkbox">Liters</span>
                     </span>
                 </div>
-                
+
                 <div className="grease">
-                    10. Grease issued/purchased: 
+                    10. Grease issued/purchased:
                     <span className="grease-field underline-field long"></span>
                     <span className="grease-unit">
                         <span className="checkbox">Liters</span>
@@ -203,7 +213,7 @@ const TripTicketPrintContent = ({ slip }) => {
                 </div>
 
                 <div className="odometer-reading">
-                    11. Odometer reading, if any: 
+                    11. Odometer reading, if any:
                     <span className="odometer-field underline-field long"></span>
                     <span className="odometer-unit">
                         <span className="checkbox">□ km</span>
@@ -212,7 +222,7 @@ const TripTicketPrintContent = ({ slip }) => {
                 </div>
 
                 <div className="odometer-beginning">
-                    - At the beginning of the trip: 
+                    - At the beginning of the trip:
                     <span className="beginning-field underline-field long"></span>
                     <span className="beginning-unit">
                         <span className="checkbox">□ km</span>
@@ -221,7 +231,7 @@ const TripTicketPrintContent = ({ slip }) => {
                 </div>
 
                 <div className="odometer-end">
-                    - At the end of the trip: 
+                    - At the end of the trip:
                     <span className="end-field underline-field long"></span>
                     <span className="end-unit">
                         <span className="checkbox">□ km</span>
@@ -238,9 +248,38 @@ const TripTicketPrintContent = ({ slip }) => {
                 <div className="certification-text">
                     I hereby certify to the correctness of the above stated records of travel.
                 </div>
+
                 <div className="driver-signature-container">
+                    <div className="driver-signature-name">{getDriverName()}</div>
                     <div className="driver-signature-line"></div>
                     <div className="driver-label">Driver</div>
+                </div>
+
+                <div className="certification-text-2">
+                    I hereby certify that I used the herein stated government vehicles with Plate No.
+                    <span className="plate-field">{getVehicleDisplay().toUpperCase()}</span>
+                    on official business as stated above.
+                </div>
+
+                <div className="authorized-passengers-section">
+                    <div className="authorized-passengers-note">
+                        AUTHORIZED PASSENGERS:
+                    </div>
+                    <div className="authorized-passengers-name">{getAuthorizedPassengers()}</div>
+                    <div className="authorized-passengers-line"></div>
+                </div>
+
+                <div className="note-section">
+                    <div className="note-text">
+                        Note: This form should be accomplished in duplicate/quadruplicate, 2 copies to be attached to the disbursement voucher.
+                    </div>
+                </div>
+                <div className="contact-info">
+                    <div className="address">DENR CENRO Lianga, Surigao del Sur, Philippines</div>
+                    <div class="contact-details">
+                        Mobile No. 0907-169-7840 E-Mail:
+                        <span class="email-highlight">cenrolianga@denr.gov.ph</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -298,76 +337,88 @@ function TripTicketPrint({ slip }) {
                         font-size: 11px;
                         margin-bottom: 1px;
                     }
+
                   .cenro-ticket {
-                      font-size: 10px;
-                      text-transform: uppercase;
-                      margin-bottom: 1px;
+                    font-size: 10px;
+                    text-transform: uppercase;
+                    margin-bottom: 1px;
                   }
+
                   .address-ticket {
-                      font-size: 12px;
-                      margin-bottom: 1px;
-                      font-weight: bold;
+                    font-size: 12px;
+                    margin-bottom: 1px;
+                    font-weight: bold;
                   }
+
                   .ticket-number {
-                      font-size: 11px;
-                      font-weight: bold;
-                      margin-top: 3px;
-                      margin-bottom: 8px;
+                    font-size: 11px;
+                    font-weight: bold;
+                    margin-top: 3px;
+                    margin-bottom: 8px;
                   }
+
                   .logo-container {
-                      display: flex;
-                      justify-content: center;
-                      align-items: flex-start;
-                      gap: 20px;
-                      margin: 3px 0;
-                      position: relative;
+                    display: flex;
+                    justify-content: center;
+                    align-items: flex-start;
+                    gap: 20px;
+                    margin: 3px 0;
+                    position: relative;
                   }
+
                   .logo1 {
-                      height: 60px;
-                      width: auto;
-                      object-fit: contain;
-                      position: absolute;
-                      left: 90px;
-                      top: -70px;
+                    height: 80px;
+                    width: auto;
+                    object-fit: contain;
+                    position: absolute;
+                    left: 100px;
+                    top: -100px;
                   }
+
                   .logo2 {
-                      height: 85px;
-                      width: 85px;
-                      object-fit: contain;
-                      position: absolute;
-                      top: -80px;
-                      right: 80px;
+                    height: 120px;
+                    width: auto;
+                    object-fit: contain;
+                    position: absolute;
+                    top: -120px;
+                    right: 80px;
                   }
+
                   .date-section {
-                      text-align: right;
-                      margin-top: 20px;
-                      margin-right: 50px;
+                    text-align: right;
+                    margin-top: -15px;
+                    margin-right: 50px;
                   }
-                  .dash-line {
-                      font-size: 12px;
-                      letter-spacing: 1px;
-                      margin-bottom: 2px;
-                  }
+            
                   .date-field {
-                      border-bottom: 1px solid #000;
-                      display: inline-block;
-                      min-width: 150px;
-                      text-align: center;
-                      padding: 0 5px;
-                  }
+                    font-size: 12px;
+                    letter-spacing: 1px;
+                    padding: 0 5px 2px 5px;
+                    border-bottom: 1px solid #000;
+                    display: inline-block;
+                    text-align: center;
+                    line-height: 1;
+                }
+
+                  .date-content-wrapper {
+                    display: inline-block;
+                    text-align: center;
+                }
+
                   .date-label {
-                      font-size: 11px;
-                      font-weight: bold;
-                      text-align: center;
-                      margin-left: 520px;
-                  }
+                    font-size: 12px;
+                    text-align: center;
+                    margin-top: 2px;
+                    width: 100%;
+                }
+
                     .admin-note {
-                        text-align: left;
-                        margin-top: 0px;
-                        margin-left: 50px;
-                        font-size: 10px;
-                        font-weight: bold;
-                        text-transform: uppercase;
+                    text-align: left;
+                    margin-top: 0px;
+                    margin-left: 50px;
+                    font-size: 10px;
+                    font-weight: bold;
+                    text-transform: uppercase;
                     }
 
                     .driver-field,
@@ -376,7 +427,7 @@ function TripTicketPrint({ slip }) {
                     .place-field,
                     .purpose-field {
                         font-size: 10px !important; 
-                        font-weight: normal !important; /* Remove any bold styling */
+                        font-weight: normal !important; 
                     }
 
                     .requesting-party,
@@ -385,8 +436,8 @@ function TripTicketPrint({ slip }) {
                     .approved-position,
                     .requesting-name,
                     .requesting-position {
-                        font-size: 10px !important; /* Same as admin-note */
-                        text-transform: uppercase !important; /* Same as admin-note */
+                        font-size: 10px !important; 
+                        text-transform: uppercase !important; 
                     }
                 
                     .driver-section {
@@ -423,7 +474,7 @@ function TripTicketPrint({ slip }) {
                         margin-top: -45px; 
                         border-bottom: 1px dashed #999;
                         text-align: center;
-                        width: 90%; /* Limit the width */
+                        width: 90%; 
                         margin-left: auto;
                         margin-right: auto;
                     }
@@ -494,14 +545,14 @@ function TripTicketPrint({ slip }) {
                         text-align: left;
                         margin-top: 3px;
                         font-size: 12px;
-                        margin-left: 14px; /* Indent for sub-item */
+                        margin-left: 14px; 
                     }
 
                     .purchased-trip {
                         text-align: left;
                         margin-top: 3px;
                         font-size: 12px;
-                        margin-left: 14px; /* Indent for sub-item */
+                        margin-left: 14px; 
                     }
 
                     .gear-oil {
@@ -536,14 +587,14 @@ function TripTicketPrint({ slip }) {
                         text-align: left;
                         margin-top: 3px;
                         font-size: 12px;
-                        margin-left: 14px; /* Indent for sub-item */
+                        margin-left: 14px; 
                     }
 
                     .odometer-end {
                         text-align: left;
                         margin-top: 3px;
                         font-size: 12px;
-                        margin-left: 14px; /* Indent for sub-item */
+                        margin-left: 14px;
                     }
 
                     .remarks-section {
@@ -568,15 +619,106 @@ function TripTicketPrint({ slip }) {
                     .certification-text {
                         text-align: left;
                         margin-top: 10px;
-                        font-size: 11px;
+                        font-size: 12px;
                         font-style: italic;
                         width: 90%;
+                    }
+
+                    .certification-text-2 {
+                        text-align: left;
+                        margin-top: 30px;
+                        font-size: 12px;
+                        font-style: italic;
+                        width: 92%;
+                    }
+
+                    .authorized-passengers-section {
+                        margin-top: 20px;
+                        position: relative;
+                    }
+
+                    .authorized-passengers-note {
+                        text-align: left;
+                        margin-bottom: 5px;
+                        font-size: 10px;
+                        font-weight: bold;
+                        text-transform: uppercase;
+                    }
+
+                    .authorized-passengers-name {
+                        font-size: 10px;
+                        text-align: left;
+                        width: 90%;
+                        text-transform: uppercase;
+                        position: absolute;
+                        top: 35px; 
+                        left: 20px;
+                    }
+
+                    .authorized-passengers-line {
+                        border-bottom: 1px solid #000;
+                        width: 90%;
+                        margin-left: 0;
+                        margin-top: 40px; 
+                    }
+
+                    .note-section {
+                        margin-top: 10px;
+                        margin-left: 0;
+                        text-align: left;
+                    }
+
+                    .note-text {
+                        font-size: 12px;
+                        font-style: italic;
+                        font-weight: bold;
+                    }
+
+                    .contact-info {
+                        text-align: center;
+                        margin-bottom: 5px;
+                    }
+                    .address {
+                        font-size: 12px;
+                        margin-top: 50px;
+                    }
+                    .contact-details {
+                        font-size: 12px;
+                        margin-bottom: 50px;
+                    }
+                        
+                    .email-highlight {
+                    color: blue;
+                    font-style: italic;
+                    text-decoration: underline;
+                    text-decoration-style: solid;
+                    }
+
+                    .plate-field {
+                        border-bottom: 1px solid #000;
+                        display: inline-block;
+                        min-width: 100px;
+                        text-align: center;
+                        margin: 0 5px;
+                        vertical-align: bottom;
+                        font-size: 10px;
                     }
 
                     .driver-signature-container {
                         margin-top: 30px;
                         display: inline-block;
-                        text-align: right;
+                        text-align: center;
+                        width: 100%;
+                    }
+
+                    .driver-signature-name {
+                        font-size: 10px;
+                        font-weight: bold;
+                        text-align: center;
+                        margin-bottom: 5px;
+                        width: 200px;
+                        margin-left: 390px;
+                        text-transform: uppercase;
                     }
 
                     .driver-signature-line {
@@ -589,7 +731,6 @@ function TripTicketPrint({ slip }) {
                     .driver-label {
                         text-align: center;
                         font-size: 11px;
-                        font-weight: bold;
                         margin-top: 2px;
                         width: 200px;
                         margin-left: 390px; 
@@ -651,7 +792,18 @@ function TripTicketPrint({ slip }) {
                         margin-left: 173px !important; 
                     }
 
-                    .time-field, .distance-field, .fuel-field, .balance-field, .issued-field, .purchased-field, .gear-field, .lubricating-field, .grease-field, .odometer-field, .beginning-field, .end-field {
+                    .time-field, 
+                    .distance-field,
+                    .fuel-field, 
+                    .balance-field, 
+                    .issued-field, 
+                    .purchased-field, 
+                    .gear-field, 
+                    .lubricating-field, 
+                    .grease-field, 
+                    .odometer-field, 
+                    .beginning-field, 
+                    .end-field {
                         width: 60px !important; 
                         min-width: 60px !important;
                         margin-left: 80px;
@@ -710,7 +862,7 @@ function TripTicketPrint({ slip }) {
                     .purpose-field {
                         display: block;
                         margin-left: 155px;
-                        width: 400px;
+                        width: 420px;
                         margin-top: -2px;
                         margin-bottom: 2px;
                         padding: 0 5px;
@@ -757,6 +909,9 @@ function TripTicketPrint({ slip }) {
                     }
                     .underline-field.long {
                         min-width: 150px;
+                    }
+                    .underline-field.medium {
+                        min-width: 100px;
                     }
                     .underline-field.extra-long {
                         min-width: 300px;
@@ -813,7 +968,7 @@ function TripTicketPrint({ slip }) {
 
                 .requesting-name {
                     font-weight: normal;    
-                    font-size: 10px !important; /* Changed from 12px to 10px */
+                    font-size: 10px !important; 
                     text-align: center;
                     width: 200px;
                     padding: 0 5px;
@@ -826,13 +981,13 @@ function TripTicketPrint({ slip }) {
                 .requesting-line {
                     border-bottom: 1px solid #000;
                     width: 200px;
-                    margin-top: 25px; /* Increased from 25px to 35px */
+                    margin-top: 25px; 
                     margin-bottom: 5px;
                 }
 
                 .requesting-position {
                     font-weight: normal;
-                    font-size: 10px !important; /* Changed from 11px to 10px */
+                    font-size: 10px !important; 
                     text-align: center;
                     width: 200px;
                     padding: 0 5px;
@@ -848,7 +1003,7 @@ function TripTicketPrint({ slip }) {
 
                 .approved-title {
                     text-align: right;
-                    margin-right: 130px; /* Adjust ths value to move only the title */
+                    margin-right: 130px; 
                     margin-top: -25px;
                     font-size: 10px !important;
                     font-weight: bold !important;
@@ -862,7 +1017,7 @@ function TripTicketPrint({ slip }) {
 
                 .approved-name {
                     font-weight: normal;
-                    font-size: 10px !important; /* Changed from 12px to 10px */
+                    font-size: 10px !important; 
                     text-align: center;
                     width: 200px;   
                     padding: 0 5px;
@@ -882,7 +1037,7 @@ function TripTicketPrint({ slip }) {
 
                 .approved-position {
                     font-weight: normal;
-                    font-size: 10px !important; /* Changed from 11px to 10px */
+                    font-size: 10px !important; 
                     text-align: center;
                     width: 200px;
                     padding: 0 5px;
@@ -917,11 +1072,11 @@ function TripTicketPrint({ slip }) {
                 const root = createRoot(printRoot);
                 root.render(<TripTicketPrintContent slip={slip} />);
 
-               
+
                 setTimeout(() => {
                     const iframeWindow = iframe.contentWindow;
 
-                  
+
                     iframeWindow.focus();
                     iframeWindow.print();
 

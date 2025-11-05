@@ -4,11 +4,11 @@ import { useNavigate } from "react-router-dom";
 import AdminSidebar from '../../components/Sidebars/AdminSidebar';
 import AdminHeader from '../../components/Headers/AdminHeader';
 import '../../assets/Style/AdminDesign/AdminDashboard.css';
-// Import any additional CSS or components you need for ApprovedSlip
+
 
 function ApprovedSlip() {
   const [admin, setAdmin] = useState(null);
-  const [activeItem, setActiveItem] = useState("approved-slip"); // Set active item to match the menu
+  const [activeItem, setActiveItem] = useState("approved-slip"); 
   const [searchTerm, setSearchTerm] = useState("");
   const [approvedSlips, setApprovedSlips] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
