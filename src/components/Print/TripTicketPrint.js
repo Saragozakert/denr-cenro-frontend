@@ -90,9 +90,11 @@ const TripTicketPrintContent = ({ slip }) => {
             <div className="signature-section">
                 <div className="requesting-party">
                     REQUESTING PARTY:
-                    <div className="requesting-name">{(slip.requesting_party || '').toUpperCase()}</div>
-                    <div className="requesting-line"></div>
-                    <div className="requesting-position">{(slip.position || '').toUpperCase()}</div>
+                    <div className="requesting-content-wrapper">
+                        <div className="requesting-name">{(slip.requesting_party || '').toUpperCase()}</div>
+                        <div className="requesting-line"></div>
+                        <div className="requesting-position">{(slip.position || '').toUpperCase()}</div>
+                    </div>
                 </div>
 
                 <div className="approved">
@@ -105,7 +107,6 @@ const TripTicketPrintContent = ({ slip }) => {
                 </div>
             </div>
 
-            {/* Cut line and driver note */}
             <div className="cut-line"></div>
             <div className="driver-section-fields">
                 <div className="driver-note">
@@ -274,6 +275,7 @@ const TripTicketPrintContent = ({ slip }) => {
                         Note: This form should be accomplished in duplicate/quadruplicate, 2 copies to be attached to the disbursement voucher.
                     </div>
                 </div>
+
                 <div className="contact-info">
                     <div className="address">DENR CENRO Lianga, Surigao del Sur, Philippines</div>
                     <div class="contact-details">
@@ -472,9 +474,9 @@ function TripTicketPrint({ slip }) {
 
                     .cut-line {
                         margin-top: -45px; 
-                        border-bottom: 1px dashed #999;
-                        text-align: center;
-                        width: 90%; 
+                        border-bottom: 1px solid #000;
+                        text-align: left;
+                        width: 625px; 
                         margin-left: auto;
                         margin-right: auto;
                     }
@@ -612,7 +614,7 @@ function TripTicketPrint({ slip }) {
 
                     .remarks-line {
                         border-bottom: 1px solid #000;
-                        width: 90%;
+                        width: 620px;
                         margin-left: 0;
                     }
 
@@ -657,7 +659,7 @@ function TripTicketPrint({ slip }) {
 
                     .authorized-passengers-line {
                         border-bottom: 1px solid #000;
-                        width: 90%;
+                        width: 620px;
                         margin-left: 0;
                         margin-top: 40px; 
                     }
@@ -671,7 +673,7 @@ function TripTicketPrint({ slip }) {
                     .note-text {
                         font-size: 12px;
                         font-style: italic;
-                        font-weight: bold;
+                        font-weight: bold;                    
                     }
 
                     .contact-info {
@@ -818,14 +820,6 @@ function TripTicketPrint({ slip }) {
                         font-size: 11px;
                     }
                       
-                    .cut-line-text {
-                        position: relative;
-                        top: 6px;
-                        background: white;
-                        padding: 0 8px;
-                        color: #999;
-                        font-size: 10px;
-                    }
 
                     .passenger-field {
                         border-bottom: 1px solid #000;
@@ -889,14 +883,6 @@ function TripTicketPrint({ slip }) {
                         margin-right: 50px;
                         font-size: 12px;
                         font-weight: bold;
-                    }
-
-        
-                    .requesting-line {
-                        border-bottom: 1px solid #000;
-                        width: 200px;
-                        margin-top: 35px; 
-                        margin-bottom: 5px;
                     }
                     
                     .underline-field {
@@ -966,34 +952,42 @@ function TripTicketPrint({ slip }) {
                     text-transform: uppercase !important;
                 }
 
+                .requesting-content-wrapper {
+                    position: absolute;
+                    left: 0;
+                    top: 25px;
+                    display: inline-block;
+                    text-align: center;
+                    
+                }
+
                 .requesting-name {
                     font-weight: normal;    
                     font-size: 10px !important; 
                     text-align: center;
-                    width: 200px;
                     padding: 0 5px;
-                    position: absolute;
-                    margin-top: 10px; 
-                    left: 0;
                     text-transform: uppercase !important;
+                    display: inline-block;
+                    line-height: 1;
+                    border-bottom: 1px solid #000;
+                    margin-bottom: -5px;
+                    
                 }
 
                 .requesting-line {
-                    border-bottom: 1px solid #000;
-                    width: 200px;
-                    margin-top: 25px; 
-                    margin-bottom: 5px;
+                    display: none; 
                 }
 
                 .requesting-position {
                     font-weight: normal;
-                    font-size: 10px !important; 
+                    font-size: 7px !important; 
                     text-align: center;
-                    width: 200px;
                     padding: 0 5px;
                     font-style: italic;
-                    margin-top: -2px;
+                    margin-top: 2px;
                     text-transform: uppercase !important;
+                    display: inline-block;
+                     white-space: nowrap; 
                 }
 
                 .approved {
