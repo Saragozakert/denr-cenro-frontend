@@ -30,12 +30,11 @@ const TripTicketPrintContent = ({ slip }) => {
         return '';
     };
 
-    // Get driver name in uppercase for the signature section
     const getDriverName = () => {
         return (slip.withdrawn_by || '').toUpperCase();
     };
 
-    // Get authorized passengers for the signature section
+
     const getAuthorizedPassengers = () => {
         return (slip.authorized_passengers || '').toUpperCase();
     };
@@ -91,9 +90,10 @@ const TripTicketPrintContent = ({ slip }) => {
                 <div className="requesting-party">
                     <div className="requesting-title">REQUESTING PARTY:</div>
                     <div className="requesting-content">
-                        <div className="requesting-name" style={{ borderBottom: '1px solid #000', paddingBottom: '2px', marginBottom: '5px' }}>
+                        <div className="requesting-name">
                             {(slip.requesting_party || '').toUpperCase()}
                         </div>
+                        <div className="requesting-line"></div>
                         <div className="requesting-position">{(slip.position || '').toUpperCase()}</div>
                     </div>
                 </div>
@@ -101,9 +101,10 @@ const TripTicketPrintContent = ({ slip }) => {
                 <div className="approved">
                     <div className="approved-title">APPROVED:</div>
                     <div className="approved-content">
-                        <div className="approved-name" style={{ borderBottom: '1px solid #000', paddingBottom: '2px', marginBottom: '5px' }}>
+                        <div className="approved-name">
                             JOSEPH E. LANGANLANGAN
                         </div>
+                        <div className="approved-line"></div>
                         <div className="approved-position">CENR OFFICER</div>
                     </div>
                 </div>
@@ -119,16 +120,28 @@ const TripTicketPrintContent = ({ slip }) => {
                     1. Time of Departure from the office/garage:
                     <span className="time-field underline-field long"></span>
                     <span className="am-pm-checkbox">
-                        <span className="checkbox">□ AM</span>
-                        <span className="checkbox">□ PM</span>
+                        <span className="checkbox">
+                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-text">AM</span>
+                        </span>
+                        <span className="checkbox">
+                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-text">PM</span>
+                        </span>
                     </span>
                 </div>
                 <div className="time-arrival">
                     2. Time of arrival at Item No. 4 above:
                     <span className="time-field underline-field long"></span>
                     <span className="am-pm-checkbox">
-                        <span className="checkbox">□ AM</span>
-                        <span className="checkbox">□ PM</span>
+                        <span className="checkbox">
+                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-text">AM</span>
+                        </span>
+                        <span className="checkbox">
+                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-text">PM</span>
+                        </span>
                     </span>
                 </div>
 
@@ -136,8 +149,14 @@ const TripTicketPrintContent = ({ slip }) => {
                     3. Time of departure from Item No. 4 above:
                     <span className="time-field underline-field long"></span>
                     <span className="am-pm-checkbox">
-                        <span className="checkbox">□ AM</span>
-                        <span className="checkbox">□ PM</span>
+                        <span className="checkbox">
+                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-text">AM</span>
+                        </span>
+                        <span className="checkbox">
+                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-text">PM</span>
+                        </span>
                     </span>
                 </div>
 
@@ -145,8 +164,14 @@ const TripTicketPrintContent = ({ slip }) => {
                     4. Time of arrival back to the office/garage:
                     <span className="time-field underline-field long"></span>
                     <span className="am-pm-checkbox">
-                        <span className="checkbox">□ AM</span>
-                        <span className="checkbox">□ PM</span>
+                        <span className="checkbox">
+                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-text">AM</span>
+                        </span>
+                        <span className="checkbox">
+                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-text">PM</span>
+                        </span>
                     </span>
                 </div>
 
@@ -154,8 +179,14 @@ const TripTicketPrintContent = ({ slip }) => {
                     5. Approximate distance traveled to & from:
                     <span className="distance-field underline-field long"></span>
                     <span className="distance-unit">
-                        <span className="checkbox">□ km</span>
-                        <span className="checkbox">□ m</span>
+                        <span className="checkbox">
+                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-text">KM</span>
+                        </span>
+                        <span className="checkbox">
+                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-text">M</span>
+                        </span>
                     </span>
                 </div>
 
@@ -219,8 +250,14 @@ const TripTicketPrintContent = ({ slip }) => {
                     - At the beginning of the trip:
                     <span className="beginning-field underline-field long"></span>
                     <span className="beginning-unit">
-                        <span className="checkbox">□ km</span>
-                        <span className="checkbox">□ m</span>
+                        <span className="checkbox">
+                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-text">KM</span>
+                        </span>
+                        <span className="checkbox">
+                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-text">M</span>
+                        </span>
                     </span>
                 </div>
 
@@ -228,8 +265,14 @@ const TripTicketPrintContent = ({ slip }) => {
                     - At the end of the trip:
                     <span className="end-field underline-field long"></span>
                     <span className="end-unit">
-                        <span className="checkbox">□ km</span>
-                        <span className="checkbox">□ m</span>
+                        <span className="checkbox">
+                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-text">KM</span>
+                        </span>
+                        <span className="checkbox">
+                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-text">M</span>
+                        </span>
                     </span>
                 </div>
             </div>
@@ -367,7 +410,7 @@ function TripTicketPrint({ slip }) {
                     object-fit: contain;
                     position: absolute;
                     left: 100px;
-                    top: -100px;
+                    top: -95px;
                   }
 
                   .logo2 {
@@ -375,7 +418,7 @@ function TripTicketPrint({ slip }) {
                     width: auto;
                     object-fit: contain;
                     position: absolute;
-                    top: -120px;
+                    top: -115px;
                     right: 80px;
                   }
 
@@ -386,13 +429,14 @@ function TripTicketPrint({ slip }) {
                   }
             
                   .date-field {
-                    font-size: 12px;
+                    font-size: 11px;
                     letter-spacing: 1px;
                     padding: 0 5px 2px 5px;
                     border-bottom: 1px solid #000;
                     display: inline-block;
                     text-align: center;
                     line-height: 1;
+                    font-weight: bold;
                 }
 
                   .date-content-wrapper {
@@ -401,7 +445,7 @@ function TripTicketPrint({ slip }) {
                 }
 
                   .date-label {
-                    font-size: 12px;
+                    font-size: 11px;
                     text-align: center;
                     margin-top: 2px;
                     width: 100%;
@@ -613,7 +657,7 @@ function TripTicketPrint({ slip }) {
 
                     .certification-text {
                         text-align: left;
-                        margin-top: 10px;
+                        margin-top: 5px;
                         font-size: 12px;
                         font-style: italic;
                         width: 90%;
@@ -646,8 +690,9 @@ function TripTicketPrint({ slip }) {
                         width: 90%;
                         text-transform: uppercase;
                         position: absolute;
-                        top: 35px; 
+                        top: 40px; 
                         left: 20px;
+                        font-weight: bold !important;
                     }
 
                     .authorized-passengers-line {
@@ -666,7 +711,8 @@ function TripTicketPrint({ slip }) {
                     .note-text {
                         font-size: 12px;
                         font-style: italic;
-                        font-weight: bold;                    
+                        font-weight: bold;             
+                        margin-top: -5px;       
                     }
 
                     .contact-info {
@@ -710,7 +756,7 @@ function TripTicketPrint({ slip }) {
                         font-size: 10px;
                         font-weight: bold;
                         text-align: center;
-                        margin-bottom: 5px;
+                        margin-bottom: 1px;
                         width: 200px;
                         margin-left: 390px;
                         text-transform: uppercase;
@@ -718,15 +764,15 @@ function TripTicketPrint({ slip }) {
 
                     .driver-signature-line {
                         border-bottom: 1px solid #000;
-                        width: 200px;
+                        width: 150px;
                         margin-bottom: 5px;
-                        margin-left: 390px; 
+                        margin-left: 415px; 
                     }
 
                     .driver-label {
                         text-align: center;
                         font-size: 11px;
-                        margin-top: 2px;
+                        margin-top: -5px;
                         width: 200px;
                         margin-left: 390px; 
                     }
@@ -772,11 +818,11 @@ function TripTicketPrint({ slip }) {
                     }
 
                     .lubricating-oils .lubricating-field {
-                        margin-left: 185px !important; 
+                        margin-left: 285px !important; 
                     }
 
                     .grease .grease-field {
-                        margin-left: 158px !important; 
+                        margin-left: 258px !important; 
                     }
 
                     .odometer-reading .odometer-field {
@@ -784,11 +830,11 @@ function TripTicketPrint({ slip }) {
                     }
 
                     .odometer-beginning .beginning-field {
-                        margin-left: 140px !important; 
+                        margin-left: 247px !important; 
                     }
 
                     .odometer-end .end-field {
-                        margin-left: 173px !important; 
+                        margin-left: 279px !important; 
                     }
 
                     .time-field, 
@@ -814,7 +860,21 @@ function TripTicketPrint({ slip }) {
 
                     .checkbox {
                         margin-left: 10px;
-                        font-size: 11px;
+                        font-size: 11px; /* Keep the original font size */
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 2px;
+                    }
+
+                    .checkbox-box {
+                        font-size: 11; /* Make only the box larger */
+                        font-family: "Arial Unicode MS", "Segoe UI Symbol";
+                        line-height: 1;
+                    }
+
+                    .checkbox-text {
+                        font-size: 11px; /* Keep text at original size */
+                        line-height: 1;
                     }
                       
 
@@ -852,7 +912,7 @@ function TripTicketPrint({ slip }) {
 
                     .purpose-field {
                         display: block;
-                        margin-left: 155px;
+                        margin-left: 158px;
                         width: 420px;
                         margin-top: -2px;
                         margin-bottom: 2px;
@@ -955,7 +1015,7 @@ function TripTicketPrint({ slip }) {
                 font-weight: bold !important;
                 text-transform: uppercase !important;
             }
-
+                
                 .requesting-content {
                     position: relative;
                     margin-top: 5px;
@@ -971,14 +1031,24 @@ function TripTicketPrint({ slip }) {
                     position: absolute;
                     top: -15px;
                     left: 0;
+                    font-weight: bold !important;
                     text-transform: uppercase !important;
                 }
 
                .requesting-line {
                     border-bottom: 1px solid #000;
-                    width: 200px;
-                    margin-top: 25px;
+                    width: 160px;
+                    margin-top: 2px; 
                     margin-bottom: 5px;
+                    margin-left: 25px;
+                }
+
+                .approved-line {
+                    border-bottom: 1px solid #000;
+                    width: 165px;
+                    margin-top: 2px; 
+                    margin-bottom: 5px;
+                    margin-left: 22px;
                 }
 
                 .requesting-position {
@@ -1017,6 +1087,7 @@ function TripTicketPrint({ slip }) {
                     position: absolute;
                     top: -15px;
                     right: 0;
+                    font-weight: bold !important;
                     text-transform: uppercase !important;
                 }
 
