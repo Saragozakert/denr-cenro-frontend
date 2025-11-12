@@ -4,7 +4,7 @@ import DENRLogo from "../../assets/images/DENR.png";
 import BagongPilipinasLogo from "../../assets/images/bagongpilipinas.png";
 
 const formatDateFullMonth = (dateString) => {
-  if (!dateString) return 'N/A';
+  if (!dateString) return '';
   
   try {
     if (dateString.includes('T')) {
@@ -21,7 +21,7 @@ const formatDateFullMonth = (dateString) => {
     return dateString; 
   } catch (error) {
     console.error('Error formatting date:', error);
-    return dateString; 
+    return '';
   }
 };
 
@@ -31,7 +31,7 @@ const formatName = (name) => {
 };
 
 const formatPurpose = (purpose) => {
-  if (!purpose) return 'N/A';
+  if (!purpose) return '';
   return purpose.toUpperCase();
 };
 
@@ -42,7 +42,6 @@ const calculateLineWidth = (name) => {
   return `${calculatedWidth}px`;
 };
 
-// React Component for the Print Content
 const GasSlipPrintContent = ({ slip }) => {
   const fuelType = slip.fuel_type || 'Gasoline';
   const fuelAmount = slip.gasoline_amount || '0';
@@ -50,6 +49,11 @@ const GasSlipPrintContent = ({ slip }) => {
   const withdrawnLineWidth = calculateLineWidth(slip.withdrawn_by);
   const approvedLineWidth = calculateLineWidth(slip.approved_by);
   const issuedLineWidth = calculateLineWidth(slip.issued_by);
+
+  // Helper function to return content or non-breaking space
+  const getFieldValue = (value) => {
+    return value || '\u00A0'; // \u00A0 is non-breaking space
+  };
 
   const SlipComponent = ({ isAdminCopy = false }) => (
     <div className={`slip ${isAdminCopy ? 'admin-slip' : 'user-slip'}`}>
@@ -70,32 +74,32 @@ const GasSlipPrintContent = ({ slip }) => {
       <div className="details">
         <div className="detail-row">
           <span className="detail-label">Date:</span>
-          <span className="detail-value">{formatDateFullMonth(slip.date_approved || slip.created_at)}</span>
+          <span className="detail-value">{getFieldValue(formatDateFullMonth(slip.date_approved || slip.created_at))}</span>
         </div>
         <div className="detail-row">
           <span className="detail-label">Type of Vehicle:</span>
-          <span className="detail-value">{slip.model_name || 'N/A'}</span>
+          <span className="detail-value">{getFieldValue(slip.model_name)}</span>
         </div>
         <div className="detail-row">
           <span className="detail-label">Plate No.:</span>
-          <span className="detail-value">{slip.plate_no || 'N/A'}</span>
+          <span className="detail-value">{getFieldValue(slip.plate_no)}</span>
         </div>
         <div className="detail-row">
           <span className="detail-label">Section:</span>
-          <span className="detail-value">{slip.section || 'N/A'}</span>
+          <span className="detail-value">{getFieldValue(slip.section)}</span>
         </div>
         <div className="detail-row">
           <span className="detail-label">Office:</span>
-          <span className="detail-value">{slip.office || 'N/A'}</span>
+          <span className="detail-value">{getFieldValue(slip.office)}</span>
         </div>
         <div className="detail-row">
           <span className="detail-label">Purchased No.</span>
-          <span className="detail-value">{slip.purchase_no || 'N/A'}</span>
+          <span className="detail-value">{getFieldValue(slip.purchased_no)}</span>
         </div>
         <div className="purpose-row">
           <span className="purpose-label">Purpose:</span>
           <span className="purpose-container">
-            <span className="purpose-value">{formatPurpose(slip.purpose)}</span>
+            <span className="purpose-value">{getFieldValue(formatPurpose(slip.purpose))}</span>
           </span>
         </div>
       </div>
@@ -103,30 +107,30 @@ const GasSlipPrintContent = ({ slip }) => {
       <table className="fuel-table">
         <thead>
           <tr>
-            <th style={{width: '40%'}}>Fuel Type</th>
-            <th style={{width: '20%'}}>Unit Price</th>
-            <th style={{width: '20%'}}>Quantity</th>
-            <th style={{width: '20%'}}>Amount</th>
+            <th style={{width: '20%'}}>Fuel Type</th>
+            <th style={{width: '15%'}}>Unit Price</th>
+            <th style={{width: '15%'}}>Quantity</th>
+            <th style={{width: '15%'}}>Amount</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>Diesel</td>
-            <td></td>
-            <td></td>
-            <td>{fuelType === 'Diesel' ? fuelAmount + ' ' : ''}</td>
+            <td>{'\u00A0'}</td>
+            <td>{'\u00A0'}</td>
+            <td>{fuelType === 'Diesel' ? fuelAmount + ' ' : '\u00A0'}</td>
           </tr>
           <tr>
             <td>Gasoline</td>
-            <td></td>
-            <td></td>
-            <td>{fuelType === 'Gasoline' ? fuelAmount + ' ' : ''}</td>
+            <td>{'\u00A0'}</td>
+            <td>{'\u00A0'}</td>
+            <td>{fuelType === 'Gasoline' ? fuelAmount + ' ' : '\u00A0'}</td>
           </tr>
           <tr>
             <td>Others</td>
-            <td></td>
-            <td></td>
-            <td>{fuelType === 'Others' ? fuelAmount + ' ' : ''}</td>
+            <td>{'\u00A0'}</td>
+            <td>{'\u00A0'}</td>
+            <td>{fuelType === 'Others' ? fuelAmount + ' ' : '\u00A0'}</td>
           </tr>
         </tbody>
       </table>
@@ -169,10 +173,8 @@ const GasSlipPrintContent = ({ slip }) => {
   );
 };
 
-// Main component function
 function GasSlipPrint({ slip }) {
   const handlePrint = () => {
-    // Create a hidden iframe instead of a new window
     const iframe = document.createElement('iframe');
     iframe.style.position = 'fixed';
     iframe.style.right = '0';
@@ -185,7 +187,6 @@ function GasSlipPrint({ slip }) {
 
     const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
 
-    // Write the basic HTML structure with styles
     iframeDoc.write(`
       <!DOCTYPE html>
       <html>
@@ -198,17 +199,18 @@ function GasSlipPrint({ slip }) {
                       margin: 0.3in;
                   }
                   body {
-                      font-family: Arial, sans-serif;
-                      font-size: 13px;
-                      line-height: 1.1;
-                      margin-top: 15px;
+                    font-family: Arial, sans-serif;
+                    font-size: 13px;
+                    line-height: 1.1;
+                    margin-top: 15px;
                   }
+
                   .slip-container {
-                      width: 100%;
-                      position: relative;
-                      display: flex;
-                      flex-direction: column;
-                      gap: 15px;
+                    width: 100%;
+                    position: relative;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 50px;
                   }
                   .slip {
                       width: 100%;
@@ -239,19 +241,19 @@ function GasSlipPrint({ slip }) {
                   }
                   .header {
                       text-align: center;
-                      margin-bottom: 8px;
+                      margin-top: -30px;
                       padding-bottom: 3px;
                       position: relative;
                   }
                   .republic {
-                      font-size: 14px;
+                      font-size: 13px;
                       font-weight: bold;
                       margin-bottom: 2px;
                   }
                   .denr {
                       font-size: 13px;
                       font-weight: bold;
-                      color: #4CAF50;
+                      color: #288f2bff;
                       margin-bottom: 1px;
                   }
                   .cenro {
@@ -266,7 +268,7 @@ function GasSlipPrint({ slip }) {
                       margin-bottom: 3px;
                   }
                   .title {
-                      font-size: 12px;        
+                      font-size: 10px;        
                       text-transform: uppercase;
                       margin-top: -3px;
                   }
@@ -279,69 +281,78 @@ function GasSlipPrint({ slip }) {
                       position: relative;
                   }
                   .logo1 {
-                      height: 65px;
+                      height: 75px;
                       width: auto;
                       object-fit: contain;
                       position: absolute;
-                      left: 90px;
-                      top: -75px;
+                      left: 70px;
+                      top: -70px;
                   }
                   .logo2 {
-                      height: 90px;
-                      width: 90px;
+                      height: 110px;
+                      width: 110px;
                       object-fit: contain;
                       position: absolute;
                       top: -85px;
-                      right: 80px;
+                      right: 55px;
                   }
                   .details {
                       width: 100%;
                       margin: 8px 0;
+                      margin-top: 40px;
                   }
                   .detail-row {
-                      margin: 4px 0;
-                      display: flex;
-                      align-items: flex-start;
+                    margin: 4px 0;
+                    display: flex;
+                    align-items: flex-start;
                   }
+
                   .detail-label {
-                      display: inline-block;
-                      width: 150px;
-                      font-weight: bold;
-                      flex-shrink: 0;
+                    display: inline-block;
+                    width: 150px;
+                    font-weight: bold;
+                    flex-shrink: 0;
+                    font-size: 12px;
                   }
+
                   .detail-value {
-                      display: inline-block;
-                      border-bottom: 1px solid #000;
-                      min-width: 180px;
-                      max-width: 180px;
-                      padding-bottom: 1px;
-                      flex-shrink: 0;
+                    display: inline-block;
+                    border-bottom: 1px solid #000;
+                    min-width: 180px;
+                    max-width: 180px;
+                    padding-bottom: 1px;
+                    flex-shrink: 0;
+                    font-size: 11px;
                   }
+
                   .purpose-row {
-                      margin: 4px 0;
-                      display: flex;
-                      align-items: flex-start;
+                    margin: 4px 0;
+                    display: flex;
+                    align-items: flex-start;
                   }
+                    
                   .purpose-label {
-                      display: inline-block;
-                      width: 150px;
-                      font-weight: bold;
-                      flex-shrink: 0;
+                    display: inline-block;
+                    width: 150px;
+                    font-weight: bold;
+                    flex-shrink: 0;
+                    font-size: 12px;
                   }
                   .purpose-container {
-                      display: inline-block;
-                      width: calc(100% - 150px);
-                      min-height: 18px;
+                    display: inline-block;
+                    width: calc(100% - 150px);
+                    min-height: 18px;
                   }
                   .purpose-value {
-                      display: block;
-                      width: 100%;
-                      min-height: 18px;
-                      word-wrap: break-word;
-                      white-space: pre-wrap;
-                      line-height: 1.2;
-                      text-transform: uppercase;
-                      padding-bottom: 1px;
+                    display: block;
+                    width: 100%;
+                    min-height: 18px;
+                    word-wrap: break-word;
+                    white-space: pre-wrap;
+                    line-height: 1.2;
+                    text-transform: uppercase;
+                    padding-bottom: 1px;
+                    font-size: 11px;
                   }
                   .fuel-table {
                       width: 100%;
@@ -357,6 +368,7 @@ function GasSlipPrint({ slip }) {
                   .fuel-table th {
                       background-color: #f0f0f0;
                       font-weight: bold;
+                      font-size: 12px;
                   }
                   .signatures {
                       display: flex;
@@ -376,8 +388,8 @@ function GasSlipPrint({ slip }) {
                   .signature-name {
                       font-weight: bold;
                       text-transform: uppercase;
-                      margin-bottom: 8px;
-                      font-size: 12px;
+                      margin-bottom: -1px;
+                      font-size: 10px;
                       word-wrap: break-word;
                       min-height: 14px;
                       text-align: center;
@@ -397,9 +409,9 @@ function GasSlipPrint({ slip }) {
                       margin-right: auto;
                   }
                   .signature-label {
-                      font-size: 11px;
+                      font-size: 12px;
                       text-align: center;
-                      margin-top: 0;
+                      margin-top: -2px;
                   }
                   .copy-label {
                       position: absolute;
@@ -443,24 +455,20 @@ function GasSlipPrint({ slip }) {
     
     iframeDoc.close();
 
-    // Wait for the DOM to be ready
     setTimeout(() => {
       const printRoot = iframeDoc.getElementById('print-root');
       
       if (printRoot) {
-        // Use React DOM to render the component
         const root = createRoot(printRoot);
         root.render(<GasSlipPrintContent slip={slip} />);
         
-        // Wait for React to render then print
+
         setTimeout(() => {
           const iframeWindow = iframe.contentWindow;
           
-          // Focus and print
           iframeWindow.focus();
           iframeWindow.print();
           
-          // Clean up after printing
           iframeWindow.onafterprint = () => {
             setTimeout(() => {
               document.body.removeChild(iframe);

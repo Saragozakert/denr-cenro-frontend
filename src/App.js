@@ -21,6 +21,10 @@ import AdminSection from "./Pages/Admin/AdminSection";
 // User Pages
 import UserDashboard from "./Pages/User/UserDashboard";
 import GasSlip from "./Pages/User/GasSlip";
+import Mainpage from "./Pages/HomeLayout/Mainpage";
+import UserForm from "./components/Auth/UserForm";
+
+import AdminForm from "./components/Auth/AdminForm";
 
 
 
@@ -29,7 +33,9 @@ function App() {
     <Router>
       <Routes>
         {/* Public Route */}
-        <Route path="/" element={<Homepage />} />
+        <Route path="/" element={<Mainpage />} />
+        <Route path="/user-portal" element={<UserForm />} />
+        <Route path="/admin-portal" element={<AdminForm />} />
 
         {/* Admin Protected Routes */}
         <Route element={<AdminProtectedRoute/>}>

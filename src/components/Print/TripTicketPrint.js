@@ -46,8 +46,14 @@ const TripTicketPrintContent = ({ slip }) => {
                 <div className="denr-ticket">Kagawaran ng Kapaligiran at Likas Yaman Caraga Region</div>
                 <div className="cenro-ticket">CENRO Lianga Surigao del Sur</div>
                 <div className="address-ticket">DRIVER'S TRIP TICKET</div>
-                <div className="ticket-number">No. <span className="underline-field short"></span></div>
-
+                <div className="ticket-number">
+                    No. <span className="underline-field short">
+                        {slip.date ?
+                            `${new Date(slip.date).getFullYear()}-${(new Date(slip.date).getMonth() + 1).toString().padStart(2, '0')}-`
+                            : ''
+                        }
+                    </span>
+                </div>
                 <div className="logo-container">
                     <img src={DENRLogo} alt="DENR Logo" className="logo1" />
                     <img src={BagongPilipinasLogo} alt="Bagong Pilipinas Logo" className="logo2" />
@@ -214,6 +220,14 @@ const TripTicketPrintContent = ({ slip }) => {
                     b. Add: purchased during the trip (to from):
                     <span className="purchased-field underline-field long"></span>
                     <span className="purchased-unit">
+                        <span className="checkbox">Liters</span>
+                    </span>
+                </div>
+
+                <div className="total-section">
+                    c. TOTAL:
+                    <span className="total-field underline-field long"></span>
+                    <span className="total-unit">
                         <span className="checkbox">Liters</span>
                     </span>
                 </div>
@@ -594,6 +608,15 @@ function TripTicketPrint({ slip }) {
                         margin-left: 14px; 
                     }
 
+                    .total-section {
+                        text-align: left;
+                        margin-top: 3px;
+                        font-size: 12px;
+                        margin-left: 14px; 
+                    }
+
+                    
+
                     .gear-oil {
                         text-align: left;
                         margin-top: 3px;
@@ -812,6 +835,10 @@ function TripTicketPrint({ slip }) {
                     .purchased-trip .purchased-field {
                         margin-left: 172px !important; 
                     }
+                    
+                    .total-section .total-field {
+                        margin-left: 343px !important; 
+                    }
 
                     .gear-oil .gear-field {
                         margin-left: 323px !important; 
@@ -843,6 +870,7 @@ function TripTicketPrint({ slip }) {
                     .balance-field, 
                     .issued-field, 
                     .purchased-field, 
+                    .total-field,
                     .gear-field, 
                     .lubricating-field, 
                     .grease-field, 
@@ -854,27 +882,29 @@ function TripTicketPrint({ slip }) {
                         margin-left: 80px;
                     }
 
-                    .am-pm-checkbox, .distance-unit, .fuel-unit, .balance-unit, .issued-unit, .purchased-unit, .gear-unit, .lubricating-unit, .grease-unit, .odometer-unit, .beginning-unit, .end-unit {
+                    .am-pm-checkbox, .distance-unit, .fuel-unit, .balance-unit, .issued-unit, .purchased-unit, .total-unit, .gear-unit, .lubricating-unit, .grease-unit, .odometer-unit, .beginning-unit, .end-unit {
                         margin-left: -5px;
                     }
 
                     .checkbox {
                         margin-left: 10px;
-                        font-size: 11px; /* Keep the original font size */
+                        font-size: 11px; 
                         display: inline-flex;
                         align-items: center;
                         gap: 2px;
                     }
 
                     .checkbox-box {
-                        font-size: 11; /* Make only the box larger */
+                        font-size: 11; 
                         font-family: "Arial Unicode MS", "Segoe UI Symbol";
                         line-height: 1;
+                        
                     }
 
                     .checkbox-text {
                         font-size: 11px; /* Keep text at original size */
                         line-height: 1;
+                        margin-top: 2px;
                     }
                       
 
@@ -975,10 +1005,11 @@ function TripTicketPrint({ slip }) {
                     }
 
                     .approved-content {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        margin-top: 17px;
                         position: relative;
-                        margin-top: 5px;
-                        margin-top: 40px;
-                        
                     }
                 }
                            
@@ -1017,9 +1048,11 @@ function TripTicketPrint({ slip }) {
             }
                 
                 .requesting-content {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    margin-top: 17px;
                     position: relative;
-                    margin-top: 5px;
-                    margin-top: 40px;
                 }
     
                 .requesting-name {
@@ -1028,39 +1061,41 @@ function TripTicketPrint({ slip }) {
                     text-align: center;
                     width: 200px;   
                     padding: 0 5px;
-                    position: absolute;
-                    top: -15px;
-                    left: 0;
                     font-weight: bold !important;
                     text-transform: uppercase !important;
+                    /* Remove position: absolute and top/left positioning */
                 }
 
                .requesting-line {
                     border-bottom: 1px solid #000;
-                    width: 160px;
+                    width: 200px; /* Match the name width */
                     margin-top: 2px; 
                     margin-bottom: 5px;
-                    margin-left: 25px;
-                }
-
-                .approved-line {
-                    border-bottom: 1px solid #000;
-                    width: 165px;
-                    margin-top: 2px; 
-                    margin-bottom: 5px;
-                    margin-left: 22px;
+                    /* Remove margin-left */
                 }
 
                 .requesting-position {
                     font-weight: normal;
                     font-size: 10px !important; 
                     text-align: center;
-                    width: 200px;
+                    width: 300px; 
                     padding: 0 5px;
                     font-style: italic;
                     margin-top: -2px;
                     text-transform: uppercase !important;
+                    word-wrap: break-word;
+                    white-space: normal;
+                    line-height: 1.2;
                 }
+
+                .approved-line {
+                    border-bottom: 1px solid #000;
+                    width: 200px; /* Match the name width */
+                    margin-top: 2px; 
+                    margin-bottom: 5px;
+                }
+
+               
 
                 .approved {
                     position: relative;
@@ -1069,7 +1104,7 @@ function TripTicketPrint({ slip }) {
 
                 .approved-title {
                     text-align: right;
-                    margin-right: 130px; 
+                    margin-right: 200px; 
                     margin-top: -25px;
                     font-size: 10px !important;
                     font-weight: bold !important;
@@ -1084,15 +1119,13 @@ function TripTicketPrint({ slip }) {
                     text-align: center;
                     width: 200px;   
                     padding: 0 5px;
-                    position: absolute;
-                    top: -15px;
-                    right: 0;
                     font-weight: bold !important;
-                    text-transform: uppercase !important;
+                    text-transform: uppercase !important;               
                 }
 
               
 
+                
                 .approved-position {
                     font-weight: normal;
                     font-size: 10px !important; 
@@ -1102,6 +1135,9 @@ function TripTicketPrint({ slip }) {
                     font-style: italic;
                     margin-top: -2px;
                     text-transform: uppercase !important;
+                    word-wrap: break-word;
+                    white-space: normal;
+                    line-height: 1.2;
                 }
 
                 .approved-label {
