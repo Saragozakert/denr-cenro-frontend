@@ -1,3 +1,4 @@
+
 /* Gas Slip Table Styles */
 .gas-slip-table-container {
     background: #fff;
@@ -109,12 +110,12 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Trip Ticket Button - Exact same as FuelTrackingTable */
+/* New Trip Ticket Button Style - Document/File Style */
 .gas-slip-table-trip-ticket-btn {
-    color: #ff6b35;
-    border-color: #ff6b35;
-    background: rgba(255, 107, 53, 0.04);
-    border: 1.5px solid #ff6b35;
+    color: #8B5CF6;
+    border-color: #8B5CF6;
+    background: rgba(139, 92, 246, 0.04);
+    border: 1.5px solid #8B5CF6;
     cursor: pointer;
     padding: 7px 7px;
     border-radius: 7px;
@@ -142,11 +143,11 @@
 }
 
 .gas-slip-table-trip-ticket-btn:hover {
-    background: #ff6b35;
+    background: #8B5CF6;
     color: white;
-    border-color: #ff6b35;
+    border-color: #8B5CF6;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
 }
 
 .gas-slip-table-edit-btn {

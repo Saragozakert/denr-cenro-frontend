@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "../../assets/Style/AdminDesign/AdminDashboard.css"; // Reusing the same CSS
+import "../../assets/Style/AdminDesign/AdminDashboard.css"; 
 import UserSidebar from "../../components/Sidebars/UserSidebar";
 import UserHeader from "../../components/Headers/UserHeader";
 
@@ -15,7 +15,7 @@ function UserDashboard() {
   useEffect(() => {
     const checkAuth = async () => { 
       try {
-        const token = localStorage.getItem("userToken"); // Changed to userToken
+        const token = localStorage.getItem("userToken"); 
         if (!token) {
           navigate("/");
           return;

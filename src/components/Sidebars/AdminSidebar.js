@@ -42,7 +42,7 @@ const AdminSidebar = ({ children, admin, activeItem, onMenuItemClick }) => {
       name: "admin",
       icon: <TbFolderCog size={20} />,
       label: "Trip Ticket",
-      path: ""
+      path: "/admin/dashboard/trip-ticket"
     },
     {
       name: "fuel",

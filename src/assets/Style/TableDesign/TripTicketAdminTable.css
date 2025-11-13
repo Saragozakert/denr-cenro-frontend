@@ -1,0 +1,333 @@
+/* Trip Ticket Admin Table Styles */
+.trip-ticket-admin-table-container {
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+.trip-ticket-admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #2d3748;
+  font-size: 0.9rem;
+}
+
+.trip-ticket-admin-table th {
+  background: #f7fafc;
+  padding: 16px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #4a5568;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.trip-ticket-admin-table td {
+  padding: 16px 12px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.trip-ticket-admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.trip-ticket-admin-table tr:hover {
+  background: #f8f9fa;
+}
+
+.trip-ticket-admin-table-number {
+  font-weight: 500;
+  color: #718096;
+}
+
+.trip-ticket-admin-table-date-requested,
+.trip-ticket-admin-table-withdrawn,
+.trip-ticket-admin-table-section,
+.trip-ticket-admin-table-date-submitted {
+  color: #4a5568;
+}
+
+.trip-ticket-admin-table-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.trip-ticket-admin-table-action-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #718096;
+}
+
+.trip-ticket-admin-table-action-btn:hover {
+  background: #f1f3f5;
+  color: #4a5568;
+}
+
+.trip-ticket-admin-table-edit-btn:hover {
+  color: #4C6EF5;
+}
+
+.trip-ticket-admin-table-icon-edit {
+  width: 18px;
+  height: 18px;
+}
+
+.trip-ticket-admin-table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  color: #718096;
+  font-size: 0.9rem;
+}
+
+.trip-ticket-admin-table-rows-info {
+  color: #6c757d;
+  font-size: 14px;
+}
+
+.trip-ticket-admin-table-pagination {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.trip-ticket-admin-table-pagination-btn {
+  background: transparent;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  color: #4a5568;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.trip-ticket-admin-table-pagination-btn:hover:not(.trip-ticket-admin-table-pagination-disabled) {
+  background: #f7fafc;
+  border-color: #cbd5e0;
+}
+
+.trip-ticket-admin-table-pagination-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.trip-ticket-admin-table-pagination-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.trip-ticket-admin-table-pagination-info {
+  font-size: 0.9rem;
+  color: #4a5568;
+  margin: 0 12px;
+}
+
+.trip-ticket-admin-table-loading,
+.trip-ticket-admin-table-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.trip-ticket-admin-table-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid #f1f3f5;
+  border-top: 3px solid #7367f0;
+  border-radius: 50%;
+  animation: trip-ticket-admin-table-spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes trip-ticket-admin-table-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.trip-ticket-admin-table-empty-icon {
+  width: 64px;
+  height: 64px;
+  color: #dee2e6;
+  margin-bottom: 16px;
+}
+
+.trip-ticket-admin-table-empty h3 {
+  margin: 0 0 8px;
+  color: #495057;
+  font-weight: 600;
+}
+
+.trip-ticket-admin-table-empty p {
+  margin: 0;
+  color: #6c757d;
+}
+
+/* Status badges */
+.trip-ticket-admin-status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.trip-ticket-admin-status-badge.pending {
+  background: rgba(255, 159, 67, 0.15);
+  color: #ff9f43;
+}
+
+.trip-ticket-admin-status-badge.approved {
+  background: rgba(40, 199, 111, 0.15);
+  color: #28c76f;
+}
+
+.trip-ticket-admin-status-badge.rejected {
+  background: rgba(234, 84, 85, 0.15);
+  color: #ea5455;
+}
+
+/* Enhanced Table Styles */
+.trip-ticket-admin-table-wrapper {
+  overflow-x: auto;
+}
+
+.trip-ticket-admin-table-sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+  position: relative;
+  padding-right: 24px !important;
+}
+
+.trip-ticket-admin-table-sortable:hover {
+  background-color: #edf2f7;
+}
+
+.trip-ticket-admin-table-sortable span {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+}
+
+/* Enhanced Action Buttons */
+.trip-ticket-admin-table-action-group {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+.trip-ticket-admin-table-action-btn {
+  background: transparent;
+  border: 1.5px solid #e2e8f0;
+  cursor: pointer;
+  padding: 7px 7px;
+  border-radius: 7px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+}
+
+.trip-ticket-admin-table-action-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.trip-ticket-admin-table-action-btn:hover::before {
+  left: 100%;
+}
+
+.trip-ticket-admin-table-action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.trip-ticket-admin-table-edit-btn {
+  color: #4C6EF5;
+  border-color: #4C6EF5;
+  background: rgba(76, 110, 245, 0.04);
+}
+
+.trip-ticket-admin-table-edit-btn:hover {
+  background: #4C6EF5;
+  color: white;
+  border-color: #4C6EF5;
+}
+
+.trip-ticket-admin-table-icon-edit {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s ease;
+}
+
+.trip-ticket-admin-table-action-btn:hover .trip-ticket-admin-table-icon-edit {
+  transform: scale(1.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .trip-ticket-admin-table th,
+  .trip-ticket-admin-table td {
+    padding: 12px 8px;
+  }
+
+  .trip-ticket-admin-table-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .trip-ticket-admin-table-actions {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+/* Responsive adjustments for table */
+@media (max-width: 1024px) {
+  .trip-ticket-admin-table {
+    min-width: 900px;
+  }
+}
+
+@media (max-width: 768px) {
+  .trip-ticket-admin-table {
+    min-width: 1000px;
+  }
+}

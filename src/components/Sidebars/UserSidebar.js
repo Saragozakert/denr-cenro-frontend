@@ -30,7 +30,7 @@ const UserSidebar = ({ children, activeItem, onMenuItemClick }) => {
       name: "tripTicket",
       icon: <TbCar size={20} />,
       label: "Trip Ticket",
-      path: ""
+      path: "/user/dashboard/trip-ticket"
     }
   ];
 
