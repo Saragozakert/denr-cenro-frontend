@@ -3,6 +3,7 @@ import GasSlipPrint from '../components/Print/GasSlipPrint';
 import TripTicketForm from '../Forms/TripTicketForm';
 import { formatDate, getStatusBadgeClass, getStatusText } from '../utils/GasSlipUtils';
 import { useState, useMemo } from 'react';
+import axios from 'axios';
 
 function GasSlipTable({
     gasSlips = [],
@@ -14,23 +15,19 @@ function GasSlipTable({
 }) {
     const [currentPage] = useState(1);
     const itemsPerPage = 5;
-    
+
     // State for Trip Ticket Form
     const [showTripTicketForm, setShowTripTicketForm] = useState(false);
     const [selectedSlip, setSelectedSlip] = useState(null);
     const [tripTicketFormData, setTripTicketFormData] = useState({
         departureTimeOffice: '',
-        departureTimeOfficePeriod: '',
         arrivalTimeDestination: '',
-        arrivalTimeDestinationPeriod: '',
         departureTimeDestination: '',
-        departureTimeDestinationPeriod: '',
         arrivalTimeOffice: '',
-        arrivalTimeOfficePeriod: '',
         distanceTraveled: '',
         distanceUnit: '',
-        gasolineIssued: '',
-        gasolinePurchased: '',
+        gasolineIssuedPurchased: '', // Make sure this matches
+        issuedFromStock: '',
         gearOilUsed: '',
         lubricatingOilUsed: '',
         greaseIssued: '',
@@ -58,12 +55,26 @@ function GasSlipTable({
     const handleGenerateTripTicket = (slip) => {
         setSelectedSlip(slip);
         setShowTripTicketForm(true);
-        
-        // Pre-fill some data from the gas slip
+
+        // Pre-fill data from the gas slip - FIXED FIELD NAME
         setTripTicketFormData(prev => ({
             ...prev,
-            gasolineIssued: slip.gasoline_amount || '',
-            // You can pre-fill other fields as needed
+            gasolineIssuedPurchased: slip.gasoline_amount || '', // This should match the form field name
+            // Initialize other fields as empty
+            departureTimeOffice: '',
+            arrivalTimeDestination: '',
+            departureTimeDestination: '',
+            arrivalTimeOffice: '',
+            distanceTraveled: '',
+            distanceUnit: '',
+            issuedFromStock: '',
+            gearOilUsed: '',
+            lubricatingOilUsed: '',
+            greaseIssued: '',
+            odometerStart: '',
+            odometerStartUnit: '',
+            odometerEnd: '',
+            odometerEndUnit: ''
         }));
     };
 
@@ -74,7 +85,7 @@ function GasSlipTable({
             ...prev,
             [id]: value
         }));
-        
+
         // Clear error when user starts typing
         if (formErrors[id]) {
             setFormErrors(prev => ({
@@ -88,59 +99,108 @@ function GasSlipTable({
     const handleTripTicketSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        
+
         // Basic validation
         const errors = {};
         if (!tripTicketFormData.departureTimeOffice) errors.departureTimeOffice = ['Departure time is required'];
-        if (!tripTicketFormData.departureTimeOfficePeriod) errors.departureTimeOfficePeriod = ['AM/PM selection is required'];
-        // Add more validation as needed
-        
+        if (!tripTicketFormData.arrivalTimeDestination) errors.arrivalTimeDestination = ['Arrival time is required'];
+        if (!tripTicketFormData.departureTimeDestination) errors.departureTimeDestination = ['Departure time from destination is required'];
+        if (!tripTicketFormData.arrivalTimeOffice) errors.arrivalTimeOffice = ['Arrival time back to office is required'];
+        if (!tripTicketFormData.distanceTraveled) errors.distanceTraveled = ['Distance traveled is required'];
+        if (!tripTicketFormData.distanceUnit) errors.distanceUnit = ['Distance unit is required'];
+        if (!tripTicketFormData.gasolineIssuedPurchased) errors.gasolineIssuedPurchased = ['Gasoline amount is required']; // Fixed field name
+        if (!tripTicketFormData.issuedFromStock) errors.issuedFromStock = ['Issued from stock amount is required'];
+        if (!tripTicketFormData.odometerStart) errors.odometerStart = ['Odometer start reading is required'];
+        if (!tripTicketFormData.odometerStartUnit) errors.odometerStartUnit = ['Odometer start unit is required'];
+        if (!tripTicketFormData.odometerEnd) errors.odometerEnd = ['Odometer end reading is required'];
+        if (!tripTicketFormData.odometerEndUnit) errors.odometerEndUnit = ['Odometer end unit is required'];
+
         if (Object.keys(errors).length > 0) {
             setFormErrors(errors);
             setLoading(false);
             return;
         }
-        
+
         try {
-            // Here you would typically send the data to your backend
-            console.log('Trip Ticket Data:', {
-                gasSlipId: selectedSlip.id,
-                ...tripTicketFormData
+            const token = localStorage.getItem("userToken");
+
+            // ADD THIS CONSOLE LOG TO DEBUG:
+            console.log('Submitting trip ticket data:', {
+                fuel_request_id: selectedSlip.id,
+                departure_time_office: tripTicketFormData.departureTimeOffice,
+                arrival_time_destination: tripTicketFormData.arrivalTimeDestination,
+                departure_time_destination: tripTicketFormData.departureTimeDestination,
+                arrival_time_office: tripTicketFormData.arrivalTimeOffice,
+                distance_traveled: tripTicketFormData.distanceTraveled,
+                distance_unit: tripTicketFormData.distanceUnit,
+                gasoline_issued_purchased: tripTicketFormData.gasolineIssuedPurchased, // Make sure this matches
+                issued_from_stock: tripTicketFormData.issuedFromStock,
+                gear_oil_used: tripTicketFormData.gearOilUsed || null,
+                lubricating_oil_used: tripTicketFormData.lubricatingOilUsed || null,
+                grease_issued: tripTicketFormData.greaseIssued || null,
+                odometer_start: tripTicketFormData.odometerStart,
+                odometer_start_unit: tripTicketFormData.odometerStartUnit,
+                odometer_end: tripTicketFormData.odometerEnd,
+                odometer_end_unit: tripTicketFormData.odometerEndUnit
             });
-            
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            // Success - close form and show success message
-            setShowTripTicketForm(false);
-            alert('Trip Ticket generated successfully!');
-            
-            // Reset form
-            setTripTicketFormData({
-                departureTimeOffice: '',
-                departureTimeOfficePeriod: '',
-                arrivalTimeDestination: '',
-                arrivalTimeDestinationPeriod: '',
-                departureTimeDestination: '',
-                departureTimeDestinationPeriod: '',
-                arrivalTimeOffice: '',
-                arrivalTimeOfficePeriod: '',
-                distanceTraveled: '',
-                distanceUnit: '',
-                gasolineIssued: '',
-                gasolinePurchased: '',
-                gearOilUsed: '',
-                lubricatingOilUsed: '',
-                greaseIssued: '',
-                odometerStart: '',
-                odometerStartUnit: '',
-                odometerEnd: '',
-                odometerEndUnit: ''
+
+            const response = await axios.post("http://localhost:8000/api/user/trip-tickets", {
+                fuel_request_id: selectedSlip.id,
+                departure_time_office: tripTicketFormData.departureTimeOffice,
+                arrival_time_destination: tripTicketFormData.arrivalTimeDestination,
+                departure_time_destination: tripTicketFormData.departureTimeDestination,
+                arrival_time_office: tripTicketFormData.arrivalTimeOffice,
+                distance_traveled: tripTicketFormData.distanceTraveled,
+                distance_unit: tripTicketFormData.distanceUnit,
+                gasoline_issued_purchased: tripTicketFormData.gasolineIssuedPurchased, // Fixed field name
+                issued_from_stock: tripTicketFormData.issuedFromStock,
+                gear_oil_used: tripTicketFormData.gearOilUsed || null,
+                lubricating_oil_used: tripTicketFormData.lubricatingOilUsed || null,
+                grease_issued: tripTicketFormData.greaseIssued || null,
+                odometer_start: tripTicketFormData.odometerStart,
+                odometer_start_unit: tripTicketFormData.odometerStartUnit,
+                odometer_end: tripTicketFormData.odometerEnd,
+                odometer_end_unit: tripTicketFormData.odometerEndUnit
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: "application/json",
+                },
             });
-            
+
+            if (response.data.success) {
+                setShowTripTicketForm(false);
+                alert('Trip Ticket submitted successfully!');
+
+                // Reset form
+                setTripTicketFormData({
+                    departureTimeOffice: '',
+                    arrivalTimeDestination: '',
+                    departureTimeDestination: '',
+                    arrivalTimeOffice: '',
+                    distanceTraveled: '',
+                    distanceUnit: '',
+                    gasolineIssuedPurchased: '', // Fixed field name
+                    issuedFromStock: '',
+                    gearOilUsed: '',
+                    lubricatingOilUsed: '',
+                    greaseIssued: '',
+                    odometerStart: '',
+                    odometerStartUnit: '',
+                    odometerEnd: '',
+                    odometerEndUnit: ''
+                });
+            }
+
         } catch (error) {
             console.error('Error generating trip ticket:', error);
-            alert('Error generating trip ticket. Please try again.');
+            // ADD MORE DETAILED ERROR LOGGING:
+            console.error('Error response:', error.response);
+            if (error.response?.data?.errors) {
+                setFormErrors(error.response.data.errors);
+            } else {
+                alert('Error generating trip ticket. Please try again.');
+            }
         } finally {
             setLoading(false);
         }
@@ -226,7 +286,7 @@ function GasSlipTable({
                                             {getStatusText(slip.status)}
                                         </span>
                                     </td>
-                                  
+
                                     <td className="gas-slip-table-actions">
                                         <div className="gas-slip-table-action-group">
                                             {slip.status === 'pending' ? (
@@ -271,7 +331,7 @@ function GasSlipTable({
                                                     <svg className="gas-slip-table-icon-trip-ticket" viewBox="0 0 24 24">
                                                         <path fill="currentColor" d="M13,9H18.5L13,3.5V9M6,2H14L20,8V20A2,2 0 0,1 18,22H6C4.89,22 4,21.1 4,20V4C4,2.89 4.89,2 6,2M15,18V16H6V18H15M18,14V12H6V14H18Z" />
                                                     </svg>
-                                                </button>   
+                                                </button>
                                             )}
                                         </div>
                                     </td>
@@ -291,6 +351,7 @@ function GasSlipTable({
                 handleTripTicketSubmit={handleTripTicketSubmit}
                 formErrors={formErrors}
                 loading={loading}
+                selectedSlip={selectedSlip} // Pass the selected slip
             />
         </>
     );

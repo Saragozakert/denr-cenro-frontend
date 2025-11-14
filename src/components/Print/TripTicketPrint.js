@@ -2,7 +2,7 @@ import { createRoot } from 'react-dom/client';
 import DENRLogo from "../../assets/images/DENR.png";
 import BagongPilipinasLogo from "../../assets/images/bagongpilipinas.png";
 
-const TripTicketPrintContent = ({ slip }) => {
+const TripTicketPrintContent = ({ slip, tripTicketData }) => {
     const formatDate = (dateString) => {
         if (!dateString) return '';
 
@@ -14,6 +14,41 @@ const TripTicketPrintContent = ({ slip }) => {
             console.error('Error formatting date:', error);
             return dateString;
         }
+    };
+
+    const formatTimeTo12Hour = (timeString) => {
+        if (!timeString) return '';
+
+        try {
+            const timeParts = timeString.split(':');
+            const hours = parseInt(timeParts[0]);
+            const minutes = timeParts[1];
+
+            const twelveHour = hours % 12 || 12;
+
+            return `${twelveHour}:${minutes}`;
+        } catch (error) {
+            console.error('Error formatting time:', error);
+            return timeString;
+        }
+    };
+
+    const getTimePeriod = (timeString) => {
+        if (!timeString) return '';
+
+        try {
+            const hours = parseInt(timeString.split(':')[0]);
+            return hours >= 12 ? 'PM' : 'AM';
+        } catch (error) {
+            return '';
+        }
+    };
+
+    const calculateTotal = () => {
+        if (!tripTicketData) return '';
+        const issued = parseFloat(tripTicketData.issued_from_stock) || 0;
+        const purchased = parseFloat(tripTicketData.gasoline_issued_purchased) || 0;
+        return (issued + purchased).toString();
     };
 
     const getVehicleDisplay = () => {
@@ -34,9 +69,13 @@ const TripTicketPrintContent = ({ slip }) => {
         return (slip.withdrawn_by || '').toUpperCase();
     };
 
-
     const getAuthorizedPassengers = () => {
         return (slip.authorized_passengers || '').toUpperCase();
+    };
+
+    // Helper function to render checkbox with filled black box
+    const renderCheckbox = (isChecked) => {
+        return isChecked ? '■' : '□';
     };
 
     return (
@@ -124,28 +163,41 @@ const TripTicketPrintContent = ({ slip }) => {
 
                 <div className="time-departure">
                     1. Time of Departure from the office/garage:
-                    <span className="time-field underline-field long"></span>
+                    <span className="time-field underline-field long">
+                        {tripTicketData ? formatTimeTo12Hour(tripTicketData.departure_time_office) : ''}
+                    </span>
                     <span className="am-pm-checkbox">
                         <span className="checkbox">
-                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-box">
+                                {renderCheckbox(getTimePeriod(tripTicketData?.departure_time_office) === 'AM')}
+                            </span>
                             <span className="checkbox-text">AM</span>
                         </span>
                         <span className="checkbox">
-                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-box">
+                                {renderCheckbox(getTimePeriod(tripTicketData?.departure_time_office) === 'PM')}
+                            </span>
                             <span className="checkbox-text">PM</span>
                         </span>
                     </span>
                 </div>
+
                 <div className="time-arrival">
                     2. Time of arrival at Item No. 4 above:
-                    <span className="time-field underline-field long"></span>
+                    <span className="time-field underline-field long">
+                        {tripTicketData ? formatTimeTo12Hour(tripTicketData.arrival_time_destination) : ''}
+                    </span>
                     <span className="am-pm-checkbox">
                         <span className="checkbox">
-                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-box">
+                                {renderCheckbox(getTimePeriod(tripTicketData?.arrival_time_destination) === 'AM')}
+                            </span>
                             <span className="checkbox-text">AM</span>
                         </span>
                         <span className="checkbox">
-                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-box">
+                                {renderCheckbox(getTimePeriod(tripTicketData?.arrival_time_destination) === 'PM')}
+                            </span>
                             <span className="checkbox-text">PM</span>
                         </span>
                     </span>
@@ -153,14 +205,20 @@ const TripTicketPrintContent = ({ slip }) => {
 
                 <div className="time-departure-item4">
                     3. Time of departure from Item No. 4 above:
-                    <span className="time-field underline-field long"></span>
+                    <span className="time-field underline-field long">
+                        {tripTicketData ? formatTimeTo12Hour(tripTicketData.departure_time_destination) : ''}
+                    </span>
                     <span className="am-pm-checkbox">
                         <span className="checkbox">
-                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-box">
+                                {renderCheckbox(getTimePeriod(tripTicketData?.departure_time_destination) === 'AM')}
+                            </span>
                             <span className="checkbox-text">AM</span>
                         </span>
                         <span className="checkbox">
-                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-box">
+                                {renderCheckbox(getTimePeriod(tripTicketData?.departure_time_destination) === 'PM')}
+                            </span>
                             <span className="checkbox-text">PM</span>
                         </span>
                     </span>
@@ -168,14 +226,20 @@ const TripTicketPrintContent = ({ slip }) => {
 
                 <div className="time-arrival-back">
                     4. Time of arrival back to the office/garage:
-                    <span className="time-field underline-field long"></span>
+                    <span className="time-field underline-field long">
+                        {tripTicketData ? formatTimeTo12Hour(tripTicketData.arrival_time_office) : ''}
+                    </span>
                     <span className="am-pm-checkbox">
                         <span className="checkbox">
-                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-box">
+                                {renderCheckbox(getTimePeriod(tripTicketData?.arrival_time_office) === 'AM')}
+                            </span>
                             <span className="checkbox-text">AM</span>
                         </span>
                         <span className="checkbox">
-                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-box">
+                                {renderCheckbox(getTimePeriod(tripTicketData?.arrival_time_office) === 'PM')}
+                            </span>
                             <span className="checkbox-text">PM</span>
                         </span>
                     </span>
@@ -183,14 +247,20 @@ const TripTicketPrintContent = ({ slip }) => {
 
                 <div className="distance-traveled">
                     5. Approximate distance traveled to & from:
-                    <span className="distance-field underline-field long"></span>
+                    <span className="distance-field underline-field long">
+                        {tripTicketData ? tripTicketData.distance_traveled : ''}
+                    </span>
                     <span className="distance-unit">
                         <span className="checkbox">
-                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-box">
+                                {renderCheckbox(tripTicketData?.distance_unit === 'KM')}
+                            </span>
                             <span className="checkbox-text">KM</span>
                         </span>
                         <span className="checkbox">
-                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-box">
+                                {renderCheckbox(tripTicketData?.distance_unit === 'M')}
+                            </span>
                             <span className="checkbox-text">M</span>
                         </span>
                     </span>
@@ -198,7 +268,9 @@ const TripTicketPrintContent = ({ slip }) => {
 
                 <div className="gasoline-diesel">
                     6. Gasoline/Diesel issued/purchased and used:
-                    <span className="fuel-field underline-field long"></span>
+                    <span className="fuel-field underline-field long">
+                        {tripTicketData ? tripTicketData.gasoline_issued_purchased : ''}
+                    </span>
                     <span className="fuel-unit">
                         <span className="checkbox">Liters</span>
                     </span>
@@ -210,7 +282,9 @@ const TripTicketPrintContent = ({ slip }) => {
 
                 <div className="issued-office">
                     a. Issued by the office from stock:
-                    <span className="issued-field underline-field long"></span>
+                    <span className="issued-field underline-field long">
+                        {tripTicketData ? tripTicketData.issued_from_stock : ''}
+                    </span>
                     <span className="issued-unit">
                         <span className="checkbox">Liters</span>
                     </span>
@@ -218,7 +292,9 @@ const TripTicketPrintContent = ({ slip }) => {
 
                 <div className="purchased-trip">
                     b. Add: purchased during the trip (to from):
-                    <span className="purchased-field underline-field long"></span>
+                    <span className="purchased-field underline-field long">
+                        {tripTicketData ? tripTicketData.gasoline_issued_purchased : ''}
+                    </span>
                     <span className="purchased-unit">
                         <span className="checkbox">Liters</span>
                     </span>
@@ -226,7 +302,9 @@ const TripTicketPrintContent = ({ slip }) => {
 
                 <div className="total-section">
                     c. TOTAL:
-                    <span className="total-field underline-field long"></span>
+                    <span className="total-field underline-field long">
+                        {tripTicketData ? calculateTotal() : ''}
+                    </span>
                     <span className="total-unit">
                         <span className="checkbox">Liters</span>
                     </span>
@@ -234,7 +312,9 @@ const TripTicketPrintContent = ({ slip }) => {
 
                 <div className="gear-oil">
                     8. Gear oil used:
-                    <span className="gear-field underline-field long"></span>
+                    <span className="gear-field underline-field long">
+                        {tripTicketData ? tripTicketData.gear_oil_used || '' : ''}
+                    </span>
                     <span className="gear-unit">
                         <span className="checkbox">Liters</span>
                     </span>
@@ -242,7 +322,9 @@ const TripTicketPrintContent = ({ slip }) => {
 
                 <div className="lubricating-oils">
                     9. Lubricating oils used:
-                    <span className="lubricating-field underline-field long"></span>
+                    <span className="lubricating-field underline-field long">
+                        {tripTicketData ? tripTicketData.lubricating_oil_used || '' : ''}
+                    </span>
                     <span className="lubricating-unit">
                         <span className="checkbox">Liters</span>
                     </span>
@@ -250,7 +332,9 @@ const TripTicketPrintContent = ({ slip }) => {
 
                 <div className="grease">
                     10. Grease issued/purchased:
-                    <span className="grease-field underline-field long"></span>
+                    <span className="grease-field underline-field long">
+                        {tripTicketData ? tripTicketData.grease_issued || '' : ''}
+                    </span>
                     <span className="grease-unit">
                         <span className="checkbox">Liters</span>
                     </span>
@@ -262,14 +346,20 @@ const TripTicketPrintContent = ({ slip }) => {
 
                 <div className="odometer-beginning">
                     - At the beginning of the trip:
-                    <span className="beginning-field underline-field long"></span>
+                    <span className="beginning-field underline-field long">
+                        {tripTicketData ? tripTicketData.odometer_start : ''}
+                    </span>
                     <span className="beginning-unit">
                         <span className="checkbox">
-                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-box">
+                                {renderCheckbox(tripTicketData?.odometer_start_unit === 'KM')}
+                            </span>
                             <span className="checkbox-text">KM</span>
                         </span>
                         <span className="checkbox">
-                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-box">
+                                {renderCheckbox(tripTicketData?.odometer_start_unit === 'M')}
+                            </span>
                             <span className="checkbox-text">M</span>
                         </span>
                     </span>
@@ -277,14 +367,20 @@ const TripTicketPrintContent = ({ slip }) => {
 
                 <div className="odometer-end">
                     - At the end of the trip:
-                    <span className="end-field underline-field long"></span>
+                    <span className="end-field underline-field long">
+                        {tripTicketData ? tripTicketData.odometer_end : ''}
+                    </span>
                     <span className="end-unit">
                         <span className="checkbox">
-                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-box">
+                                {renderCheckbox(tripTicketData?.odometer_end_unit === 'KM')}
+                            </span>
                             <span className="checkbox-text">KM</span>
                         </span>
                         <span className="checkbox">
-                            <span className="checkbox-box">□</span>
+                            <span className="checkbox-box">
+                                {renderCheckbox(tripTicketData?.odometer_end_unit === 'M')}
+                            </span>
                             <span className="checkbox-text">M</span>
                         </span>
                     </span>
@@ -328,9 +424,9 @@ const TripTicketPrintContent = ({ slip }) => {
 
                 <div className="contact-info">
                     <div className="address">DENR CENRO Lianga, Surigao del Sur, Philippines</div>
-                    <div class="contact-details">
+                    <div className="contact-details">
                         Mobile No. 0907-169-7840 E-Mail:
-                        <span class="email-highlight">cenrolianga@denr.gov.ph</span>
+                        <span className="email-highlight">cenrolianga@denr.gov.ph</span>
                     </div>
                 </div>
             </div>
@@ -339,849 +435,862 @@ const TripTicketPrintContent = ({ slip }) => {
 };
 
 function TripTicketPrint({ slip }) {
-    const handlePrint = () => {
-        const iframe = document.createElement('iframe');
-        iframe.style.position = 'fixed';
-        iframe.style.right = '0';
-        iframe.style.bottom = '0';
-        iframe.style.width = '0';
-        iframe.style.height = '0';
-        iframe.style.border = 'none';
-        iframe.style.visibility = 'hidden';
-        document.body.appendChild(iframe);
+    const handlePrint = async () => {
+        try {
+            const token = localStorage.getItem("adminToken") || localStorage.getItem("userToken");
 
-        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            // Fetch trip ticket data
+            let tripTicketData = null;
+            try {
+                const response = await fetch(`http://localhost:8000/api/user/trip-tickets/${slip.id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: "application/json",
+                    },
+                });
 
-        iframeDoc.write(`
-        <!DOCTYPE html>
-            <html>
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        tripTicketData = data.trip_ticket;
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching trip ticket data:', error);
+            }
+
+            const iframe = document.createElement('iframe');
+            iframe.style.position = 'fixed';
+            iframe.style.right = '0';
+            iframe.style.bottom = '0';
+            iframe.style.width = '0';
+            iframe.style.height = '0';
+            iframe.style.border = 'none';
+            iframe.style.visibility = 'hidden';
+            document.body.appendChild(iframe);
+
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+            iframeDoc.write(`
+            <!DOCTYPE html>
+                <html>
                     <head>
-                <title>Trip Ticket - ${slip.model_name}</title>
-                <style>
-                 @media print {
-                    @page {
-                        size: A4 portrait;
-                        margin: 0.3in;
-                    }
-                    body {
-                        font-family: Arial, sans-serif;
-                        font-size: 12px;
-                        line-height: 1.2;
-                        margin-top: 15px;
-                    }
-                    .slip {
-                        width: 100%;
-                        position: relative;
-                        page-break-inside: avoid;
-                    }
-                    .header {
-                        text-align: center;
-                        margin-bottom: 10px;
-                        padding-bottom: 3px;
-                        position: relative;
-                    }
-                    .republic-ticket {
-                        font-size: 13px;
-                        font-weight: bold;
-                        margin-bottom: 2px;
-                    }
-                    .denr-ticket {
-                        font-size: 11px;
-                        margin-bottom: 1px;
-                    }
+                        <title>Trip Ticket - ${slip.model_name}</title>
+                        <style>
+                            /* Your exact existing CSS styles */
+                            @media print {
+                                @page {
+                                    size: A4 portrait;
+                                    margin: 0.3in;
+                                }
+                                body {
+                                    font-family: Arial, sans-serif;
+                                    font-size: 12px;
+                                    line-height: 1.2;
+                                    margin-top: 15px;
+                                }
+                                .slip {
+                                    width: 100%;
+                                    position: relative;
+                                    page-break-inside: avoid;
+                                }
+                                .header {
+                                    text-align: center;
+                                    margin-bottom: 10px;
+                                    padding-bottom: 3px;
+                                    position: relative;
+                                }
+                                .republic-ticket {
+                                    font-size: 13px;
+                                    font-weight: bold;
+                                    margin-bottom: 2px;
+                                }
+                                .denr-ticket {
+                                    font-size: 11px;
+                                    margin-bottom: 1px;
+                                }
 
-                  .cenro-ticket {
-                    font-size: 10px;
-                    text-transform: uppercase;
-                    margin-bottom: 1px;
-                  }
+                              .cenro-ticket {
+                                font-size: 10px;
+                                text-transform: uppercase;
+                                margin-bottom: 1px;
+                              }
 
-                  .address-ticket {
-                    font-size: 12px;
-                    margin-bottom: 1px;
-                    font-weight: bold;
-                  }
+                              .address-ticket {
+                                font-size: 12px;
+                                margin-bottom: 1px;
+                                font-weight: bold;
+                              }
 
-                  .ticket-number {
-                    font-size: 11px;
-                    font-weight: bold;
-                    margin-top: 3px;
-                    margin-bottom: 8px;
-                  }
+                              .ticket-number {
+                                font-size: 11px;
+                                font-weight: bold;
+                                margin-top: 3px;
+                                margin-bottom: 8px;
+                              }
 
-                  .logo-container {
-                    display: flex;
-                    justify-content: center;
-                    align-items: flex-start;
-                    gap: 20px;
-                    margin: 3px 0;
-                    position: relative;
-                  }
+                              .logo-container {
+                                display: flex;
+                                justify-content: center;
+                                align-items: flex-start;
+                                gap: 20px;
+                                margin: 3px 0;
+                                position: relative;
+                              }
 
-                  .logo1 {
-                    height: 80px;
-                    width: auto;
-                    object-fit: contain;
-                    position: absolute;
-                    left: 100px;
-                    top: -95px;
-                  }
+                              .logo1 {
+                                height: 80px;
+                                width: auto;
+                                object-fit: contain;
+                                position: absolute;
+                                left: 100px;
+                                top: -95px;
+                              }
 
-                  .logo2 {
-                    height: 120px;
-                    width: auto;
-                    object-fit: contain;
-                    position: absolute;
-                    top: -115px;
-                    right: 80px;
-                  }
+                              .logo2 {
+                                height: 120px;
+                                width: auto;
+                                object-fit: contain;
+                                position: absolute;
+                                top: -115px;
+                                right: 80px;
+                              }
 
-                  .date-section {
-                    text-align: right;
-                    margin-top: -15px;
-                    margin-right: 50px;
-                  }
+                              .date-section {
+                                text-align: right;
+                                margin-top: -15px;
+                                margin-right: 50px;
+                              }
+                        
+                              .date-field {
+                                font-size: 11px;
+                                letter-spacing: 1px;
+                                padding: 0 5px 2px 5px;
+                                border-bottom: 1px solid #000;
+                                display: inline-block;
+                                text-align: center;
+                                line-height: 1;
+                                font-weight: bold;
+                            }
+
+                              .date-content-wrapper {
+                                display: inline-block;
+                                text-align: center;
+                            }
+
+                              .date-label {
+                                font-size: 11px;
+                                text-align: center;
+                                margin-top: 2px;
+                                width: 100%;
+                            }
+
+                                .admin-note {
+                                text-align: left;
+                                margin-top: 0px;
+                                margin-left: 50px;
+                                font-size: 10px;
+                                font-weight: bold;
+                                text-transform: uppercase;
+                                }
+
+                                .driver-field,
+                                .car-field,
+                                .passenger-field,
+                                .place-field,
+                                .purpose-field {
+                                    font-size: 10px !important; 
+                                    font-weight: normal !important; 
+                                }
+
+                                .requesting-party,
+                                .approved-title,
+                                .approved-name,
+                                .approved-position,
+                                .requesting-name,
+                                .requesting-position {
+                                    font-size: 10px !important; 
+                                    text-transform: uppercase !important; 
+                                }
+                            
+                                .driver-section {
+                                    text-align: left;
+                                    margin-top: 5px;
+                                    margin-left: 50px;
+                                    font-size: 12px;
+                                }
+                                .driver-field {
+                                    border-bottom: 1px solid #000;
+                                    display: inline-block;
+                                    margin-left: 100px;
+                                    width: 250px;
+                                    vertical-align: bottom; 
+                                    margin-bottom: 2px;  
+                                    padding: 0 5px;
+                                    font-size: 10px !important;
+                                    font-weight: normal !important;
+                                }
+
+                                .car-field {
+                                    border-bottom: 1px solid #000;
+                                    display: inline-block;
+                                    margin-left: 38px;
+                                    width: 250px;
+                                    vertical-align: bottom; 
+                                    margin-bottom: 2px;
+                                    padding: 0 5px;
+                                    font-size: 10px !important;
+                                    font-weight: normal !important;
+                                }
+
+                                .cut-line {
+                                    margin-top: -45px; 
+                                    border-bottom: 1px solid #000;
+                                    text-align: left;
+                                    width: 625px; 
+                                    margin-left: auto;
+                                    margin-right: auto;
+                                }
+
+                                .driver-section-fields {
+                                    margin-top: 10px;
+                                    margin-left: 50px;
+                                }
+
+                                .driver-note {
+                                    text-align: left;
+                                    margin-bottom: 10px;
+                                    font-size: 10px;
+                                    font-weight: bold;
+                                    text-transform: uppercase;
+                                }
+
+                                .time-departure {
+                                    text-align: left;
+                                    margin-top: -5px;
+                                    font-size: 12px;
+                                    margin-left: 0;
+                                }
+
+                                .time-arrival {
+                                    text-align: left;
+                                    margin-top: 5px;
+                                    font-size: 12px;
+                                    margin-left: 0;
+                                }
+
+                                .time-departure-item4 {
+                                    text-align: left;
+                                    margin-top: 3px;
+                                    font-size: 12px;
+                                    margin-left: 0;
+                                }
+
+                                .time-arrival-back {
+                                    text-align: left;
+                                    margin-top: 3px;
+                                    font-size: 12px;
+                                    margin-left: 0;
+                                }
+
+                                .distance-traveled {
+                                    text-align: left;
+                                    margin-top: 3px;
+                                    font-size: 12px;
+                                    margin-left: 0;
+                                }
+
+                                .gasoline-diesel {
+                                    text-align: left;
+                                    margin-top: 3px;
+                                    font-size: 12px;
+                                    margin-left: 0;
+                                }
+
+                                .balance-tank {
+                                    text-align: left;
+                                    margin-top: 3px;
+                                    font-size: 12px;
+                                    margin-left: 0;
+                                }
+
+                                .issued-office {
+                                    text-align: left;
+                                    margin-top: 3px;
+                                    font-size: 12px;
+                                    margin-left: 14px; 
+                                }
+
+                                .purchased-trip {
+                                    text-align: left;
+                                    margin-top: 3px;
+                                    font-size: 12px;
+                                    margin-left: 14px; 
+                                }
+
+                                .total-section {
+                                    text-align: left;
+                                    margin-top: 3px;
+                                    font-size: 12px;
+                                    margin-left: 14px; 
+                                }
+
+                                .gear-oil {
+                                    text-align: left;
+                                    margin-top: 3px;
+                                    font-size: 12px;
+                                    margin-left: 0;
+                                }
+
+                                .lubricating-oils {
+                                    text-align: left;
+                                    margin-top: 3px;
+                                    font-size: 12px;
+                                    margin-left: 0;
+                                }
+
+                                .grease {
+                                    text-align: left;
+                                    margin-top: 3px;
+                                    font-size: 12px;
+                                    margin-left: -7px;
+                                }
+
+                                .odometer-reading {
+                                    text-align: left;
+                                    margin-top: 3px;
+                                    font-size: 12px;
+                                    margin-left: -6px;
+                                }
+
+                                .odometer-beginning {
+                                    text-align: left;
+                                    margin-top: 3px;
+                                    font-size: 12px;
+                                    margin-left: 14px; 
+                                }
+
+                                .odometer-end {
+                                    text-align: left;
+                                    margin-top: 3px;
+                                    font-size: 12px;
+                                    margin-left: 14px;
+                                }
+
+                                .remarks-section {
+                                    margin-top: 20px;
+                                    margin-left: 50px;
+                                }
+
+                                .remarks-note {
+                                    text-align: left;
+                                    margin-bottom: 5px;
+                                    font-size: 10px;
+                                    font-weight: bold;
+                                    text-transform: uppercase;
+                                }
+
+                                .remarks-line {
+                                    border-bottom: 1px solid #000;
+                                    width: 620px;
+                                    margin-left: 0;
+                                }
+
+                                .certification-text {
+                                    text-align: left;
+                                    margin-top: 5px;
+                                    font-size: 12px;
+                                    font-style: italic;
+                                    width: 90%;
+                                }
+
+                                .certification-text-2 {
+                                    text-align: left;
+                                    margin-top: 30px;
+                                    font-size: 12px;
+                                    font-style: italic;
+                                    width: 92%;
+                                }
+
+                                .authorized-passengers-section {
+                                    margin-top: 20px;
+                                    position: relative;
+                                }
+
+                                .authorized-passengers-note {
+                                    text-align: left;
+                                    margin-bottom: 5px;
+                                    font-size: 10px;
+                                    font-weight: bold;
+                                    text-transform: uppercase;
+                                }
+
+                                .authorized-passengers-name {
+                                    font-size: 10px;
+                                    text-align: left;
+                                    width: 90%;
+                                    text-transform: uppercase;
+                                    position: absolute;
+                                    top: 40px; 
+                                    left: 20px;
+                                    font-weight: bold !important;
+                                }
+
+                                .authorized-passengers-line {
+                                    border-bottom: 1px solid #000;
+                                    width: 620px;
+                                    margin-left: 0;
+                                    margin-top: 40px; 
+                                }
+
+                                .note-section {
+                                    margin-top: 10px;
+                                    margin-left: 0;
+                                    text-align: left;
+                                }
+
+                                .note-text {
+                                    font-size: 12px;
+                                    font-style: italic;
+                                    font-weight: bold;             
+                                    margin-top: -5px;       
+                                }
+
+                                .contact-info {
+                                    text-align: center;
+                                    margin-bottom: 5px;
+                                }
+                                .address {
+                                    font-size: 12px;
+                                    margin-top: 50px;
+                                }
+                                .contact-details {
+                                    font-size: 12px;
+                                    margin-bottom: 50px;
+                                }
+                                    
+                                .email-highlight {
+                                color: blue;
+                                font-style: italic;
+                                text-decoration: underline;
+                                text-decoration-style: solid;
+                                }
+
+                                .plate-field {
+                                    border-bottom: 1px solid #000;
+                                    display: inline-block;
+                                    min-width: 100px;
+                                    text-align: center;
+                                    margin: 0 5px;
+                                    vertical-align: bottom;
+                                    font-size: 10px;
+                                }
+
+                                .driver-signature-container {
+                                    margin-top: 30px;
+                                    display: inline-block;
+                                    text-align: center;
+                                    width: 100%;
+                                }
+
+                                .driver-signature-name {
+                                    font-size: 10px;
+                                    font-weight: bold;
+                                    text-align: center;
+                                    margin-bottom: 1px;
+                                    width: 200px;
+                                    margin-left: 390px;
+                                    text-transform: uppercase;
+                                }
+
+                                .driver-signature-line {
+                                    border-bottom: 1px solid #000;
+                                    width: 150px;
+                                    margin-bottom: 5px;
+                                    margin-left: 415px; 
+                                }
+
+                                .driver-label {
+                                    text-align: center;
+                                    font-size: 11px;
+                                    margin-top: -5px;
+                                    width: 200px;
+                                    margin-left: 390px; 
+                                }
+
+                                .time-departure .time-field {
+                                    margin-left: 178px !important;
+                                }
+
+                                .time-arrival .time-field {
+                                    margin-left: 211px !important; 
+                                }
+
+                                .time-departure-item4 .time-field {
+                                    margin-left: 178px !important; 
+                                }
+
+                                .time-arrival-back .time-field {
+                                    margin-left: 184px !important; 
+                                }
+
+                                .distance-traveled .distance-field {
+                                    margin-left: 182px !important; 
+                                }
+
+                                .gasoline-diesel .fuel-field {
+                                    margin-left: 160px !important; 
+                                }
+
+                                .balance-tank .balance-field {
+                                    margin-left: 210px !important; 
+                                }
+
+                                .issued-office .issued-field {
+                                    margin-left: 218px !important; 
+                                }
+
+                                .purchased-trip .purchased-field {
+                                    margin-left: 172px !important; 
+                                }
+                                
+                                .total-section .total-field {
+                                    margin-left: 343px !important; 
+                                }
+
+                                .gear-oil .gear-field {
+                                    margin-left: 323px !important; 
+                                }
+
+                                .lubricating-oils .lubricating-field {
+                                    margin-left: 285px !important; 
+                                }
+
+                                .grease .grease-field {
+                                    margin-left: 258px !important; 
+                                }
+
+                                .odometer-reading .odometer-field {
+                                    margin-left: 162px !important; 
+                                }
+
+                                .odometer-beginning .beginning-field {
+                                    margin-left: 247px !important; 
+                                }
+
+                                .odometer-end .end-field {
+                                    margin-left: 279px !important; 
+                                }
+
+                                .time-field, 
+                                .distance-field,
+                                .fuel-field, 
+                                .balance-field, 
+                                .issued-field, 
+                                .purchased-field, 
+                                .total-field,
+                                .gear-field, 
+                                .lubricating-field, 
+                                .grease-field, 
+                                .odometer-field, 
+                                .beginning-field, 
+                                .end-field {
+                                    width: 60px !important; 
+                                    min-width: 60px !important;
+                                    margin-left: 80px;
+                                }
+
+                                .am-pm-checkbox, .distance-unit, .fuel-unit, .balance-unit, .issued-unit, .purchased-unit, .total-unit, .gear-unit, .lubricating-unit, .grease-unit, .odometer-unit, .beginning-unit, .end-unit {
+                                    margin-left: -5px;
+                                }
+
+                                .checkbox {
+                                    margin-left: 10px;
+                                    font-size: 11px; 
+                                    display: inline-flex;
+                                    align-items: center;
+                                    gap: 2px;
+                                }
+
+                                .checkbox-box {
+                                    font-size: 11; 
+                                    font-family: "Arial Unicode MS", "Segoe UI Symbol";
+                                    line-height: 1;
+                                    
+                                }
+
+                                .checkbox-text {
+                                    font-size: 11px; /* Keep text at original size */
+                                    line-height: 1;
+                                    margin-top: 2px;
+                                }
+                                
+
+                                .passenger-field {
+                                    border-bottom: 1px solid #000;
+                                    display: inline-block;
+                                    margin-left: 27px;
+                                    width: 250px;
+                                    vertical-align: bottom; 
+                                    margin-bottom: 2px;
+                                    padding: 0 5px;
+                                    font-size: 10px !important;
+                                    font-weight: normal !important;
+                                }
+
+                                .place-field {
+                                    border-bottom: 1px solid #000;
+                                    display: inline-block;
+                                    margin-left: 38px;
+                                    width: 250px;
+                                    vertical-align: bottom; 
+                                    margin-bottom: 2px;
+                                    padding: 0 5px;
+                                    font-size: 10px !important;
+                                    font-weight: normal !important;
+                                }
+
+                                .purpose-section {
+                                    display: flex;
+                                    align-items: flex-start;
+                                    margin-top: 15px;
+                                    margin-left: 50px;
+                                    font-size: 12px;
+                                }
+
+                                .purpose-field {
+                                    display: block;
+                                    margin-left: 158px;
+                                    width: 420px;
+                                    margin-top: -2px;
+                                    margin-bottom: 2px;
+                                    padding: 0 5px;
+                                    word-wrap: break-word;
+                                    white-space: normal;
+                                    line-height: 1.3;
+                                    font-size: 10px !important;
+                                    font-weight: normal !important;
+                                }
+                                                          
+                                .car-plate-section {
+                                    text-align: left;
+                                    margin-top: 5px;
+                                    margin-left: 50px;
+                                    font-size: 12px;
+                                }
+                                    
+
+                                .signature-section {
+                                    display: flex;
+                                    justify-content: space-between;
+                                    margin-top: 40px;
+                                    margin-left: 50px;
+                                    margin-right: 50px;
+                                    font-size: 12px;
+                                    font-weight: bold;
+                                }
+                                
+                                .underline-field {
+                                    border-bottom: 1px solid #000;
+                                    display: inline-block;
+                                    text-align: center;
+                                }
+                                .underline-field.short {
+                                    min-width: 80px;
+                                }
+                                .underline-field.long {
+                                    min-width: 150px;
+                                }
+                                .underline-field.medium {
+                                    min-width: 100px;
+                                }
+                                .underline-field.extra-long {
+                                    min-width: 300px;
+                                }
+                                .underline-field.left-align {
+                                    text-align: left;
+                                    margin-left: 0;
+                                }
+
+                                .approved-label {
+                                    font-weight: normal;
+                                    font-size: 11px;
+                                    text-align: center;
+                                    width: 200px;
+                                    padding: 0 5px;
+                                    font-style: italic;
+                                    margin-top: 5px;
+                                }
+
+                                .approved-content {
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: center;
+                                    margin-top: 17px;
+                                    position: relative;
+                                }
+                            }
+                                       
+                            body {
+                                visibility: hidden;
+                            }
+                            
+                            @media print {
+                                body {
+                                    visibility: visible;
+                                }
+                            }
+
+                            .signature-section {
+                                display: flex;
+                                justify-content: space-between;
+                                margin-top: 40px;
+                                margin-left: 50px;
+                                margin-right: 50px;
+                                font-size: 12px;
+                                font-weight: bold;
+                            }
+
+                            .requesting-party {
+                                position: relative;
+                                min-height: 90px; 
+                            }
+
+                        .requesting-title {
+                            text-align: left;
+                            margin-left: 0;
+                            margin-top: -25px;
+                            font-size: 10px !important;
+                            font-weight: bold !important;
+                            text-transform: uppercase !important;
+                        }
+                            
+                            .requesting-content {
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                margin-top: 17px;
+                                position: relative;
+                            }
             
-                  .date-field {
-                    font-size: 11px;
-                    letter-spacing: 1px;
-                    padding: 0 5px 2px 5px;
-                    border-bottom: 1px solid #000;
-                    display: inline-block;
-                    text-align: center;
-                    line-height: 1;
-                    font-weight: bold;
+                            .requesting-name {
+                                font-weight: normal;
+                                font-size: 10px !important; 
+                                text-align: center;
+                                width: 200px;   
+                                padding: 0 5px;
+                                font-weight: bold !important;
+                                text-transform: uppercase !important;
+                            }
+
+                           .requesting-line {
+                                border-bottom: 1px solid #000;
+                                width: 200px; /* Match the name width */
+                                margin-top: 2px; 
+                                margin-bottom: 5px;
+                            }
+
+                            .requesting-position {
+                                font-weight: normal;
+                                font-size: 10px !important; 
+                                text-align: center;
+                                width: 300px; 
+                                padding: 0 5px;
+                                font-style: italic;
+                                margin-top: -2px;
+                                text-transform: uppercase !important;
+                                word-wrap: break-word;
+                                white-space: normal;
+                                line-height: 1.2;
+                            }
+
+                            .approved-line {
+                                border-bottom: 1px solid #000;
+                                width: 200px; /* Match the name width */
+                                margin-top: 2px; 
+                                margin-bottom: 5px;
+                            }
+
+                            .approved {
+                                position: relative;
+                                min-height: 90px; 
+                            }
+
+                            .approved-title {
+                                text-align: right;
+                                margin-right: 200px; 
+                                margin-top: -25px;
+                                font-size: 10px !important;
+                                font-weight: bold !important;
+                                text-transform: uppercase !important;
+                            }
+
+                            .approved-name {
+                                font-weight: normal;
+                                font-size: 10px !important; 
+                                text-align: center;
+                                width: 200px;   
+                                padding: 0 5px;
+                                font-weight: bold !important;
+                                text-transform: uppercase !important;               
+                            }
+                            
+                            .approved-position {
+                                font-weight: normal;
+                                font-size: 10px !important; 
+                                text-align: center;
+                                width: 200px;
+                                padding: 0 5px;
+                                font-style: italic;
+                                margin-top: -2px;
+                                text-transform: uppercase !important;
+                                word-wrap: break-word;
+                                white-space: normal;
+                                line-height: 1.2;
+                            }
+
+                            .approved-label {
+                                font-weight: normal;
+                                font-size: 11px;
+                                text-align: center;
+                                width: 200px;
+                                padding: 0 5px;
+                                font-style: italic;
+                                margin-top: 5px;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div id="print-root"></div>
+                    </body>
+                </html>
+            `);
+
+            iframeDoc.close();
+
+            setTimeout(() => {
+                const printRoot = iframeDoc.getElementById('print-root');
+                if (printRoot) {
+                    const root = createRoot(printRoot);
+                    root.render(<TripTicketPrintContent slip={slip} tripTicketData={tripTicketData} />);
+
+                    setTimeout(() => {
+                        const iframeWindow = iframe.contentWindow;
+                        iframeWindow.focus();
+                        iframeWindow.print();
+
+                        iframeWindow.onafterprint = () => {
+                            setTimeout(() => {
+                                document.body.removeChild(iframe);
+                            }, 100);
+                        };
+                    }, 500);
                 }
-
-                  .date-content-wrapper {
-                    display: inline-block;
-                    text-align: center;
-                }
-
-                  .date-label {
-                    font-size: 11px;
-                    text-align: center;
-                    margin-top: 2px;
-                    width: 100%;
-                }
-
-                    .admin-note {
-                    text-align: left;
-                    margin-top: 0px;
-                    margin-left: 50px;
-                    font-size: 10px;
-                    font-weight: bold;
-                    text-transform: uppercase;
-                    }
-
-                    .driver-field,
-                    .car-field,
-                    .passenger-field,
-                    .place-field,
-                    .purpose-field {
-                        font-size: 10px !important; 
-                        font-weight: normal !important; 
-                    }
-
-                    .requesting-party,
-                    .approved-title,
-                    .approved-name,
-                    .approved-position,
-                    .requesting-name,
-                    .requesting-position {
-                        font-size: 10px !important; 
-                        text-transform: uppercase !important; 
-                    }
-                
-                    .driver-section {
-                        text-align: left;
-                        margin-top: 5px;
-                        margin-left: 50px;
-                        font-size: 12px;
-                    }
-                    .driver-field {
-                        border-bottom: 1px solid #000;
-                        display: inline-block;
-                        margin-left: 100px;
-                        width: 250px;
-                        vertical-align: bottom; 
-                        margin-bottom: 2px;  
-                        padding: 0 5px;
-                        font-size: 10px !important;
-                        font-weight: normal !important;
-                    }
-
-                    .car-field {
-                        border-bottom: 1px solid #000;
-                        display: inline-block;
-                        margin-left: 38px;
-                        width: 250px;
-                        vertical-align: bottom; 
-                        margin-bottom: 2px;
-                        padding: 0 5px;
-                        font-size: 10px !important;
-                        font-weight: normal !important;
-                    }
-
-                    .cut-line {
-                        margin-top: -45px; 
-                        border-bottom: 1px solid #000;
-                        text-align: left;
-                        width: 625px; 
-                        margin-left: auto;
-                        margin-right: auto;
-                    }
-
-                    .driver-section-fields {
-                        margin-top: 10px;
-                        margin-left: 50px;
-                    }
-
-                    .driver-note {
-                        text-align: left;
-                        margin-bottom: 10px;
-                        font-size: 10px;
-                        font-weight: bold;
-                        text-transform: uppercase;
-                    }
-
-                    .time-departure {
-                        text-align: left;
-                        margin-top: -5px;
-                        font-size: 12px;
-                        margin-left: 0;
-                    }
-
-                    .time-arrival {
-                        text-align: left;
-                        margin-top: 5px;
-                        font-size: 12px;
-                        margin-left: 0;
-                    }
-
-                    .time-departure-item4 {
-                        text-align: left;
-                        margin-top: 3px;
-                        font-size: 12px;
-                        margin-left: 0;
-                    }
-
-                    .time-arrival-back {
-                        text-align: left;
-                        margin-top: 3px;
-                        font-size: 12px;
-                        margin-left: 0;
-                    }
-
-                    .distance-traveled {
-                        text-align: left;
-                        margin-top: 3px;
-                        font-size: 12px;
-                        margin-left: 0;
-                    }
-
-                    .gasoline-diesel {
-                        text-align: left;
-                        margin-top: 3px;
-                        font-size: 12px;
-                        margin-left: 0;
-                    }
-
-                    .balance-tank {
-                        text-align: left;
-                        margin-top: 3px;
-                        font-size: 12px;
-                        margin-left: 0;
-                    }
-
-                    .issued-office {
-                        text-align: left;
-                        margin-top: 3px;
-                        font-size: 12px;
-                        margin-left: 14px; 
-                    }
-
-                    .purchased-trip {
-                        text-align: left;
-                        margin-top: 3px;
-                        font-size: 12px;
-                        margin-left: 14px; 
-                    }
-
-                    .total-section {
-                        text-align: left;
-                        margin-top: 3px;
-                        font-size: 12px;
-                        margin-left: 14px; 
-                    }
-
-                    
-
-                    .gear-oil {
-                        text-align: left;
-                        margin-top: 3px;
-                        font-size: 12px;
-                        margin-left: 0;
-                    }
-
-                    .lubricating-oils {
-                        text-align: left;
-                        margin-top: 3px;
-                        font-size: 12px;
-                        margin-left: 0;
-                    }
-
-                    .grease {
-                        text-align: left;
-                        margin-top: 3px;
-                        font-size: 12px;
-                        margin-left: -7px;
-                    }
-
-                    .odometer-reading {
-                        text-align: left;
-                        margin-top: 3px;
-                        font-size: 12px;
-                        margin-left: -6px;
-                    }
-
-                    .odometer-beginning {
-                        text-align: left;
-                        margin-top: 3px;
-                        font-size: 12px;
-                        margin-left: 14px; 
-                    }
-
-                    .odometer-end {
-                        text-align: left;
-                        margin-top: 3px;
-                        font-size: 12px;
-                        margin-left: 14px;
-                    }
-
-                    .remarks-section {
-                        margin-top: 20px;
-                        margin-left: 50px;
-                    }
-
-                    .remarks-note {
-                        text-align: left;
-                        margin-bottom: 5px;
-                        font-size: 10px;
-                        font-weight: bold;
-                        text-transform: uppercase;
-                    }
-
-                    .remarks-line {
-                        border-bottom: 1px solid #000;
-                        width: 620px;
-                        margin-left: 0;
-                    }
-
-                    .certification-text {
-                        text-align: left;
-                        margin-top: 5px;
-                        font-size: 12px;
-                        font-style: italic;
-                        width: 90%;
-                    }
-
-                    .certification-text-2 {
-                        text-align: left;
-                        margin-top: 30px;
-                        font-size: 12px;
-                        font-style: italic;
-                        width: 92%;
-                    }
-
-                    .authorized-passengers-section {
-                        margin-top: 20px;
-                        position: relative;
-                    }
-
-                    .authorized-passengers-note {
-                        text-align: left;
-                        margin-bottom: 5px;
-                        font-size: 10px;
-                        font-weight: bold;
-                        text-transform: uppercase;
-                    }
-
-                    .authorized-passengers-name {
-                        font-size: 10px;
-                        text-align: left;
-                        width: 90%;
-                        text-transform: uppercase;
-                        position: absolute;
-                        top: 40px; 
-                        left: 20px;
-                        font-weight: bold !important;
-                    }
-
-                    .authorized-passengers-line {
-                        border-bottom: 1px solid #000;
-                        width: 620px;
-                        margin-left: 0;
-                        margin-top: 40px; 
-                    }
-
-                    .note-section {
-                        margin-top: 10px;
-                        margin-left: 0;
-                        text-align: left;
-                    }
-
-                    .note-text {
-                        font-size: 12px;
-                        font-style: italic;
-                        font-weight: bold;             
-                        margin-top: -5px;       
-                    }
-
-                    .contact-info {
-                        text-align: center;
-                        margin-bottom: 5px;
-                    }
-                    .address {
-                        font-size: 12px;
-                        margin-top: 50px;
-                    }
-                    .contact-details {
-                        font-size: 12px;
-                        margin-bottom: 50px;
-                    }
-                        
-                    .email-highlight {
-                    color: blue;
-                    font-style: italic;
-                    text-decoration: underline;
-                    text-decoration-style: solid;
-                    }
-
-                    .plate-field {
-                        border-bottom: 1px solid #000;
-                        display: inline-block;
-                        min-width: 100px;
-                        text-align: center;
-                        margin: 0 5px;
-                        vertical-align: bottom;
-                        font-size: 10px;
-                    }
-
-                    .driver-signature-container {
-                        margin-top: 30px;
-                        display: inline-block;
-                        text-align: center;
-                        width: 100%;
-                    }
-
-                    .driver-signature-name {
-                        font-size: 10px;
-                        font-weight: bold;
-                        text-align: center;
-                        margin-bottom: 1px;
-                        width: 200px;
-                        margin-left: 390px;
-                        text-transform: uppercase;
-                    }
-
-                    .driver-signature-line {
-                        border-bottom: 1px solid #000;
-                        width: 150px;
-                        margin-bottom: 5px;
-                        margin-left: 415px; 
-                    }
-
-                    .driver-label {
-                        text-align: center;
-                        font-size: 11px;
-                        margin-top: -5px;
-                        width: 200px;
-                        margin-left: 390px; 
-                    }
-
-                    .time-departure .time-field {
-                        margin-left: 178px !important; 
-                    }
-
-                    .time-arrival .time-field {
-                        margin-left: 211px !important; 
-                    }
-
-                    .time-departure-item4 .time-field {
-                        margin-left: 178px !important; 
-                    }
-
-                    .time-arrival-back .time-field {
-                        margin-left: 184px !important; 
-                    }
-
-                    .distance-traveled .distance-field {
-                        margin-left: 182px !important; 
-                    }
-
-                    .gasoline-diesel .fuel-field {
-                        margin-left: 160px !important; 
-                    }
-
-                    .balance-tank .balance-field {
-                        margin-left: 210px !important; 
-                    }
-
-                    .issued-office .issued-field {
-                        margin-left: 218px !important; 
-                    }
-
-                    .purchased-trip .purchased-field {
-                        margin-left: 172px !important; 
-                    }
-                    
-                    .total-section .total-field {
-                        margin-left: 343px !important; 
-                    }
-
-                    .gear-oil .gear-field {
-                        margin-left: 323px !important; 
-                    }
-
-                    .lubricating-oils .lubricating-field {
-                        margin-left: 285px !important; 
-                    }
-
-                    .grease .grease-field {
-                        margin-left: 258px !important; 
-                    }
-
-                    .odometer-reading .odometer-field {
-                        margin-left: 162px !important; 
-                    }
-
-                    .odometer-beginning .beginning-field {
-                        margin-left: 247px !important; 
-                    }
-
-                    .odometer-end .end-field {
-                        margin-left: 279px !important; 
-                    }
-
-                    .time-field, 
-                    .distance-field,
-                    .fuel-field, 
-                    .balance-field, 
-                    .issued-field, 
-                    .purchased-field, 
-                    .total-field,
-                    .gear-field, 
-                    .lubricating-field, 
-                    .grease-field, 
-                    .odometer-field, 
-                    .beginning-field, 
-                    .end-field {
-                        width: 60px !important; 
-                        min-width: 60px !important;
-                        margin-left: 80px;
-                    }
-
-                    .am-pm-checkbox, .distance-unit, .fuel-unit, .balance-unit, .issued-unit, .purchased-unit, .total-unit, .gear-unit, .lubricating-unit, .grease-unit, .odometer-unit, .beginning-unit, .end-unit {
-                        margin-left: -5px;
-                    }
-
-                    .checkbox {
-                        margin-left: 10px;
-                        font-size: 11px; 
-                        display: inline-flex;
-                        align-items: center;
-                        gap: 2px;
-                    }
-
-                    .checkbox-box {
-                        font-size: 11; 
-                        font-family: "Arial Unicode MS", "Segoe UI Symbol";
-                        line-height: 1;
-                        
-                    }
-
-                    .checkbox-text {
-                        font-size: 11px; /* Keep text at original size */
-                        line-height: 1;
-                        margin-top: 2px;
-                    }
-                      
-
-                    .passenger-field {
-                        border-bottom: 1px solid #000;
-                        display: inline-block;
-                        margin-left: 27px;
-                        width: 250px;
-                        vertical-align: bottom; 
-                        margin-bottom: 2px;
-                        padding: 0 5px;
-                        font-size: 10px !important;
-                        font-weight: normal !important;
-                    }
-
-                    .place-field {
-                        border-bottom: 1px solid #000;
-                        display: inline-block;
-                        margin-left: 38px;
-                        width: 250px;
-                        vertical-align: bottom; 
-                        margin-bottom: 2px;
-                        padding: 0 5px;
-                        font-size: 10px !important;
-                        font-weight: normal !important;
-                    }
-
-                    .purpose-section {
-                        display: flex;
-                        align-items: flex-start;
-                        margin-top: 15px;
-                        margin-left: 50px;
-                        font-size: 12px;
-                    }
-
-                    .purpose-field {
-                        display: block;
-                        margin-left: 158px;
-                        width: 420px;
-                        margin-top: -2px;
-                        margin-bottom: 2px;
-                        padding: 0 5px;
-                        word-wrap: break-word;
-                        white-space: normal;
-                        line-height: 1.3;
-                        font-size: 10px !important;
-                        font-weight: normal !important;
-                    }
-                                            
-                    .car-plate-section {
-                        text-align: left;
-                        margin-top: 5px;
-                        margin-left: 50px;
-                        font-size: 12px;
-                    }
-                        
-
-                    .signature-section {
-                        display: flex;
-                        justify-content: space-between;
-                        margin-top: 40px;
-                        margin-left: 50px;
-                        margin-right: 50px;
-                        font-size: 12px;
-                        font-weight: bold;
-                    }
-                    
-                    .underline-field {
-                        border-bottom: 1px solid #000;
-                        display: inline-block;
-                        text-align: center;
-                    }
-                    .underline-field.short {
-                        min-width: 80px;
-                    }
-                    .underline-field.long {
-                        min-width: 150px;
-                    }
-                    .underline-field.medium {
-                        min-width: 100px;
-                    }
-                    .underline-field.extra-long {
-                        min-width: 300px;
-                    }
-                    .underline-field.left-align {
-                        text-align: left;
-                        margin-left: 0;
-                    }
-
-                    .approved-label {
-                        font-weight: normal;
-                        font-size: 11px;
-                        text-align: center;
-                        width: 200px;
-                        padding: 0 5px;
-                        font-style: italic;
-                        margin-top: 5px;
-                    }
-
-                    .approved-content {
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        margin-top: 17px;
-                        position: relative;
-                    }
-                }
-                           
-                body {
-                    visibility: hidden;
-                }
-                
-                @media print {
-                    body {
-                        visibility: visible;
-                    }
-                }
-
-                .signature-section {
-                    display: flex;
-                    justify-content: space-between;
-                    margin-top: 40px;
-                    margin-left: 50px;
-                    margin-right: 50px;
-                    font-size: 12px;
-                    font-weight: bold;
-                }
-
-                .requesting-party {
-                    position: relative;
-                    min-height: 90px; 
-                }
-
-            .requesting-title {
-                text-align: left;
-                margin-left: 0;
-                margin-top: -25px;
-                font-size: 10px !important;
-                font-weight: bold !important;
-                text-transform: uppercase !important;
-            }
-                
-                .requesting-content {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    margin-top: 17px;
-                    position: relative;
-                }
-    
-                .requesting-name {
-                    font-weight: normal;
-                    font-size: 10px !important; 
-                    text-align: center;
-                    width: 200px;   
-                    padding: 0 5px;
-                    font-weight: bold !important;
-                    text-transform: uppercase !important;
-                    /* Remove position: absolute and top/left positioning */
-                }
-
-               .requesting-line {
-                    border-bottom: 1px solid #000;
-                    width: 200px; /* Match the name width */
-                    margin-top: 2px; 
-                    margin-bottom: 5px;
-                    /* Remove margin-left */
-                }
-
-                .requesting-position {
-                    font-weight: normal;
-                    font-size: 10px !important; 
-                    text-align: center;
-                    width: 300px; 
-                    padding: 0 5px;
-                    font-style: italic;
-                    margin-top: -2px;
-                    text-transform: uppercase !important;
-                    word-wrap: break-word;
-                    white-space: normal;
-                    line-height: 1.2;
-                }
-
-                .approved-line {
-                    border-bottom: 1px solid #000;
-                    width: 200px; /* Match the name width */
-                    margin-top: 2px; 
-                    margin-bottom: 5px;
-                }
-
-               
-
-                .approved {
-                    position: relative;
-                    min-height: 90px; 
-                }
-
-                .approved-title {
-                    text-align: right;
-                    margin-right: 200px; 
-                    margin-top: -25px;
-                    font-size: 10px !important;
-                    font-weight: bold !important;
-                    text-transform: uppercase !important;
-                }
-
-               
-
-                .approved-name {
-                    font-weight: normal;
-                    font-size: 10px !important; 
-                    text-align: center;
-                    width: 200px;   
-                    padding: 0 5px;
-                    font-weight: bold !important;
-                    text-transform: uppercase !important;               
-                }
-
-              
-
-                
-                .approved-position {
-                    font-weight: normal;
-                    font-size: 10px !important; 
-                    text-align: center;
-                    width: 200px;
-                    padding: 0 5px;
-                    font-style: italic;
-                    margin-top: -2px;
-                    text-transform: uppercase !important;
-                    word-wrap: break-word;
-                    white-space: normal;
-                    line-height: 1.2;
-                }
-
-                .approved-label {
-                    font-weight: normal;
-                    font-size: 11px;
-                    text-align: center;
-                    width: 200px;
-                    padding: 0 5px;
-                    font-style: italic;
-                    margin-top: 5px;
-                }
-                    </style>
-            </head>
-            <body>
-                <div id="print-root"></div>
-            </body>
-        </html>
-    `);
-
-        iframeDoc.close();
-
-        setTimeout(() => {
-            const printRoot = iframeDoc.getElementById('print-root');
-
-            if (printRoot) {
-                const root = createRoot(printRoot);
-                root.render(<TripTicketPrintContent slip={slip} />);
-
-
-                setTimeout(() => {
-                    const iframeWindow = iframe.contentWindow;
-
-
-                    iframeWindow.focus();
-                    iframeWindow.print();
-
-                    iframeWindow.onafterprint = () => {
-                        setTimeout(() => {
-                            document.body.removeChild(iframe);
-                        }, 100);
-                    };
-                }, 500);
-            }
-        }, 100);
+            }, 100);
+
+        } catch (error) {
+            console.error('Error in print function:', error);
+        }
     };
 
     return { handlePrint };

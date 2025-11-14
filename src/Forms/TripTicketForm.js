@@ -8,7 +8,8 @@ function TripTicketForm({
     handleInputChange,
     handleTripTicketSubmit,
     formErrors,
-    loading
+    loading,
+    selectedSlip // Add this prop to get the fuel request ID
 }) {
     if (!showTripTicketForm) return null;
 
@@ -154,7 +155,7 @@ function TripTicketForm({
                                 </div>
 
                                 <div className="enhanced-form-group">
-                                    <label htmlFor="gasolineIssuedPurchased">
+                                    <label htmlFor="gasolineIssuedPurchased"> {/* This should match */}
                                         Gasoline/Diesel issued/purchased and used <span className="required-field">*</span>
                                     </label>
                                     <input
@@ -186,8 +187,6 @@ function TripTicketForm({
                                     />
                                     {formErrors.issuedFromStock && <span className="enhanced-error-text">{formErrors.issuedFromStock[0]}</span>}
                                 </div>
-
-                                {/* REMOVED: Add: purchased during the trip (to from) field */}
 
                                 <div className="enhanced-form-group">
                                     <label htmlFor="gearOilUsed">
@@ -244,7 +243,7 @@ function TripTicketForm({
                             <div className="enhanced-section-header">
                                 <div className="enhanced-section-icon">
                                     <svg viewBox="0 0 24 24" width="20" height="20">
-                                        <path fill="currentColor" d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12C4,14.09 4.8,16 6.11,17.41L9.88,9.88L17.41,6.11C16,4.8 14.09,4 12,4M12,20A8,8 0 0,0 20,12C20,9.91 19.2,8 17.89,6.59L14.12,14.12L6.59,17.89C8,19.2 9.91,20 12,20M12,12L11.23,11.23L9.7,14.3L12,12M12,12L14.3,9.7L11.23,11.23L12,12Z" />
+                                        <path fill="currentColor" d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,12L11.23,11.23L9.7,14.3L12,12M12,12L14.3,9.7L11.23,11.23L12,12Z" />
                                     </svg>
                                 </div>
                                 <h3>Odometer Reading</h3>
@@ -321,9 +320,9 @@ function TripTicketForm({
                             >
                                 Cancel
                             </button>
-                            <button 
-                                type="submit" 
-                                className="enhanced-submit-btn" 
+                            <button
+                                type="submit"
+                                className="enhanced-submit-btn"
                                 disabled={loading}
                             >
                                 {loading ? (
