@@ -108,7 +108,7 @@ function TripTicketUserTable({
                                     {formatDate(ticket.date_requested)}
                                 </td>
                                 <td className="trip-ticket-table-fuel-amount">
-                                    {ticket.fuel_amount ? `${ticket.fuel_amount} L` : 'N/A'}
+                                    {ticket.fuel_amount ? `${ticket.fuel_amount} ` : 'N/A'}
                                 </td>
                                 <td className="trip-ticket-table-fuel-type">
                                     {ticket.fuel_type || 'N/A'}

@@ -331,3 +331,49 @@
     min-width: 1000px;
   }
 }
+
+/* Status badge styles */
+.trip-ticket-admin-status-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.trip-ticket-admin-status-badge.pending {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.trip-ticket-admin-status-badge.submitted {
+  background-color: #d1edff;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+
+.trip-ticket-admin-status-badge.approved {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.trip-ticket-admin-status-badge.rejected {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.trip-ticket-admin-status-badge.completed {
+  background-color: #e2e3e5;
+  color: #383d41;
+  border: 1px solid #d6d8db;
+}
+
+/* Style for Pending date */
+.trip-ticket-admin-table-date-submitted {
+  font-style: italic;
+  color: #6c757d;
+}

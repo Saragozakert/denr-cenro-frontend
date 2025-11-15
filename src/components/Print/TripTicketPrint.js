@@ -955,7 +955,7 @@ function TripTicketPrint({ slip }) {
                                 }
                                 
                                 .total-section .total-field {
-                                    margin-left: 343px !important; 
+                                    margin-left: 344px !important; 
                                 }
 
                                 .gear-oil .gear-field {
@@ -998,10 +998,25 @@ function TripTicketPrint({ slip }) {
                                     width: 60px !important; 
                                     min-width: 60px !important;
                                     margin-left: 80px;
+                                    font-size: 10px !important; //Adjust//
                                 }
 
                                 .am-pm-checkbox, .distance-unit, .fuel-unit, .balance-unit, .issued-unit, .purchased-unit, .total-unit, .gear-unit, .lubricating-unit, .grease-unit, .odometer-unit, .beginning-unit, .end-unit {
                                     margin-left: -5px;
+                                    margin-top: -5px;
+                                }
+
+                                .fuel-unit .checkbox,
+                                .issued-unit .checkbox,
+                                .purchased-unit .checkbox,
+                                .total-unit .checkbox,
+                                .gear-unit .checkbox,
+                                .lubricating-unit .checkbox,
+                                .grease-unit .checkbox {
+                                    margin-bottom: 1px !important;
+                                }
+                                .fuel-unit .checkbox {
+                                    margin-bottom: -1px !important;
                                 }
 
                                 .checkbox {
@@ -1010,6 +1025,8 @@ function TripTicketPrint({ slip }) {
                                     display: inline-flex;
                                     align-items: center;
                                     gap: 2px;
+                                    vertical-align: bottom;
+                                    margin-bottom: 2px;
                                 }
 
                                 .checkbox-box {

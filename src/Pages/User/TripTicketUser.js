@@ -7,58 +7,6 @@ import TripTicketUserTable from "../../Tables/TripTicketUserTable";
 import "./../../assets/Style/UserDesign/UserDashboard.css";
 import "./../../assets/Style/UserDesign/TripTicketUser.css";
 
-// Sample data moved outside the component - this never changes
-const sampleTripTickets = [
-    {
-        id: 1,
-        date_requested: "2024-01-15",
-        fuel_amount: 50,
-        fuel_type: "Premium Gasoline",
-        status: "pending",
-        requesting_party: "John Doe",
-        vehicle_type: "SUV",
-        plate_no: "ABC123",
-        purpose: "Client Meeting",
-        created_at: "2024-01-15T08:30:00Z"
-    },
-    {
-        id: 2,
-        date_requested: "2024-01-16",
-        fuel_amount: 35,
-        fuel_type: "Diesel",
-        status: "approved",
-        requesting_party: "John Doe",
-        vehicle_type: "Sedan",
-        plate_no: "XYZ789",
-        purpose: "Site Inspection",
-        created_at: "2024-01-16T09:15:00Z"
-    },
-    {
-        id: 3,
-        date_requested: "2024-01-17",
-        fuel_amount: 60,
-        fuel_type: "Premium Gasoline",
-        status: "completed",
-        requesting_party: "Jane Smith",
-        vehicle_type: "Van",
-        plate_no: "DEF456",
-        purpose: "Equipment Delivery",
-        created_at: "2024-01-17T10:00:00Z"
-    },
-    {
-        id: 4,
-        date_requested: "2024-01-18",
-        fuel_amount: 45,
-        fuel_type: "Diesel",
-        status: "declined",
-        requesting_party: "Mike Johnson",
-        vehicle_type: "Truck",
-        plate_no: "GHI789",
-        purpose: "Material Transport",
-        created_at: "2024-01-18T11:20:00Z"
-    }
-];
-
 function TripTicketUser() {
     const [user, setUser] = useState(null);
     const [activeItem, setActiveItem] = useState("tripTicket");
@@ -97,7 +45,7 @@ function TripTicketUser() {
             try {
                 setIsLoading(true);
                 const token = localStorage.getItem("userToken");
-                const response = await axios.get("http://localhost:8000/api/user/trip-tickets", {
+                const response = await axios.get("http://localhost:8000/api/user/user-trip-tickets", {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         Accept: "application/json",
@@ -107,15 +55,11 @@ function TripTicketUser() {
                 if (response.data.success) {
                     setTripTickets(response.data.tripTickets || []);
                 } else {
-                    // Use sample data if API fails or returns no data
-                    console.log("Using sample data for demonstration");
-                    setTripTickets(sampleTripTickets);
+                    setTripTickets([]);
                 }
             } catch (error) {
                 console.error("Error fetching trip tickets:", error);
-                // Use sample data when API is not available
-                console.log("API not available, using sample data");
-                setTripTickets(sampleTripTickets);
+                setTripTickets([]);
             } finally {
                 setIsLoading(false);
             }
@@ -123,7 +67,7 @@ function TripTicketUser() {
 
         checkAuth();
         fetchTripTickets();
-    }, [navigate]); // Only navigate as dependency
+    }, [navigate]);
 
     const handleMenuItemClick = (itemName, path) => {
         setActiveItem(itemName);
@@ -134,7 +78,7 @@ function TripTicketUser() {
 
     const handleEditTicket = (ticket) => {
         console.log('Edit ticket:', ticket);
-        alert(`Edit functionality for ${ticket.requesting_party}'s trip ticket (ID: ${ticket.id}) will be implemented here`);
+        alert(`Edit functionality for trip ticket (ID: ${ticket.id}) will be implemented here`);
     };
 
     const filteredTripTickets = tripTickets.filter(ticket =>
@@ -142,9 +86,7 @@ function TripTicketUser() {
         ticket.fuel_amount?.toString().includes(searchTerm) ||
         ticket.fuel_type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         ticket.status?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        ticket.requesting_party?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        ticket.plate_no?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        ticket.purpose?.toLowerCase().includes(searchTerm.toLowerCase())
+        ticket.date_submitted?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
@@ -165,7 +107,7 @@ function TripTicketUser() {
                                 </svg>
                                 <input
                                     type="text"
-                                    placeholder="Search trip tickets by date, fuel amount, fuel type, status, requesting party, plate no, or purpose..."
+                                    placeholder="Search trip tickets by date, fuel amount, fuel type, status, or date submitted..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     className="trip-ticket-search-input"
@@ -182,13 +124,6 @@ function TripTicketUser() {
                                 )}
                             </div>
                         </div>
-                        <button
-                            className="trip-ticket-add-btn"
-                            onClick={() => alert('Add Trip Ticket Form will be implemented here')}
-                        >
-                            <span className="trip-ticket-btn-icon">+</span>
-                            Add Trip Ticket
-                        </button>
                     </div>
 
                     <TripTicketUserTable

@@ -11,7 +11,8 @@ function GasSlipTable({
     searchTerm = "",
     handleEditSlip,
     handleViewSlip,
-    handleDeclineSlip
+    handleDeclineSlip,
+    onTripTicketSubmitted // ADD THIS PROP
 }) {
     const [currentPage] = useState(1);
     const itemsPerPage = 5;
@@ -26,7 +27,7 @@ function GasSlipTable({
         arrivalTimeOffice: '',
         distanceTraveled: '',
         distanceUnit: '',
-        gasolineIssuedPurchased: '', // Make sure this matches
+        gasolineIssuedPurchased: '',
         issuedFromStock: '',
         gearOilUsed: '',
         lubricatingOilUsed: '',
@@ -56,11 +57,10 @@ function GasSlipTable({
         setSelectedSlip(slip);
         setShowTripTicketForm(true);
 
-        // Pre-fill data from the gas slip - FIXED FIELD NAME
+        // Pre-fill data from the gas slip
         setTripTicketFormData(prev => ({
             ...prev,
-            gasolineIssuedPurchased: slip.gasoline_amount || '', // This should match the form field name
-            // Initialize other fields as empty
+            gasolineIssuedPurchased: slip.gasoline_amount || '',
             departureTimeOffice: '',
             arrivalTimeDestination: '',
             departureTimeDestination: '',
@@ -95,7 +95,7 @@ function GasSlipTable({
         }
     };
 
-    // Handle form submission
+    // UPDATED: Handle form submission - refresh gas slips after success
     const handleTripTicketSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -108,7 +108,7 @@ function GasSlipTable({
         if (!tripTicketFormData.arrivalTimeOffice) errors.arrivalTimeOffice = ['Arrival time back to office is required'];
         if (!tripTicketFormData.distanceTraveled) errors.distanceTraveled = ['Distance traveled is required'];
         if (!tripTicketFormData.distanceUnit) errors.distanceUnit = ['Distance unit is required'];
-        if (!tripTicketFormData.gasolineIssuedPurchased) errors.gasolineIssuedPurchased = ['Gasoline amount is required']; // Fixed field name
+        if (!tripTicketFormData.gasolineIssuedPurchased) errors.gasolineIssuedPurchased = ['Gasoline amount is required'];
         if (!tripTicketFormData.issuedFromStock) errors.issuedFromStock = ['Issued from stock amount is required'];
         if (!tripTicketFormData.odometerStart) errors.odometerStart = ['Odometer start reading is required'];
         if (!tripTicketFormData.odometerStartUnit) errors.odometerStartUnit = ['Odometer start unit is required'];
@@ -124,26 +124,6 @@ function GasSlipTable({
         try {
             const token = localStorage.getItem("userToken");
 
-            // ADD THIS CONSOLE LOG TO DEBUG:
-            console.log('Submitting trip ticket data:', {
-                fuel_request_id: selectedSlip.id,
-                departure_time_office: tripTicketFormData.departureTimeOffice,
-                arrival_time_destination: tripTicketFormData.arrivalTimeDestination,
-                departure_time_destination: tripTicketFormData.departureTimeDestination,
-                arrival_time_office: tripTicketFormData.arrivalTimeOffice,
-                distance_traveled: tripTicketFormData.distanceTraveled,
-                distance_unit: tripTicketFormData.distanceUnit,
-                gasoline_issued_purchased: tripTicketFormData.gasolineIssuedPurchased, // Make sure this matches
-                issued_from_stock: tripTicketFormData.issuedFromStock,
-                gear_oil_used: tripTicketFormData.gearOilUsed || null,
-                lubricating_oil_used: tripTicketFormData.lubricatingOilUsed || null,
-                grease_issued: tripTicketFormData.greaseIssued || null,
-                odometer_start: tripTicketFormData.odometerStart,
-                odometer_start_unit: tripTicketFormData.odometerStartUnit,
-                odometer_end: tripTicketFormData.odometerEnd,
-                odometer_end_unit: tripTicketFormData.odometerEndUnit
-            });
-
             const response = await axios.post("http://localhost:8000/api/user/trip-tickets", {
                 fuel_request_id: selectedSlip.id,
                 departure_time_office: tripTicketFormData.departureTimeOffice,
@@ -152,7 +132,7 @@ function GasSlipTable({
                 arrival_time_office: tripTicketFormData.arrivalTimeOffice,
                 distance_traveled: tripTicketFormData.distanceTraveled,
                 distance_unit: tripTicketFormData.distanceUnit,
-                gasoline_issued_purchased: tripTicketFormData.gasolineIssuedPurchased, // Fixed field name
+                gasoline_issued_purchased: tripTicketFormData.gasolineIssuedPurchased,
                 issued_from_stock: tripTicketFormData.issuedFromStock,
                 gear_oil_used: tripTicketFormData.gearOilUsed || null,
                 lubricating_oil_used: tripTicketFormData.lubricatingOilUsed || null,
@@ -180,7 +160,7 @@ function GasSlipTable({
                     arrivalTimeOffice: '',
                     distanceTraveled: '',
                     distanceUnit: '',
-                    gasolineIssuedPurchased: '', // Fixed field name
+                    gasolineIssuedPurchased: '',
                     issuedFromStock: '',
                     gearOilUsed: '',
                     lubricatingOilUsed: '',
@@ -190,12 +170,15 @@ function GasSlipTable({
                     odometerEnd: '',
                     odometerEndUnit: ''
                 });
+
+                // REFRESH THE GAS SLIPS LIST - This will remove the row
+                if (onTripTicketSubmitted) {
+                    onTripTicketSubmitted();
+                }
             }
 
         } catch (error) {
             console.error('Error generating trip ticket:', error);
-            // ADD MORE DETAILED ERROR LOGGING:
-            console.error('Error response:', error.response);
             if (error.response?.data?.errors) {
                 setFormErrors(error.response.data.errors);
             } else {
@@ -206,17 +189,19 @@ function GasSlipTable({
         }
     };
 
-    // Filter and sort gas slips
+    // Filter and sort gas slips - ONLY show slips without trip tickets
     const processedGasSlips = useMemo(() => {
         let filtered = gasSlips.filter(slip =>
-            slip.model_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            slip.plate_no?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            slip.section?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            slip.fuel_type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            slip.approved_by?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            slip.status?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            slip.places_to_visit?.toLowerCase().includes(searchTerm.toLowerCase()) || // Add this
-            slip.authorized_passengers?.toLowerCase().includes(searchTerm.toLowerCase()) // Add this
+            !slip.has_trip_ticket && ( // ONLY show slips without trip tickets
+                slip.model_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                slip.plate_no?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                slip.section?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                slip.fuel_type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                slip.approved_by?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                slip.status?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                slip.places_to_visit?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                slip.authorized_passengers?.toLowerCase().includes(searchTerm.toLowerCase())
+            )
         );
 
         return filtered;
@@ -237,14 +222,14 @@ function GasSlipTable({
         );
     }
 
-    if (gasSlips.length === 0) {
+    if (processedGasSlips.length === 0) {
         return (
             <div className="gas-slip-table-empty">
                 <svg className="gas-slip-table-empty-icon" viewBox="0 0 24 24">
                     <path fill="currentColor" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
                 </svg>
                 <h3>No Gas Slips Found</h3>
-                <p>No gas slip records available yet.</p>
+                <p>No gas slip records available or all slips have been converted to trip tickets.</p>
             </div>
         );
     }
@@ -351,7 +336,7 @@ function GasSlipTable({
                 handleTripTicketSubmit={handleTripTicketSubmit}
                 formErrors={formErrors}
                 loading={loading}
-                selectedSlip={selectedSlip} // Pass the selected slip
+                selectedSlip={selectedSlip}
             />
         </>
     );

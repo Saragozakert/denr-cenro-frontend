@@ -23,8 +23,8 @@ function GasSlip() {
         office: '',
         purchasedNo: '',
         purpose: '',
-        placesToVisit: '', // Add this
-        authorizedPassengers: '', // Add this
+        placesToVisit: '',
+        authorizedPassengers: '',
         fuelType: '',
         gasolineAmount: '',
         withdrawnBy: '',
@@ -71,11 +71,12 @@ function GasSlip() {
         fetchGasSlips();
     }, [navigate]);
 
+    // UPDATED: Fetch gas slips with trip ticket status
     const fetchGasSlips = async () => {
         try {
             setIsLoading(true);
             const token = localStorage.getItem("userToken");
-            const response = await axios.get("http://localhost:8000/api/user/fuel-requests", {
+            const response = await axios.get("http://localhost:8000/api/user/fuel-requests-with-trip-status", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     Accept: "application/json",
@@ -87,7 +88,28 @@ function GasSlip() {
             }
         } catch (error) {
             console.error("Error fetching gas slips:", error);
-            setGasSlips([]);
+            // Fallback to original endpoint if new one fails
+            try {
+                const token = localStorage.getItem("userToken");
+                const fallbackResponse = await axios.get("http://localhost:8000/api/user/fuel-requests", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: "application/json",
+                    },
+                });
+
+                if (fallbackResponse.data.success) {
+                    // Add has_trip_ticket field as false for all (fallback behavior)
+                    const gasSlipsWithDefault = fallbackResponse.data.fuelRequests.map(slip => ({
+                        ...slip,
+                        has_trip_ticket: false
+                    }));
+                    setGasSlips(gasSlipsWithDefault || []);
+                }
+            } catch (fallbackError) {
+                console.error("Error fetching gas slips from fallback endpoint:", fallbackError);
+                setGasSlips([]);
+            }
         } finally {
             setIsLoading(false);
         }
@@ -187,8 +209,8 @@ function GasSlip() {
                 office: gasSlipFormData.office,
                 purchased_no: gasSlipFormData.purchasedNo,
                 purpose: gasSlipFormData.purpose,
-                places_to_visit: gasSlipFormData.placesToVisit, // Add this
-                authorized_passengers: gasSlipFormData.authorizedPassengers, // Add this
+                places_to_visit: gasSlipFormData.placesToVisit,
+                authorized_passengers: gasSlipFormData.authorizedPassengers,
                 fuel_type: gasSlipFormData.fuelType,
                 gasoline_amount: gasSlipFormData.gasolineAmount,
                 withdrawn_by: user ? user.full_name : "Current User",
@@ -205,7 +227,7 @@ function GasSlip() {
                 setShowGasSlipForm(false);
                 alert('Fuel request submitted successfully!');
 
-                // Reset form data including new fields
+                // Reset form data
                 setGasSlipFormData({
                     vehicleType: '',
                     modelName: '',
@@ -216,8 +238,8 @@ function GasSlip() {
                     office: '',
                     purchasedNo: '',
                     purpose: '',
-                    placesToVisit: '', // Add this
-                    authorizedPassengers: '', // Add this
+                    placesToVisit: '',
+                    authorizedPassengers: '',
                     fuelType: '',
                     gasolineAmount: '',
                     withdrawnBy: '',
@@ -267,13 +289,16 @@ function GasSlip() {
         }
     };
 
+    // UPDATED: Filter out gas slips that have trip tickets
     const filteredGasSlips = gasSlips.filter(slip =>
-        slip.model_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        slip.plate_no?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        slip.requesting_party?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        slip.withdrawn_by?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        slip.office?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        slip.date?.toLowerCase().includes(searchTerm.toLowerCase())
+        !slip.has_trip_ticket && ( // EXCLUDE slips with trip tickets
+            slip.model_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            slip.plate_no?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            slip.requesting_party?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            slip.withdrawn_by?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            slip.office?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            slip.date?.toLowerCase().includes(searchTerm.toLowerCase())
+        )
     );
 
     return (
@@ -326,6 +351,7 @@ function GasSlip() {
                         searchTerm={searchTerm}
                         handleEditSlip={handleEditSlip}
                         handleDeclineSlip={handleDeclineSlip}
+                        onTripTicketSubmitted={fetchGasSlips} // Pass refresh function
                     />
                 </div>
 
