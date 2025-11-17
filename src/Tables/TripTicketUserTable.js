@@ -12,13 +12,19 @@ function TripTicketUserTable({
 
     // Format date utility function
     const formatDate = (dateString) => {
-        if (!dateString) return 'N/A';
-        const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
-        });
+        if (!dateString || dateString === 'Pending') return 'Pending';
+        try {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return dateString;
+            
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${month}-${day}-${year}`;
+        } catch (error) {
+            console.error('Error formatting date:', error);
+            return dateString;
+        }
     };
 
     // Status badge classes
@@ -26,6 +32,8 @@ function TripTicketUserTable({
         switch (status?.toLowerCase()) {
             case 'pending':
                 return 'trip-ticket-status-badge pending';
+            case 'submitted':
+                return 'trip-ticket-status-badge submitted';
             case 'approved':
                 return 'trip-ticket-status-badge approved';
             case 'declined':
@@ -118,8 +126,8 @@ function TripTicketUserTable({
                                         {getStatusText(ticket.status)}
                                     </span>
                                 </td>
-                                 <td className="trip-ticket-table-date-submitted">
-                                    {formatDate(ticket.date_submitted || ticket.created_at)}
+                                <td className="trip-ticket-table-date-submitted">
+                                    {formatDate(ticket.date_submitted)}
                                 </td>
                                 <td className="trip-ticket-table-actions">
                                     <div className="trip-ticket-table-action-group">

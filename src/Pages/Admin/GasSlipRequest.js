@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom";
 import AdminSidebar from '../../components/Sidebars/AdminSidebar';
 import AdminHeader from '../../components/Headers/AdminHeader';
 import GasSlipRequestTable from '../../Tables/GasSlipRequestTable'; 
-import '../../assets/Style/AdminDesign/AdminDashboard.css';
-import '../../assets/Style/AdminDesign/FuelTracking.css';
+import '../../assets/Style/AdminDesign/GasSlipRequest.css';
 
 function GasSlipRequest() {
   const [admin, setAdmin] = useState(null);

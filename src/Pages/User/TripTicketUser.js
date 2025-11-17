@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import UserSidebar from "../../components/Sidebars/UserSidebar";
@@ -78,7 +78,33 @@ function TripTicketUser() {
 
     const handleEditTicket = (ticket) => {
         console.log('Edit ticket:', ticket);
-        alert(`Edit functionality for trip ticket (ID: ${ticket.id}) will be implemented here`);
+        // Navigate to trip ticket form or show modal
+        if (ticket.status === 'Pending') {
+            navigate(`/trip-ticket-form/${ticket.fuel_request_id}`);
+        } else {
+            alert(`Trip ticket already submitted on ${ticket.date_submitted}`);
+        }
+    };
+
+    const handleRefresh = async () => {
+        try {
+            setIsLoading(true);
+            const token = localStorage.getItem("userToken");
+            const response = await axios.get("http://localhost:8000/api/user/user-trip-tickets", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: "application/json",
+                },
+            });
+
+            if (response.data.success) {
+                setTripTickets(response.data.tripTickets || []);
+            }
+        } catch (error) {
+            console.error("Error refreshing trip tickets:", error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const filteredTripTickets = tripTickets.filter(ticket =>
@@ -124,6 +150,7 @@ function TripTicketUser() {
                                 )}
                             </div>
                         </div>
+                
                     </div>
 
                     <TripTicketUserTable
@@ -131,6 +158,7 @@ function TripTicketUser() {
                         isLoading={isLoading}
                         searchTerm={searchTerm}
                         handleEditTicket={handleEditTicket}
+                        onRefresh={handleRefresh}
                     />
                 </div>
             </main>

@@ -248,18 +248,18 @@ function GasSlipPrint({ slip }) {
                   .republic {
                       font-size: 13px;
                       font-weight: bold;
-                      margin-bottom: 2px;
+                      margin-bottom: 1px;
                   }
                   .denr {
                       font-size: 13px;
                       font-weight: bold;
-                      color: #288f2bff;
+                      color: #0d6a10ff;
                       margin-bottom: 1px;
                   }
                   .cenro {
                       font-size: 12px;
                       font-weight: bold;
-                      color: #2196F3;
+                      color: #120a82ff;
                       text-transform: uppercase;
                       margin-bottom: 1px;
                   }
@@ -270,7 +270,9 @@ function GasSlipPrint({ slip }) {
                   .title {
                       font-size: 10px;        
                       text-transform: uppercase;
-                      margin-top: -3px;
+                      margin-top: -5px;
+                      font-weight: bold;
+
                   }
                   .logo-container {
                       display: flex;
@@ -293,8 +295,8 @@ function GasSlipPrint({ slip }) {
                       width: 110px;
                       object-fit: contain;
                       position: absolute;
-                      top: -85px;
-                      right: 55px;
+                      top: -80px;
+                      right: 50px;
                   }
                   .details {
                       width: 100%;

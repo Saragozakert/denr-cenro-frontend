@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AdminSidebar from "../../components/Sidebars/AdminSidebar";
@@ -7,7 +7,6 @@ import TypeUnitTable from "../../Tables/TypeUnitTable";
 import AddUnit from "../../Forms/AddUnit";
 import EditUnit from "../../Forms/EditUnit";
 import "./../../assets/Style/AdminDesign/TypeUnit.css";
-import "../../assets/Style/AdminDesign/AdminDashboard.css";
 
 function TypeUnit() {
   const [admin, setAdmin] = useState(null);

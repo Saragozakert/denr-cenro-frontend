@@ -57,6 +57,43 @@ function TripTicketAdminTable({
     return sortConfig.direction === 'asc' ? <span>↑</span> : <span>↓</span>;
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString || dateString === 'Pending') return 'Pending';
+    
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return dateString;
+      
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${month}-${day}-${year}`;
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return dateString;
+    }
+  };
+
+  const getStatusBadgeClass = (status) => {
+    switch (status?.toLowerCase()) {
+      case 'submitted':
+        return 'trip-ticket-admin-status-badge submitted';
+      case 'approved':
+        return 'trip-ticket-admin-status-badge approved';
+      case 'rejected':
+        return 'trip-ticket-admin-status-badge rejected';
+      case 'completed':
+        return 'trip-ticket-admin-status-badge completed';
+      default:
+        return 'trip-ticket-admin-status-badge pending';
+    }
+  };
+
+  const getStatusText = (status) => {
+    if (!status) return 'Pending';
+    return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+  };
+
   if (isLoading) {
     return (
       <div className="trip-ticket-admin-table-loading">
@@ -84,8 +121,8 @@ function TripTicketAdminTable({
         <table className="trip-ticket-admin-table">
           <thead>
             <tr>
-              <th onClick={() => handleSort('id')} className="trip-ticket-admin-table-sortable">
-                No. <SortIcon columnKey="id" />
+              <th onClick={() => handleSort('no')} className="trip-ticket-admin-table-sortable">
+                No. <SortIcon columnKey="no" />
               </th>
               <th onClick={() => handleSort('date_requested')} className="trip-ticket-admin-table-sortable">
                 Date Requested <SortIcon columnKey="date_requested" />
@@ -111,21 +148,25 @@ function TripTicketAdminTable({
                 <td className="trip-ticket-admin-table-number">
                   {(currentPage - 1) * itemsPerPage + index + 1}
                 </td>
-                <td className="trip-ticket-admin-table-date-requested">{ticket.date_requested}</td>
+                <td className="trip-ticket-admin-table-date-requested">
+                  {formatDate(ticket.date_requested)}
+                </td>
                 <td className="trip-ticket-admin-table-withdrawn">{ticket.withdrawn_by}</td>
                 <td className="trip-ticket-admin-table-section">{ticket.section}</td>
                 <td className="trip-ticket-admin-table-status">
-                  <span className={`trip-ticket-admin-status-badge ${ticket.status.toLowerCase()}`}>
-                    {ticket.status}
+                  <span className={getStatusBadgeClass(ticket.status)}>
+                    {getStatusText(ticket.status)}
                   </span>
                 </td>
-                <td className="trip-ticket-admin-table-date-submitted">{ticket.date_submitted}</td>
+                <td className="trip-ticket-admin-table-date-submitted">
+                  {formatDate(ticket.date_submitted)}
+                </td>
                 <td className="trip-ticket-admin-table-actions">
                   <div className="trip-ticket-admin-table-action-group">
                     <button
                       className="trip-ticket-admin-table-action-btn trip-ticket-admin-table-edit-btn"
                       onClick={() => handleEditTripTicket(ticket)}
-                      aria-label="Edit trip ticket"
+                      aria-label="View trip ticket details"
                     >
                       <svg className="trip-ticket-admin-table-icon-edit" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />

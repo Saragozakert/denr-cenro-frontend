@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AdminSidebar from "../../components/Sidebars/AdminSidebar";
@@ -12,34 +12,8 @@ function TripTicketAdmin() {
   const [activeItem, setActiveItem] = useState("admin");
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  
-  // Mock data for design purposes only
-  const [tripTickets] = useState([
-    {
-      id: 1,
-      date_requested: "2024-01-15",
-      withdrawn_by: "John Doe",
-      section: "IT Department",
-      status: "Pending",
-      date_submitted: "2024-01-14"
-    },
-    {
-      id: 2,
-      date_requested: "2024-01-16",
-      withdrawn_by: "Jane Smith",
-      section: "HR Department",
-      status: "Approved",
-      date_submitted: "2024-01-15"
-    },
-    {
-      id: 3,
-      date_requested: "2024-01-17",
-      withdrawn_by: "Mike Johnson",
-      section: "Finance",
-      status: "Rejected",
-      date_submitted: "2024-01-16"
-    }
-  ]);
+  const [tripTickets, setTripTickets] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -65,7 +39,30 @@ function TripTicketAdmin() {
     };
 
     checkAuth();
+    fetchTripTickets();
   }, [navigate]);
+
+  const fetchTripTickets = async () => {
+    try {
+      setIsLoading(true);
+      const token = localStorage.getItem("adminToken");
+      const response = await axios.get("http://localhost:8000/api/admin/trip-tickets-admin", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+
+      if (response.data.success) {
+        setTripTickets(response.data.tripTickets || []);
+      }
+    } catch (error) {
+      console.error("Error fetching trip tickets:", error);
+      setTripTickets([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleMenuItemClick = (itemName, itemPath) => {
     setActiveItem(itemName);
@@ -74,15 +71,17 @@ function TripTicketAdmin() {
     }
   };
 
-  // Mock functions for design purposes
   const handleEditTripTicket = (ticket) => {
-    console.log("Edit ticket:", ticket);
+    console.log("View trip ticket details:", ticket);
+    // You can implement a modal or navigate to details page here
   };
 
   const filteredTickets = tripTickets.filter(ticket =>
-    ticket.withdrawn_by.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    ticket.section.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    ticket.status.toLowerCase().includes(searchTerm.toLowerCase())
+    ticket.withdrawn_by?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    ticket.section?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    ticket.status?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    ticket.date_requested?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    ticket.date_submitted?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -107,7 +106,7 @@ function TripTicketAdmin() {
                 </svg>
                 <input
                   type="text"
-                  placeholder="Search trip tickets by withdrawn by, section, or status..."
+                  placeholder="Search trip tickets by withdrawn by, section, status, or date..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="trip-ticket-admin-search-input"
@@ -124,20 +123,14 @@ function TripTicketAdmin() {
                 )}
               </div>
             </div>
-            <button
-              className="trip-ticket-admin-add-btn"
-              onClick={() => console.log("Add new trip ticket")}
-            >
-              <span className="trip-ticket-admin-btn-icon">+</span>
-              Add Trip Ticket
-            </button>
           </div>
 
           <TripTicketAdminTable
             tripTickets={filteredTickets}
-            isLoading={false}
+            isLoading={isLoading}
             searchTerm={searchTerm}
             handleEditTripTicket={handleEditTripTicket}
+            onRefresh={fetchTripTickets}
           />
         </div>
       </main>

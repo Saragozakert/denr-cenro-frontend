@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AdminSidebar from "../../components/Sidebars/AdminSidebar";
 import AdminHeader from "../../components/Headers/AdminHeader";
-import "../../assets/Style/AdminDesign/AdminDashboard.css";
 import "../../assets/Style/AdminDesign/ConservativeSection.css";
 import ApproveSectionTable from "../../Tables/ApproveSectionTable";
 import AddEmployee from "../../Forms/AddEmployee";
