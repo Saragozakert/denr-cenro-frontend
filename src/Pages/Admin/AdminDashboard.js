@@ -8,14 +8,6 @@ import AdminHeader from "../../components/Headers/AdminHeader";
 function AdminDashboard() {
   const [admin, setAdmin] = useState(null);
   const [activeItem, setActiveItem] = useState("dashboard");
-  const stats = useState({
-    gasSlipRequests: 24,
-    tripTickets: 18,
-    requestingParties: 12,
-    users: 156,
-    pendingApprovals: 8,
-    unitTypes: 6
-  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -53,44 +45,57 @@ function AdminDashboard() {
 
   const cards = [
     {
-      title: "Trip Ticket",
-      count: stats.tripTickets,
+      title: "Trip Tickets",
+      count: 24,
       icon: "🚗",
-      color: "#065f46",
       path: "/admin/dashboard/trip-ticket",
-      badge: stats.tripTickets > 15 ? "Active" : null,
-      priority: 1
+      priority: 1,
+      thisMonth: 8,
+      trend: "positive",
+      colorType: "success" 
     },
     {
-      title: "Gas Slip Request",
-      count: stats.gasSlipRequests,
+      title: "Gas Slip Requests",
+      count: 18,
       icon: "⛽",
-      color: "#047857",
       path: "/admin/gas-slips",
-      badge: stats.gasSlipRequests > 20 ? "High" : null,
-      priority: 2
+      priority: 2,
+      thisMonth: 12,
+      trend: "positive", 
+      colorType: "info" 
     },
     {
-      title: "Approve Section",
-      count: stats.pendingApprovals,
+      title: "Pending Approvals",
+      count: 8,
       icon: "✅",
-      color: "#10b981",
       path: "/admin/approvals",
-      badge: stats.pendingApprovals > 0 ? "Pending" : null,
-      priority: 3
+      priority: 3,
+      thisMonth: 8,
+      trend: "warning",
+      colorType: "warning" 
     },
     {
-      title: "Requesting Party",
-      count: stats.requestingParties,
-      icon: "👥",
-      color: "#059669",
-      path: "/admin/requesting-parties",
-      priority: 4
-    },
-    
-
-    
+      title: "Total Users",
+      count: 156,
+      icon: "👤",
+      path: "/admin/users",
+      priority: 4,
+      thisMonth: 23,
+      trend: "positive",
+      colorType: "secondary" 
+    }
   ];
+
+  const getCardType = (card) => {
+    return card.colorType;
+  };
+
+  const getTrendText = (trend, count, thisMonth) => {
+    const difference = count - thisMonth;
+    if (trend === "positive") return `+${difference} from last month`;
+    if (trend === "negative") return `-${Math.abs(difference)} from last month`;
+    return `No change from last month`;
+  };
 
   return (
     <AdminSidebar 
@@ -106,40 +111,52 @@ function AdminDashboard() {
 
       <main className="dashboard-content">
         <div className="dashboard-grid">
-          {cards.map((card, index) => (
-            <div 
-              key={index} 
-              className="dashboard-card"
-              onClick={() => handleMenuItemClick(card.title.toLowerCase(), card.path)}
-            >
-              {card.badge && (
-                <div 
-                  className="card-badge"
-                  style={{ backgroundColor: card.color }}
-                >
-                  {card.badge}
+          {cards.map((card, index) => {
+            const cardType = getCardType(card);
+            
+            return (
+              <div 
+                key={index} 
+                className={`dashboard-card ${cardType}`}
+                onClick={() => handleMenuItemClick(card.title.toLowerCase(), card.path)}
+              >
+                <div className="card-header">
+                  <h3 className="card-title">{card.title}</h3>
+                  <div className="card-icon">
+                    {card.icon}
+                  </div>
                 </div>
-              )}
-              <div className="card-header">
-                <div 
-                  className="card-icon" 
-                  style={{ 
-                    backgroundColor: `${card.color}15`, 
-                    color: card.color,
-                    borderColor: `${card.color}30`
-                  }}
-                >
-                  {card.icon}
+
+                <div className="card-content">
+                  <div className="card-main-value">{card.count}</div>
+                  <div className="card-main-label">Total Count</div>
+                  
+                  <div className="status-indicator">
+                    <div className={`status-dot status-${cardType}`}></div>
+                    <span className={`status-text status-${cardType}`}>
+                      {getTrendText(card.trend, card.count, card.thisMonth)}
+                    </span>
+                  </div>
                 </div>
-                <div className="card-count">{card.count}</div>
+
+                <div className="card-comparison">
+                  <div className="comparison-item">
+                    <span className="comparison-label">This Month</span>
+                    <span className="comparison-value">{card.thisMonth}</span>
+                  </div>
+                  
+                  <div className="comparison-item">
+                    <span className="comparison-label">Status</span>
+                    <div className={`comparison-badge badge-${cardType}`}>
+                      {card.trend === "positive" ? "On Track" : 
+                       card.trend === "warning" ? "Attention" : 
+                       card.trend === "negative" ? "Needs Review" : "Stable"}
+                    </div>
+                  </div>
+                </div>
               </div>
-              <h3 className="card-title">{card.title}</h3>
-              <div className="card-footer">
-                <span className="view-text">View Details</span>
-                <span className="arrow">→</span>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </main>
     </AdminSidebar>
