@@ -23,13 +23,13 @@ const UserSidebar = ({ children, activeItem, onMenuItemClick }) => {
     {
       name: "gasSlip",
       icon: <TbGasStation size={20} />,
-      label: "Gas Slip",
+      label: "Trip Fuel Request",
       path: "/user/dashboard/gas-slip"
     },
     {
       name: "tripTicket",
       icon: <TbCar size={20} />,
-      label: "Trip Ticket",
+      label: "Trip Records",
       path: "/user/dashboard/trip-ticket"
     }
   ];

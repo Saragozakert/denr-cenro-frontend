@@ -1,13 +1,12 @@
-/* Gas Slip Container */
 .gas-slip-container {
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   padding: 24px;
-  margin: 20px 0;
+  margin-top: 50px;
 }
 
-/* Gas Slip Management Header */
+
 .gas-slip-management-header {
   display: flex;
   justify-content: space-between;
@@ -16,7 +15,7 @@
   gap: 20px;
 }
 
-/* Search Container */
+
 .gas-slip-search-container {
   flex: 1;
   margin-right: 20px;
@@ -85,7 +84,7 @@
   height: 18px;
 }
 
-/* Add Gas Slip Button */
+
 .gas-slip-add-btn {
   background: #4C6EF5;
   color: white;
@@ -113,7 +112,6 @@
   font-weight: 500;
 }
 
-/* Gas Slip Content */
 .gas-slip-content {
   min-height: 300px;
   display: flex;
@@ -123,7 +121,7 @@
   font-size: 1.1rem;
 }
 
-/* Animation for search focus */
+
 @keyframes gas-slip-pulse {
   0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.15); }
   70% { box-shadow: 0 0 0 6px rgba(139, 92, 246, 0); }
@@ -134,7 +132,7 @@
   animation: gas-slip-pulse 1.5s infinite;
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 968px) {
   .gas-slip-management-header {
     flex-direction: column;

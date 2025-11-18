@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AdminSidebar from "../../components/Sidebars/AdminSidebar";
-import AdminHeader from "../../components/Headers/AdminHeader";
-import "../../assets/Style/AdminDesign/ConservativeSection.css";
+import "../../assets/Style/AdminDesign/ApproveSection.css";
 import ApproveSectionTable from "../../Tables/ApproveSectionTable";
 import AddEmployee from "../../Forms/AddEmployee";
 
@@ -142,12 +141,6 @@ function ApproveSection() {
       activeItem={activeItem}   
       onMenuItemClick={handleMenuItemClick}
     >
-      <AdminHeader 
-        admin={admin} 
-        title="Conservative Section"
-        subtitle="Manage conservation-related activities and resources"
-      />
-      
       <main className="dashboard-content">
         <div className="conservative-container">
           <div className="conservative-management-header">

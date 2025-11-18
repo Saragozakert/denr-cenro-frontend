@@ -3,6 +3,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../../assets/Style/AdminDesign/AdminDashboard.css";
 import AdminSidebar from "../../components/Sidebars/AdminSidebar";
+import AdminCards from "../../components/cards/AdminCards";
+import AdminGraph from "../../components/Graph/AdminGraph";
 import AdminHeader from "../../components/Headers/AdminHeader";
 
 function AdminDashboard() {
@@ -43,6 +45,28 @@ function AdminDashboard() {
     }
   };
 
+  const handleCardClick = (itemName, itemPath) => {
+    handleMenuItemClick(itemName, itemPath);
+  };
+
+  const handleSignOut = async () => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      await axios.post("http://localhost:8000/api/admin/logout", {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+      localStorage.removeItem("adminToken");
+      navigate("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+      localStorage.removeItem("adminToken");
+      navigate("/");
+    }
+  };
+
   const cards = [
     {
       title: "Trip Tickets",
@@ -52,7 +76,8 @@ function AdminDashboard() {
       priority: 1,
       thisMonth: 8,
       trend: "positive",
-      colorType: "success" 
+      colorType: "success",
+      trendValue: "+12%"
     },
     {
       title: "Gas Slip Requests",
@@ -62,7 +87,8 @@ function AdminDashboard() {
       priority: 2,
       thisMonth: 12,
       trend: "positive", 
-      colorType: "info" 
+      colorType: "info",
+      trendValue: "+8%"
     },
     {
       title: "Pending Approvals",
@@ -72,7 +98,8 @@ function AdminDashboard() {
       priority: 3,
       thisMonth: 8,
       trend: "warning",
-      colorType: "warning" 
+      colorType: "warning",
+      trendValue: "+3%"
     },
     {
       title: "Total Users",
@@ -82,20 +109,10 @@ function AdminDashboard() {
       priority: 4,
       thisMonth: 23,
       trend: "positive",
-      colorType: "secondary" 
+      colorType: "secondary",
+      trendValue: "+15%"
     }
   ];
-
-  const getCardType = (card) => {
-    return card.colorType;
-  };
-
-  const getTrendText = (trend, count, thisMonth) => {
-    const difference = count - thisMonth;
-    if (trend === "positive") return `+${difference} from last month`;
-    if (trend === "negative") return `-${Math.abs(difference)} from last month`;
-    return `No change from last month`;
-  };
 
   return (
     <AdminSidebar 
@@ -103,61 +120,17 @@ function AdminDashboard() {
       activeItem={activeItem} 
       onMenuItemClick={handleMenuItemClick}
     >
-      <AdminHeader 
-        admin={admin} 
-        title="Admin Dashboard"
-        subtitle="Overview of system statistics and management"
-      />
-
       <main className="dashboard-content">
-        <div className="dashboard-grid">
-          {cards.map((card, index) => {
-            const cardType = getCardType(card);
-            
-            return (
-              <div 
-                key={index} 
-                className={`dashboard-card ${cardType}`}
-                onClick={() => handleMenuItemClick(card.title.toLowerCase(), card.path)}
-              >
-                <div className="card-header">
-                  <h3 className="card-title">{card.title}</h3>
-                  <div className="card-icon">
-                    {card.icon}
-                  </div>
-                </div>
+        {/* Top Right Header Section */}
+        <AdminHeader onSignOut={handleSignOut} />
 
-                <div className="card-content">
-                  <div className="card-main-value">{card.count}</div>
-                  <div className="card-main-label">Total Count</div>
-                  
-                  <div className="status-indicator">
-                    <div className={`status-dot status-${cardType}`}></div>
-                    <span className={`status-text status-${cardType}`}>
-                      {getTrendText(card.trend, card.count, card.thisMonth)}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="card-comparison">
-                  <div className="comparison-item">
-                    <span className="comparison-label">This Month</span>
-                    <span className="comparison-value">{card.thisMonth}</span>
-                  </div>
-                  
-                  <div className="comparison-item">
-                    <span className="comparison-label">Status</span>
-                    <div className={`comparison-badge badge-${cardType}`}>
-                      {card.trend === "positive" ? "On Track" : 
-                       card.trend === "warning" ? "Attention" : 
-                       card.trend === "negative" ? "Needs Review" : "Stable"}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <AdminCards 
+          cards={cards} 
+          onCardClick={handleCardClick}
+        />
+        
+        {/* Enhanced Charts Section */}
+        <AdminGraph />
       </main>
     </AdminSidebar>
   );

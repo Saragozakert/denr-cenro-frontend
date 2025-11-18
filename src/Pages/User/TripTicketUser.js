@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import UserSidebar from "../../components/Sidebars/UserSidebar";
-import UserHeader from "../../components/Headers/UserHeader";
 import TripTicketUserTable from "../../Tables/TripTicketUserTable";
 import "./../../assets/Style/UserDesign/UserDashboard.css";
 import "./../../assets/Style/UserDesign/TripTicketUser.css";
@@ -121,8 +120,6 @@ function TripTicketUser() {
             activeItem={activeItem}
             onMenuItemClick={handleMenuItemClick}
         >
-            <UserHeader user={user} />
-
             <main className="dashboard-content">
                 <div className="trip-ticket-container">
                     <div className="trip-ticket-management-header">

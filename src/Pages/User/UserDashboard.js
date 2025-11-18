@@ -3,11 +3,9 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../../assets/Style/AdminDesign/AdminDashboard.css"; 
 import UserSidebar from "../../components/Sidebars/UserSidebar";
-import UserHeader from "../../components/Headers/UserHeader";
 
 
 function UserDashboard() {
-  const [user, setUser] = useState(null);
   const [statsLoading, setStatsLoading] = useState(true);
   const [activeItem, setActiveItem] = useState("dashboard");
   const navigate = useNavigate();
@@ -21,14 +19,14 @@ function UserDashboard() {
           return;
         }
 
-        const response = await axios.get("http://localhost:8000/api/user/check-auth", {
+        // Remove the unused response variable
+        await axios.get("http://localhost:8000/api/user/check-auth", {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
           },
         });
 
-        setUser(response.data.user);
       } catch (error) {
         localStorage.removeItem("userToken");
         navigate("/");
@@ -61,8 +59,6 @@ function UserDashboard() {
       activeItem={activeItem}
       onMenuItemClick={handleMenuItemClick}
     >
-
-      <UserHeader user={user} />
       
       <main className="dashboard-content">
         <div className="dashboard-stats-container">
@@ -117,8 +113,7 @@ function UserDashboard() {
         </div>
 
         <div className="dashboard-content-main">
-          <p>Welcome to your user dashboard. Here you can manage your gas slips and trip tickets.</p>
-          {/* Your user-specific content will go here */}
+          
         </div>
       </main>
     </UserSidebar>

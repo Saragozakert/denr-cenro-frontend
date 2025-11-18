@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AdminSidebar from '../../components/Sidebars/AdminSidebar';
-import AdminHeader from '../../components/Headers/AdminHeader';
 import GasSlipRequestTable from '../../Tables/GasSlipRequestTable'; 
+import GasSlipRequestNotifications from '../../components/Notifications/GasSlipRequestNotifications';
 import '../../assets/Style/AdminDesign/GasSlipRequest.css';
 
 function GasSlipRequest() {
@@ -15,6 +15,7 @@ function GasSlipRequest() {
   const [employees, setEmployees] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [statusFilter, setStatusFilter] = useState('pending'); 
+  const [notifications, setNotifications] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -82,9 +83,7 @@ function GasSlipRequest() {
     }
   };
 
-  // FIXED: Enhanced fuel records with correct position data
   const enhancedFuelRecords = fuelRecords.map(record => {
-    // For requesting party position
     let requestingPosition = record.position;
     if (!requestingPosition) {
       const requestingParty = requestingParties.find(
@@ -93,7 +92,6 @@ function GasSlipRequest() {
       requestingPosition = requestingParty ? requestingParty.position : 'N/A';
     }
 
-    // FIXED: For approve section position - find by approved_by name instead of withdrawn_by
     let approveSectionPosition = record.approve_section_position;
     if (!approveSectionPosition || approveSectionPosition === 'N/A') {
       const employee = employees.find(
@@ -124,12 +122,12 @@ function GasSlipRequest() {
       );
 
       if (response.data.success) {
-        alert("Gasoline amount updated successfully!");
-        fetchFuelRecords(); 
+        addNotification("Gasoline amount updated successfully!", "success");
+        fetchFuelRecords();
       }
     } catch (error) {
-      alert("Error updating gasoline amount: " + (error.response?.data?.message || error.message));
-      throw error; 
+      addNotification("Error updating gasoline amount: " + (error.response?.data?.message || error.message), "error");
+      throw error;
     }
   };
 
@@ -177,11 +175,11 @@ function GasSlipRequest() {
       );
 
       if (response.data.success) {
-        alert("Fuel request approved successfully!");
+        addNotification("Successfully Approved", "success");
         fetchFuelRecords();
       }
     } catch (error) {
-      alert("Error approving fuel request: " + (error.response?.data?.message || error.message));
+      addNotification("Error approving fuel request: " + (error.response?.data?.message || error.message), "error");
     }
   };
 
@@ -200,11 +198,11 @@ function GasSlipRequest() {
       );
 
       if (response.data.success) {
-        alert("Fuel request rejected successfully!");
+        addNotification("Successfully Rejected", "success");
         fetchFuelRecords();
       }
     } catch (error) {
-      alert("Error rejecting fuel request: " + (error.response?.data?.message || error.message));
+      addNotification("Error rejecting fuel request: " + (error.response?.data?.message || error.message), "error");
     }
   };
 
@@ -219,17 +217,37 @@ function GasSlipRequest() {
     record.approve_section_position?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Notification functions
+  const addNotification = (message, type = "info") => {
+    const id = Date.now() + Math.random();
+    const newNotification = {
+      id,
+      message,
+      type,
+      timestamp: new Date(),
+    };
+
+    setNotifications(prev => [...prev, newNotification]);
+
+    // Auto remove after 4 seconds
+    setTimeout(() => {
+      removeNotification(id);
+    }, 4000);
+  };
+
+  const removeNotification = (id) => {
+    setNotifications(prev => prev.filter(notification => notification.id !== id));
+  };
+
   return (
     <AdminSidebar
       admin={admin}
       activeItem={activeItem}
       onMenuItemClick={handleMenuItemClick}
     >
-
-      <AdminHeader
-        admin={admin}
-        title="Fuel Tracking"
-        subtitle="Monitor and manage fuel consumption across all units"
+      <GasSlipRequestNotifications 
+        notifications={notifications}
+        onRemoveNotification={removeNotification}
       />
 
       <main className="dashboard-content">

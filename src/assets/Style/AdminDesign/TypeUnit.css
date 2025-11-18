@@ -1,13 +1,12 @@
-/* Type Unit Container */
 .type-unit-container {
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   padding: 24px;
-  margin: 20px 0;
+  margin-top: 50px;
 }
 
-/* Type Unit Management Header */
+
 .type-unit-management-header {
   display: flex;
   justify-content: space-between;
@@ -16,7 +15,7 @@
   gap: 20px;
 }
 
-/* Search Container */
+
 .type-unit-search-container {
   flex: 1;
   margin-right: 20px;
@@ -85,7 +84,7 @@
   height: 18px;
 }
 
-/* Add Unit Button */
+
 .type-unit-add-btn {
   background: #4C6EF5;
   color: white;
@@ -113,7 +112,7 @@
   font-weight: 500;
 }
 
-/* Animation for search focus */
+
 @keyframes type-unit-pulse {
   0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.15); }
   70% { box-shadow: 0 0 0 6px rgba(139, 92, 246, 0); }
@@ -124,7 +123,7 @@
   animation: type-unit-pulse 1.5s infinite;
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 968px) {
   .type-unit-management-header {
     flex-direction: column;

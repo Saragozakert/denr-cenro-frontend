@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AdminSidebar from "../../components/Sidebars/AdminSidebar";
-import AdminHeader from "../../components/Headers/AdminHeader";
 import TypeUnitTable from "../../Tables/TypeUnitTable";
+import "./../../assets/Style/AdminDesign/TypeUnit.css";
+
 import AddUnit from "../../Forms/AddUnit";
 import EditUnit from "../../Forms/EditUnit";
-import "./../../assets/Style/AdminDesign/TypeUnit.css";
+
 
 function TypeUnit() {
   const [admin, setAdmin] = useState(null);
@@ -250,12 +251,6 @@ function TypeUnit() {
       activeItem={activeItem}
       onMenuItemClick={handleMenuItemClick}
     >
-      <AdminHeader
-        admin={admin}
-        title="Type of Unit"
-        subtitle="Manage different types of units in the system"
-      />
-
       <main className="dashboard-content">
         <div className="type-unit-container">
           <div className="type-unit-management-header">

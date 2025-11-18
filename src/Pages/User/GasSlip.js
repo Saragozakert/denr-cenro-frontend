@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import UserSidebar from "../../components/Sidebars/UserSidebar";
-import UserHeader from "../../components/Headers/UserHeader";
 import GasSlipForm from "../../Forms/GasSlipForm";
 import GasSlipTable from "../../Tables/GasSlipTable";
 import '../../assets/Style/UserDesign/GasSlip.css';
@@ -307,8 +306,6 @@ function GasSlip() {
             activeItem={activeItem}
             onMenuItemClick={handleMenuItemClick}
         >
-            <UserHeader user={user} />
-
             <main className="dashboard-content">
                 <div className="gas-slip-container">
                     <div className="gas-slip-management-header">

@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AdminSidebar from "../../components/Sidebars/AdminSidebar";
-import AdminHeader from "../../components/Headers/AdminHeader";
 import UserManagementTable from "../../Tables/UserManagementTable";
-import RegisterUser from "../../Forms/RegisterUser";
 import "../../assets/Style/AdminDesign/UserManagement.css";
+import RegisterUser from "../../Forms/RegisterUser";
+
 
 function UserManagement() {
   const [admin, setAdmin] = useState(null);
@@ -192,12 +192,6 @@ function UserManagement() {
       activeItem={activeItem} 
       onMenuItemClick={handleMenuItemClick}
     >
-      <AdminHeader 
-        admin={admin} 
-        title="User Management"
-        subtitle="Manage user accounts, permissions, and status"
-      />
-      
       <main className="dashboard-content">
         <div className="user-management-container">
           <div className="management-header">

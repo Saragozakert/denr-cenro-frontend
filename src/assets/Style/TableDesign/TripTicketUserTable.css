@@ -193,6 +193,12 @@
     border: 1px solid rgba(255, 193, 7, 0.3);
 }
 
+.trip-ticket-status-badge.submitted {
+    background: rgba(40, 167, 69, 0.15);
+    color: #28a745;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
 .trip-ticket-status-badge.approved {
     background: rgba(40, 167, 69, 0.15);
     color: #28a745;

@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AdminSidebar from "../../components/Sidebars/AdminSidebar";
-import AdminHeader from "../../components/Headers/AdminHeader";
 import TripTicketAdminTable from "../../Tables/TripTicketAdminTable";
-import "./../../assets/Style/AdminDesign/AdminDashboard.css";
 import "./../../assets/Style/AdminDesign/TripTicketAdmin.css";
 
 function TripTicketAdmin() {
@@ -90,12 +88,6 @@ function TripTicketAdmin() {
       activeItem={activeItem}
       onMenuItemClick={handleMenuItemClick}
     >
-      <AdminHeader
-        admin={admin}
-        title="Trip Ticket"
-        subtitle="Manage trip tickets in the system"
-      />
-
       <main className="dashboard-content">
         <div className="trip-ticket-admin-container">
           <div className="trip-ticket-admin-management-header">

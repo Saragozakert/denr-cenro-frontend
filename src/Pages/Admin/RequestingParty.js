@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AdminSidebar from "../../components/Sidebars/AdminSidebar";
-import AdminHeader from "../../components/Headers/AdminHeader";
 import RequestingPartyTable from "../../Tables/RequestingPartyTable";
 import AddRequestingParty from "../../Forms/AddRequestingParty";
 import "../../assets/Style/AdminDesign/RequestingParty.css";
@@ -189,12 +188,6 @@ function RequestingParty() {
       activeItem={activeItem}
       onMenuItemClick={handleMenuItemClick}
     >
-      <AdminHeader
-        admin={admin}
-        title="Requesting Party Management"
-        subtitle="Manage and monitor requesting parties"
-      />
-      
       <main className="dashboard-content">
         <div className="user-management-container">
           <div className="management-header">
