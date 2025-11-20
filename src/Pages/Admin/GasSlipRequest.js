@@ -1,243 +1,49 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AdminSidebar from '../../components/Sidebars/AdminSidebar';
 import GasSlipRequestTable from '../../Tables/GasSlipRequestTable'; 
 import GasSlipRequestNotifications from '../../components/Notifications/GasSlipRequestNotifications';
 import '../../assets/Style/AdminDesign/GasSlipRequest.css';
+import { useAdminAuth } from "../../hooks/AdminDashboardHooks";
+import { 
+  useGasSlipRequestData, 
+  useFuelRecordActions, 
+  useGasSlipRequestFilters, 
+  useNotifications 
+} from "../../hooks/GasSlipRequestHooks";
+import { NavigationUtils, DataEnhancementUtils } from "../../utils/GasSlipRequestUtils";
 
 function GasSlipRequest() {
-  const [admin, setAdmin] = useState(null);
   const [activeItem, setActiveItem] = useState("fuel");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [fuelRecords, setFuelRecords] = useState([]);
-  const [requestingParties, setRequestingParties] = useState([]);
-  const [employees, setEmployees] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [statusFilter, setStatusFilter] = useState('pending'); 
-  const [notifications, setNotifications] = useState([]);
   const navigate = useNavigate();
+  
+  // Custom hooks
+  const { admin } = useAdminAuth();
+  const { 
+    fuelRecords, 
+    requestingParties, 
+    employees, 
+    isLoading, 
+    fetchAllData, 
+    refetchFuelRecords 
+  } = useGasSlipRequestData();
+  
+  const { searchTerm, setSearchTerm, statusFilter, setStatusFilter } = useGasSlipRequestFilters();
+  const { notifications, addNotification, removeNotification } = useNotifications();
+  const { handleUpdateAmount, handleAcceptRecord, handleRejectRecord } = useFuelRecordActions(refetchFuelRecords, addNotification);
+
+  // Navigation
+  const handleMenuItemClick = NavigationUtils.handleMenuItemClick(setActiveItem, navigate);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const token = localStorage.getItem("adminToken");
-        if (!token) {
-          navigate("/");
-          return;
-        }
-
-        const response = await axios.get("http://localhost:8000/api/admin/check-auth", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        });
-
-        setAdmin(response.data.admin);
-      } catch (error) {
-        localStorage.removeItem("adminToken");
-        navigate("/");
-      }
-    };
-
-    checkAuth();
-    fetchFuelRecords();
-    fetchRequestingParties();
-    fetchEmployees();
-  }, [navigate]);
-
-  const fetchRequestingParties = async () => {
-    try {
-      const token = localStorage.getItem("adminToken");
-      const response = await axios.get("http://localhost:8000/api/admin/requesting-parties", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
-
-      if (response.data.success) {
-        setRequestingParties(response.data.requestingParties || []);
-      }
-    } catch (error) {
-      console.error("Error fetching requesting parties:", error);
+    if (admin) {
+      fetchAllData();
     }
-  };
+  }, [admin, fetchAllData]);
 
-  const fetchEmployees = async () => {
-    try {
-      const token = localStorage.getItem("adminToken");
-      const response = await axios.get("http://localhost:8000/api/admin/employees", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
-
-      if (response.data.success) {
-        setEmployees(response.data.employees || []);
-      }
-    } catch (error) {
-      console.error("Error fetching employees:", error);
-    }
-  };
-
-  const enhancedFuelRecords = fuelRecords.map(record => {
-    let requestingPosition = record.position;
-    if (!requestingPosition) {
-      const requestingParty = requestingParties.find(
-        party => party.full_name === record.requesting_party
-      );
-      requestingPosition = requestingParty ? requestingParty.position : 'N/A';
-    }
-
-    let approveSectionPosition = record.approve_section_position;
-    if (!approveSectionPosition || approveSectionPosition === 'N/A') {
-      const employee = employees.find(
-        emp => emp.name === record.approved_by
-      );
-      approveSectionPosition = employee ? employee.position : 'N/A';
-    }
-
-    return {
-      ...record,
-      position: requestingPosition,
-      approve_section_position: approveSectionPosition
-    };
-  });
-
-  const handleUpdateAmount = async (recordId, newAmount) => {
-    try {
-      const token = localStorage.getItem("adminToken");
-      const response = await axios.put(
-        `http://localhost:8000/api/admin/fuel-requests/${recordId}/amount`,
-        { gasoline_amount: newAmount },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        }
-      );
-
-      if (response.data.success) {
-        addNotification("Gasoline amount updated successfully!", "success");
-        fetchFuelRecords();
-      }
-    } catch (error) {
-      addNotification("Error updating gasoline amount: " + (error.response?.data?.message || error.message), "error");
-      throw error;
-    }
-  };
-
-  const fetchFuelRecords = async () => {
-    try {
-      setIsLoading(true);
-      const token = localStorage.getItem("adminToken");
-      const response = await axios.get("http://localhost:8000/api/admin/fuel-requests", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
-
-      if (response.data.success) {
-        setFuelRecords(response.data.fuelRequests || []);
-      }
-    } catch (error) {
-      console.error("Error fetching fuel records:", error);
-      setFuelRecords([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleMenuItemClick = (itemName, itemPath) => {
-    setActiveItem(itemName);
-    if (itemPath && itemPath !== "#") {
-      navigate(itemPath);
-    }
-  };
-
-  const handleAcceptRecord = async (recordId) => {
-    try {
-      const token = localStorage.getItem("adminToken");
-      const response = await axios.put(
-        `http://localhost:8000/api/admin/fuel-requests/${recordId}/status`,
-        { status: 'approved' },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        }
-      );
-
-      if (response.data.success) {
-        addNotification("Successfully Approved", "success");
-        fetchFuelRecords();
-      }
-    } catch (error) {
-      addNotification("Error approving fuel request: " + (error.response?.data?.message || error.message), "error");
-    }
-  };
-
-  const handleRejectRecord = async (recordId) => {
-    try {
-      const token = localStorage.getItem("adminToken");
-      const response = await axios.put(
-        `http://localhost:8000/api/admin/fuel-requests/${recordId}/status`,
-        { status: 'rejected' },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        }
-      );
-
-      if (response.data.success) {
-        addNotification("Successfully Rejected", "success");
-        fetchFuelRecords();
-      }
-    } catch (error) {
-      addNotification("Error rejecting fuel request: " + (error.response?.data?.message || error.message), "error");
-    }
-  };
-
-  const filteredFuelRecords = enhancedFuelRecords.filter(record =>
-    record.model_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    record.plate_no?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    record.requesting_party?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    record.withdrawn_by?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    record.office?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    record.date?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    record.position?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    record.approve_section_position?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  // Notification functions
-  const addNotification = (message, type = "info") => {
-    const id = Date.now() + Math.random();
-    const newNotification = {
-      id,
-      message,
-      type,
-      timestamp: new Date(),
-    };
-
-    setNotifications(prev => [...prev, newNotification]);
-
-    // Auto remove after 4 seconds
-    setTimeout(() => {
-      removeNotification(id);
-    }, 4000);
-  };
-
-  const removeNotification = (id) => {
-    setNotifications(prev => prev.filter(notification => notification.id !== id));
-  };
+  // Data processing
+  const enhancedFuelRecords = DataEnhancementUtils.enhanceFuelRecords(fuelRecords, requestingParties, employees);
+  const filteredFuelRecords = DataEnhancementUtils.filterFuelRecords(enhancedFuelRecords, searchTerm, statusFilter);
 
   return (
     <AdminSidebar

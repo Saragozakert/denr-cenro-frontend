@@ -109,7 +109,7 @@ function ApproveSection() {
           department: "",
           position: ""
         });
-        fetchEmployees(); // Refresh the employees list
+        fetchEmployees(); 
       }
     } catch (err) {
       if (err.response?.data?.errors) {
