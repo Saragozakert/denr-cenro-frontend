@@ -422,6 +422,7 @@ function GasSlipForm({
                                         className={`enhanced-form-input ${formErrors.gasolineAmount ? 'enhanced-error' : ''}`}
                                         value={formData.gasolineAmount}
                                         onChange={handleInputChange}
+                                        onWheel={(e) => e.target.blur()}
                                         required
                                     />
                                     {formErrors.gasolineAmount && <span className="enhanced-error-text">{formErrors.gasolineAmount[0]}</span>}
@@ -498,9 +499,9 @@ function GasSlipForm({
                             >
                                 Cancel
                             </button>
-                            <button 
-                                type="submit" 
-                                className="enhanced-submit-btn" 
+                            <button
+                                type="submit"
+                                className="enhanced-submit-btn"
                                 disabled={loading}
                             >
                                 {loading ? (

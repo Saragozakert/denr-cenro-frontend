@@ -137,6 +137,7 @@ function TripTicketForm({
                                             className={`enhanced-form-input ${formErrors.distanceTraveled ? 'enhanced-error' : ''}`}
                                             value={formData.distanceTraveled}
                                             onChange={handleInputChange}
+                                            onWheel={(e) => e.target.blur()}
                                             required
                                         />
                                         <select
@@ -155,7 +156,7 @@ function TripTicketForm({
                                 </div>
 
                                 <div className="enhanced-form-group">
-                                    <label htmlFor="gasolineIssuedPurchased"> {/* This should match */}
+                                    <label htmlFor="gasolineIssuedPurchased"> 
                                         Gasoline/Diesel issued/purchased and used <span className="required-field">*</span>
                                     </label>
                                     <input
@@ -165,6 +166,7 @@ function TripTicketForm({
                                         className={`enhanced-form-input ${formErrors.gasolineIssuedPurchased ? 'enhanced-error' : ''}`}
                                         value={formData.gasolineIssuedPurchased}
                                         onChange={handleInputChange}
+                                        onWheel={(e) => e.target.blur()}
                                         required
                                         step="0.01"
                                     />
@@ -182,6 +184,7 @@ function TripTicketForm({
                                         className={`enhanced-form-input ${formErrors.issuedFromStock ? 'enhanced-error' : ''}`}
                                         value={formData.issuedFromStock}
                                         onChange={handleInputChange}
+                                        onWheel={(e) => e.target.blur()}
                                         required
                                         step="0.01"
                                     />
@@ -199,6 +202,7 @@ function TripTicketForm({
                                         className={`enhanced-form-input ${formErrors.gearOilUsed ? 'enhanced-error' : ''}`}
                                         value={formData.gearOilUsed}
                                         onChange={handleInputChange}
+                                        onWheel={(e) => e.target.blur()}
                                         step="0.01"
                                     />
                                     {formErrors.gearOilUsed && <span className="enhanced-error-text">{formErrors.gearOilUsed[0]}</span>}
@@ -215,6 +219,7 @@ function TripTicketForm({
                                         className={`enhanced-form-input ${formErrors.lubricatingOilUsed ? 'enhanced-error' : ''}`}
                                         value={formData.lubricatingOilUsed}
                                         onChange={handleInputChange}
+                                        onWheel={(e) => e.target.blur()}
                                         step="0.01"
                                     />
                                     {formErrors.lubricatingOilUsed && <span className="enhanced-error-text">{formErrors.lubricatingOilUsed[0]}</span>}
@@ -231,6 +236,7 @@ function TripTicketForm({
                                         className={`enhanced-form-input ${formErrors.greaseIssued ? 'enhanced-error' : ''}`}
                                         value={formData.greaseIssued}
                                         onChange={handleInputChange}
+                                        onWheel={(e) => e.target.blur()}
                                         step="0.01"
                                     />
                                     {formErrors.greaseIssued && <span className="enhanced-error-text">{formErrors.greaseIssued[0]}</span>}
@@ -261,6 +267,7 @@ function TripTicketForm({
                                             className={`enhanced-form-input ${formErrors.odometerStart ? 'enhanced-error' : ''}`}
                                             value={formData.odometerStart}
                                             onChange={handleInputChange}
+                                            onWheel={(e) => e.target.blur()}
                                             required
                                             step="0.01"
                                         />
@@ -291,6 +298,7 @@ function TripTicketForm({
                                             className={`enhanced-form-input ${formErrors.odometerEnd ? 'enhanced-error' : ''}`}
                                             value={formData.odometerEnd}
                                             onChange={handleInputChange}
+                                            onWheel={(e) => e.target.blur()}
                                             required
                                             step="0.01"
                                         />

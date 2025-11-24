@@ -57,10 +57,9 @@ function GasSlipTable({
         setSelectedSlip(slip);
         setShowTripTicketForm(true);
 
-        // Pre-fill data from the gas slip
+        // Pre-fill data from the gas slip - DON'T pre-fill gasolineIssuedPurchased
         setTripTicketFormData(prev => ({
             ...prev,
-            gasolineIssuedPurchased: slip.gasoline_amount || '',
             departureTimeOffice: '',
             arrivalTimeDestination: '',
             departureTimeDestination: '',

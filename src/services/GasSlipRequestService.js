@@ -51,7 +51,7 @@ export const GasSlipRequestService = {
 
   async updateFuelAmount(recordId, amount) {
     try {
-      await fuelRecordsApi.updateAmount(recordId, amount); // Remove unused response variable
+      await fuelRecordsApi.updateAmount(recordId, amount); 
       return {
         success: true,
         message: "Gasoline amount updated successfully!",
@@ -66,7 +66,7 @@ export const GasSlipRequestService = {
 
   async updateFuelStatus(recordId, status) {
     try {
-      await fuelRecordsApi.updateStatus(recordId, status); // Remove unused response variable
+      await fuelRecordsApi.updateStatus(recordId, status); 
       return {
         success: true,
         message: status === 'approved' ? "Successfully Approved" : "Successfully Rejected",
