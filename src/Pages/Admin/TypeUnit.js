@@ -4,10 +4,32 @@ import { useNavigate } from "react-router-dom";
 import AdminSidebar from "../../components/Sidebars/AdminSidebar";
 import TypeUnitTable from "../../Tables/TypeUnitTable";
 import "./../../assets/Style/AdminDesign/TypeUnit.css";
-
 import AddUnit from "../../Forms/AddUnit";
 import EditUnit from "../../Forms/EditUnit";
 
+// Modern SVG Icons
+const SearchIcon = () => (
+  <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="11" cy="11" r="8"/>
+    <path d="m21 21-4.3-4.3"/>
+  </svg>
+);
+
+const ClearIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <line x1="18" y1="6" x2="6" y2="18"/>
+    <line x1="6" y1="6" x2="18" y2="18"/>
+  </svg>
+);
+
+const AddUnitIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M16 3H1V16H16V3Z"/>
+    <path d="M16 8H20L23 11V16H16V8Z"/>
+    <circle cx="5.5" cy="17.5" r="2.5"/>
+    <circle cx="18.5" cy="17.5" r="2.5"/>
+  </svg>
+);
 
 function TypeUnit() {
   const [admin, setAdmin] = useState(null);
@@ -135,6 +157,7 @@ function TypeUnit() {
       setEditLoading(false);
     }
   };
+  
 
   const fetchUnits = async () => {
     try {
@@ -253,38 +276,47 @@ function TypeUnit() {
     >
       <main className="dashboard-content">
         <div className="type-unit-container">
-          <div className="type-unit-management-header">
-            <div className="type-unit-search-container">
-              <div className="type-unit-search-box">
-                <svg className="type-unit-search-icon" viewBox="0 0 24 24">
-                  <path fill="currentColor" d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12,7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
-                </svg>
-                <input
-                  type="text"
-                  placeholder="Search units by model, plate code, assigned to, or office..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="type-unit-search-input"
-                />
-                {searchTerm && (
-                  <button
-                    className="type-unit-clear-search"
-                    onClick={() => setSearchTerm("")}
-                  >
-                    <svg viewBox="0 0 24 24">
-                      <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
-                    </svg>
-                  </button>
-                )}
+          {/* Modern Header Section */}
+          <div className="management-header-modern">
+            <div className="header-content">
+              <div className="title-section">
+                <h1 className="page-title">Vehicle Units</h1>
+                <p className="page-subtitle">Manage fleet vehicles and their assignments</p>
+              </div>
+              
+              <div className="actions-section">
+                {/* Modern Search Bar */}
+                <div className="search-container-modern">
+                  <div className="search-input-wrapper">
+                    <SearchIcon />
+                    <input
+                      type="text"
+                      placeholder="Search by model, plate, assigned to..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="search-input-modern"
+                    />
+                    {searchTerm && (
+                      <button 
+                        className="clear-search-btn"
+                        onClick={() => setSearchTerm("")}
+                      >
+                        <ClearIcon />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Modern Add Button with Purple Gradient */}
+                <button 
+                  className="add-unit-btn-modern"
+                  onClick={() => setShowAddUnitForm(true)}
+                >
+                  <AddUnitIcon />
+                  <span>Add Unit</span>
+                </button>
               </div>
             </div>
-            <button
-              className="type-unit-add-btn"
-              onClick={() => setShowAddUnitForm(true)}
-            >
-              <span className="type-unit-btn-icon">+</span>
-              Add Unit
-            </button>
           </div>
 
           <TypeUnitTable
@@ -313,16 +345,6 @@ function TypeUnit() {
             handleEditUnitSubmit={handleEditUnitSubmit}
             formErrors={editFormErrors}
             loading={editLoading}
-          />
- 
-          <AddUnit
-            showAddUnitForm={showAddUnitForm}
-            setShowAddUnitForm={setShowAddUnitForm}
-            formData={formData}
-            handleInputChange={handleInputChange}
-            handleAddUnitSubmit={handleAddUnitSubmit}
-            formErrors={formErrors}
-            loading={loading}
           />
         </div>
       </main>

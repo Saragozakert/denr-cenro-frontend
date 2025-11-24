@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import AdminSidebar from '../../components/Sidebars/AdminSidebar';
 import GasSlipRequestTable from '../../Tables/GasSlipRequestTable'; 
 import GasSlipRequestNotifications from '../../components/Notifications/GasSlipRequestNotifications';
+import { SearchIcon, ChevronDownIcon, CheckIcon, ClearIcon } from '../../components/icons/FilterIcons';
+import { useDropdown } from "../../hooks/useDropdown";
+import { STATUS_COLORS, STATUS_DISPLAY_TEXTS } from "../../constants/GasSlipRequestConstants";
 import '../../assets/Style/AdminDesign/GasSlipRequest.css';
 import { useAdminAuth } from "../../hooks/AdminDashboardHooks";
 import { 
@@ -19,6 +22,13 @@ function GasSlipRequest() {
   
   // Custom hooks
   const { admin } = useAdminAuth();
+  const { 
+    isDropdownOpen,
+    dropdownRef,
+    toggleDropdown,
+    closeDropdown
+  } = useDropdown();
+  
   const { 
     fuelRecords, 
     requestingParties, 
@@ -45,6 +55,14 @@ function GasSlipRequest() {
   const enhancedFuelRecords = DataEnhancementUtils.enhanceFuelRecords(fuelRecords, requestingParties, employees);
   const filteredFuelRecords = DataEnhancementUtils.filterFuelRecords(enhancedFuelRecords, searchTerm, statusFilter);
 
+  const handleStatusChange = (status) => {
+    setStatusFilter(status);
+    closeDropdown();
+  };
+
+  const getStatusDisplayText = () => STATUS_DISPLAY_TEXTS[statusFilter] || 'All Requests';
+  const getStatusColor = (status) => STATUS_COLORS[status] || '#6b7280';
+
   return (
     <AdminSidebar
       admin={admin}
@@ -58,29 +76,71 @@ function GasSlipRequest() {
 
       <main className="dashboard-content">
         <div className="fuel-tracking-container">
-          <div className="fuel-tracking-filters">
-            <div className="search-filter-container">
-              <input
-                type="text"
-                placeholder="Search fuel records..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="search-input"
-              />
+          <div className="fuel-tracking-filters-modern">
+            {/* Search Bar */}
+            <div className="search-container-modern">
+              <div className="search-input-wrapper">
+                <SearchIcon />
+                <input
+                  type="text"
+                  placeholder="Search fuel records by vehicle, plate, requester..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="search-input-modern"
+                />
+                {searchTerm && (
+                  <button 
+                    className="clear-search-btn"
+                    onClick={() => setSearchTerm('')}
+                  >
+                    <ClearIcon />
+                  </button>
+                )}
+              </div>
             </div>
-            <div className="status-filter-container">
-              <label htmlFor="status-filter">Filter by Status:</label>
-              <select 
-                id="status-filter"
-                value={statusFilter} 
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="status-filter-select"
-              >
-                <option value="all">All Requests</option>
-                <option value="pending">Pending Only</option>
-                <option value="approved">Approved Only</option>
-                <option value="rejected">Rejected Only</option>
-              </select>
+
+            {/* Status Filter Dropdown */}
+            <div className="status-filter-modern" ref={dropdownRef}>
+              <div className="dropdown-container">
+                <button 
+                  className={`dropdown-trigger ${isDropdownOpen ? 'active' : ''}`}
+                  onClick={toggleDropdown}
+                >
+                  <span className="selected-option">
+                    <span 
+                      className="status-dot"
+                      style={{ backgroundColor: getStatusColor(statusFilter) }}
+                    ></span>
+                    {getStatusDisplayText()}
+                  </span>
+                  <ChevronDownIcon />
+                </button>
+                
+                {isDropdownOpen && (
+                  <div className="dropdown-menu">
+                    {Object.entries(STATUS_DISPLAY_TEXTS).map(([status, displayText]) => (
+                      <div 
+                        key={status}
+                        className={`dropdown-item ${statusFilter === status ? 'active' : ''}`}
+                        onClick={() => handleStatusChange(status)}
+                      >
+                        <span className="option-content">
+                          <span 
+                            className="status-dot" 
+                            style={{ backgroundColor: getStatusColor(status) }}
+                          ></span>
+                          {displayText}
+                        </span>
+                        {statusFilter === status && (
+                          <div className="check-indicator">
+                            <CheckIcon />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 

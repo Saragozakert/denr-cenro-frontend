@@ -6,6 +6,30 @@ import "../../assets/Style/AdminDesign/ApproveSection.css";
 import ApproveSectionTable from "../../Tables/ApproveSectionTable";
 import AddEmployee from "../../Forms/AddEmployee";
 
+// Modern SVG Icons
+const SearchIcon = () => (
+  <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="11" cy="11" r="8"/>
+    <path d="m21 21-4.3-4.3"/>
+  </svg>
+);
+
+const ClearIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <line x1="18" y1="6" x2="6" y2="18"/>
+    <line x1="6" y1="6" x2="18" y2="18"/>
+  </svg>
+);
+
+const AddEmployeeIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+    <circle cx="8.5" cy="7" r="4"/>
+    <line x1="20" y1="8" x2="20" y2="14"/>
+    <line x1="23" y1="11" x2="17" y2="11"/>
+  </svg>
+);
+
 function ApproveSection() {
   const [admin, setAdmin] = useState(null);
   const [activeItem, setActiveItem] = useState("approve");
@@ -143,38 +167,47 @@ function ApproveSection() {
     >
       <main className="dashboard-content">
         <div className="conservative-container">
-          <div className="conservative-management-header">
-            <div className="conservative-search-container">
-              <div className="conservative-search-box">
-                <svg className="conservative-search-icon" viewBox="0 0 24 24">
-                  <path fill="currentColor" d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12,7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
-                </svg>
-                <input
-                  type="text"
-                  placeholder="Search employees by name, department, or role..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="conservative-search-input"
-                />
-                {searchTerm && (
-                  <button
-                    className="conservative-clear-search"
-                    onClick={() => setSearchTerm("")}
-                  >
-                    <svg viewBox="0 0 24 24">
-                      <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
-                    </svg>
-                  </button>
-                )}
+          {/* Modern Header Section */}
+          <div className="management-header-modern">
+            <div className="header-content">
+              <div className="title-section">
+                <h1 className="page-title">Approval Section</h1>
+                <p className="page-subtitle">Manage employees with approval authority</p>
+              </div>
+              
+              <div className="actions-section">
+                {/* Modern Search Bar */}
+                <div className="search-container-modern">
+                  <div className="search-input-wrapper">
+                    <SearchIcon />
+                    <input
+                      type="text"
+                      placeholder="Search by name, department, role..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="search-input-modern"
+                    />
+                    {searchTerm && (
+                      <button 
+                        className="clear-search-btn"
+                        onClick={() => setSearchTerm("")}
+                      >
+                        <ClearIcon />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Modern Add Button */}
+                <button 
+                  className="add-employee-btn-modern"
+                  onClick={() => setShowAddEmployeeForm(true)}
+                >
+                  <AddEmployeeIcon />
+                  <span>Add Employee</span>
+                </button>
               </div>
             </div>
-            <button
-              className="conservative-add-btn"
-              onClick={() => setShowAddEmployeeForm(true)}
-            >
-              <span className="conservative-btn-icon">+</span>
-              Add Employee
-            </button>
           </div>
 
           <ApproveSectionTable 

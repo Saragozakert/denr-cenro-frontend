@@ -6,6 +6,30 @@ import RequestingPartyTable from "../../Tables/RequestingPartyTable";
 import AddRequestingParty from "../../Forms/AddRequestingParty";
 import "../../assets/Style/AdminDesign/RequestingParty.css";
 
+// Modern SVG Icons
+const SearchIcon = () => (
+  <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="11" cy="11" r="8"/>
+    <path d="m21 21-4.3-4.3"/>
+  </svg>
+);
+
+const ClearIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <line x1="18" y1="6" x2="6" y2="18"/>
+    <line x1="6" y1="6" x2="18" y2="18"/>
+  </svg>
+);
+
+const AddUserIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+    <circle cx="9" cy="7" r="4"/>
+    <line x1="19" y1="8" x2="19" y2="14"/>
+    <line x1="16" y1="11" x2="22" y2="11"/>
+  </svg>
+);
+
 function RequestingParty() {
   const [admin, setAdmin] = useState(null);
   const [activeItem, setActiveItem] = useState("requesting-party");
@@ -13,7 +37,6 @@ function RequestingParty() {
   const [requestingParties, setRequestingParties] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   
-  // State for AddRequestingParty modal
   const [showAddRequestingPartyForm, setShowAddRequestingPartyForm] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -52,7 +75,6 @@ function RequestingParty() {
     fetchRequestingParties();
   }, [navigate]);
 
-  // Fetch requesting parties data
   const fetchRequestingParties = async () => {
     try {
       setIsLoading(true);
@@ -75,7 +97,6 @@ function RequestingParty() {
     }
   };
 
-  // Handle input change for the form
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     setFormData(prevState => ({
@@ -83,7 +104,6 @@ function RequestingParty() {
       [id]: value
     }));
     
-    // Clear error when user starts typing
     if (formErrors[id]) {
       setFormErrors(prevState => ({
         ...prevState,
@@ -92,7 +112,6 @@ function RequestingParty() {
     }
   };
 
-  // Handle form submission
   const handleAddRequestingPartySubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -111,7 +130,6 @@ function RequestingParty() {
       );
 
       if (response.data.success) {
-        // Reset form and close modal
         setFormData({
           name: "",
           division: "",
@@ -120,7 +138,6 @@ function RequestingParty() {
         setShowAddRequestingPartyForm(false);
         setFormErrors({});
         
-        // Refresh the requesting parties list
         fetchRequestingParties();
         
         alert("Requesting party added successfully!");
@@ -137,7 +154,6 @@ function RequestingParty() {
     }
   };
 
-  // Handler for deleting a requesting party
   const handleDeleteRequestingParty = async (partyId) => {
     if (window.confirm("Are you sure you want to delete this requesting party?")) {
       try {
@@ -174,7 +190,6 @@ function RequestingParty() {
     setShowAddRequestingPartyForm(true);
   };
 
-  // Filter requesting parties based on search term
   const filteredRequestingParties = requestingParties.filter(party =>
     party.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     party.division_section?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -190,41 +205,49 @@ function RequestingParty() {
     >
       <main className="dashboard-content">
         <div className="user-management-container">
-          <div className="management-header">
-            <div className="search-container">
-              <div className="search-box">
-                <svg className="search-icon" viewBox="0 0 24 24">
-                  <path fill="currentColor" d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12,7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
-                </svg>
-                <input
-                  type="text"
-                  placeholder="Search requesting parties by name, division, position, or ID..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="search-input"
-                />
-                {searchTerm && (
-                  <button 
-                    className="clear-search"
-                    onClick={() => setSearchTerm("")}
-                  >
-                    <svg viewBox="0 0 24 24">
-                      <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
-                    </svg>
-                  </button>
-                )}
+          {/* Modern Header Section */}
+          <div className="management-header-modern">
+            <div className="header-content">
+              <div className="title-section">
+                <h1 className="page-title">Requesting Parties</h1>
+                <p className="page-subtitle">Manage department representatives and their information</p>
+              </div>
+              
+              <div className="actions-section">
+                {/* Modern Search Bar */}
+                <div className="search-container-modern">
+                  <div className="search-input-wrapper">
+                    <SearchIcon />
+                    <input
+                      type="text"
+                      placeholder="Search by name, division, position..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="search-input-modern"
+                    />
+                    {searchTerm && (
+                      <button 
+                        className="clear-search-btn"
+                        onClick={() => setSearchTerm("")}
+                      >
+                        <ClearIcon />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Modern Add Button */}
+                <button 
+                  className="add-party-btn-modern"
+                  onClick={handleAddRequestingParty}
+                >
+                  <AddUserIcon />
+                  <span>Add Party</span>
+                </button>
               </div>
             </div>
-            <button 
-              className="register-user-btn"
-              onClick={handleAddRequestingParty}
-            >
-              <span className="btn-icon">+</span>
-              Add Requesting Party
-            </button>
           </div>
 
-          {/* Requesting Party Table Component */}
           <RequestingPartyTable
             requestingParties={filteredRequestingParties}
             fetchLoading={isLoading}
@@ -232,7 +255,6 @@ function RequestingParty() {
             handleDeleteRequestingParty={handleDeleteRequestingParty}
           />
 
-          {/* Add Requesting Party Modal */}
           <AddRequestingParty
             showAddRequestingPartyForm={showAddRequestingPartyForm}
             setShowAddRequestingPartyForm={setShowAddRequestingPartyForm}

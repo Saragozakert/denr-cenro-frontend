@@ -5,6 +5,21 @@ import AdminSidebar from "../../components/Sidebars/AdminSidebar";
 import TripTicketAdminTable from "../../Tables/TripTicketAdminTable";
 import "./../../assets/Style/AdminDesign/TripTicketAdmin.css";
 
+// Modern SVG Icons
+const SearchIcon = () => (
+  <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="11" cy="11" r="8"/>
+    <path d="m21 21-4.3-4.3"/>
+  </svg>
+);
+
+const ClearIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <line x1="18" y1="6" x2="6" y2="18"/>
+    <line x1="6" y1="6" x2="18" y2="18"/>
+  </svg>
+);
+
 function TripTicketAdmin() {
   const [admin, setAdmin] = useState(null);
   const [activeItem, setActiveItem] = useState("admin");
@@ -90,29 +105,36 @@ function TripTicketAdmin() {
     >
       <main className="dashboard-content">
         <div className="trip-ticket-admin-container">
-          <div className="trip-ticket-admin-management-header">
-            <div className="trip-ticket-admin-search-container">
-              <div className="trip-ticket-admin-search-box">
-                <svg className="trip-ticket-admin-search-icon" viewBox="0 0 24 24">
-                  <path fill="currentColor" d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12,7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
-                </svg>
-                <input
-                  type="text"
-                  placeholder="Search trip tickets by withdrawn by, section, status, or date..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="trip-ticket-admin-search-input"
-                />
-                {searchTerm && (
-                  <button
-                    className="trip-ticket-admin-clear-search"
-                    onClick={() => setSearchTerm("")}
-                  >
-                    <svg viewBox="0 0 24 24">
-                      <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
-                    </svg>
-                  </button>
-                )}
+          {/* Modern Header Section - Search Only */}
+          <div className="management-header-modern">
+            <div className="header-content">
+              <div className="title-section">
+                <h1 className="page-title">Trip Tickets</h1>
+                <p className="page-subtitle">Monitor and manage all trip ticket requests</p>
+              </div>
+              
+              <div className="actions-section">
+                {/* Modern Search Bar */}
+                <div className="search-container-modern">
+                  <div className="search-input-wrapper">
+                    <SearchIcon />
+                    <input
+                      type="text"
+                      placeholder="Search by withdrawn by, section, status..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="search-input-modern"
+                    />
+                    {searchTerm && (
+                      <button 
+                        className="clear-search-btn"
+                        onClick={() => setSearchTerm("")}
+                      >
+                        <ClearIcon />
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>

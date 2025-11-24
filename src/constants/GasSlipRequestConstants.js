@@ -1,0 +1,20 @@
+export const STATUS_FILTER_OPTIONS = {
+  ALL: 'all',
+  PENDING: 'pending',
+  APPROVED: 'approved',
+  REJECTED: 'rejected'
+};
+
+export const STATUS_COLORS = {
+  [STATUS_FILTER_OPTIONS.PENDING]: '#f59e0b',
+  [STATUS_FILTER_OPTIONS.APPROVED]: '#10b981',
+  [STATUS_FILTER_OPTIONS.REJECTED]: '#ef4444',
+  [STATUS_FILTER_OPTIONS.ALL]: '#6b7280'
+};
+
+export const STATUS_DISPLAY_TEXTS = {
+  [STATUS_FILTER_OPTIONS.ALL]: 'All Requests',
+  [STATUS_FILTER_OPTIONS.PENDING]: 'Pending Only',
+  [STATUS_FILTER_OPTIONS.APPROVED]: 'Approved Only',
+  [STATUS_FILTER_OPTIONS.REJECTED]: 'Rejected Only'
+};

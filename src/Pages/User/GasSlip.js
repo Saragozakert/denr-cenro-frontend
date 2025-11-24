@@ -6,6 +6,31 @@ import GasSlipForm from "../../Forms/GasSlipForm";
 import GasSlipTable from "../../Tables/GasSlipTable";
 import '../../assets/Style/UserDesign/GasSlip.css';
 
+// Modern SVG Icons
+const SearchIcon = () => (
+  <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="11" cy="11" r="8"/>
+    <path d="m21 21-4.3-4.3"/>
+  </svg>
+);
+
+const ClearIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <line x1="18" y1="6" x2="6" y2="18"/>
+    <line x1="6" y1="6" x2="18" y2="18"/>
+  </svg>
+);
+
+const GasSlipIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+    <polyline points="14,2 14,8 20,8"/>
+    <line x1="16" y1="13" x2="8" y2="13"/>
+    <line x1="16" y1="17" x2="8" y2="17"/>
+    <polyline points="10,9 9,9 8,9"/>
+  </svg>
+);
+
 function GasSlip() {
     const [user, setUser] = useState(null);
     const [activeItem, setActiveItem] = useState("gasSlip");
@@ -308,38 +333,47 @@ function GasSlip() {
         >
             <main className="dashboard-content">
                 <div className="gas-slip-container">
-                    <div className="gas-slip-management-header">
-                        <div className="gas-slip-search-container">
-                            <div className="gas-slip-search-box">
-                                <svg className="gas-slip-search-icon" viewBox="0 0 24 24">
-                                    <path fill="currentColor" d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12,7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
-                                </svg>
-                                <input
-                                    type="text"
-                                    placeholder="Search gas slips by model, plate number, requesting party, driver, or date..."
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="gas-slip-search-input"
-                                />
-                                {searchTerm && (
-                                    <button
-                                        className="gas-slip-clear-search"
-                                        onClick={() => setSearchTerm("")}
-                                    >
-                                        <svg viewBox="0 0 24 24">
-                                            <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
-                                        </svg>
-                                    </button>
-                                )}
+                    {/* Modern Header Section */}
+                    <div className="gas-slip-header-modern">
+                        <div className="header-content">
+                            <div className="title-section">
+                                <h1 className="page-title">Gas Slips</h1>
+                                <p className="page-subtitle">Manage fuel requests and trip ticket assignments</p>
+                            </div>
+                            
+                            <div className="actions-section">
+                                {/* Modern Search Bar */}
+                                <div className="search-container-modern">
+                                    <div className="search-input-wrapper">
+                                        <SearchIcon />
+                                        <input
+                                            type="text"
+                                            placeholder="Search by model, plate, requester, driver..."
+                                            value={searchTerm}
+                                            onChange={(e) => setSearchTerm(e.target.value)}
+                                            className="search-input-modern"
+                                        />
+                                        {searchTerm && (
+                                            <button 
+                                                className="clear-search-btn"
+                                                onClick={() => setSearchTerm("")}
+                                            >
+                                                <ClearIcon />
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Modern Gas Slip Button */}
+                                <button 
+                                    className="gas-slip-btn-modern"
+                                    onClick={() => setShowGasSlipForm(true)}
+                                >
+                                    <GasSlipIcon />
+                                    <span>New Request</span>
+                                </button>
                             </div>
                         </div>
-                        <button
-                            className="gas-slip-add-btn"
-                            onClick={() => setShowGasSlipForm(true)}
-                        >
-                            <span className="gas-slip-btn-icon">+</span>
-                            Gas Slip Form
-                        </button>
                     </div>
 
                     <GasSlipTable
