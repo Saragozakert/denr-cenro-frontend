@@ -1,67 +1,246 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AdminSidebar from '../../components/Sidebars/AdminSidebar';
 import GasSlipRequestTable from '../../Tables/GasSlipRequestTable'; 
 import GasSlipRequestNotifications from '../../components/Notifications/GasSlipRequestNotifications';
-import { SearchIcon, ChevronDownIcon, CheckIcon, ClearIcon } from '../../components/icons/FilterIcons';
-import { useDropdown } from "../../hooks/useDropdown";
-import { STATUS_COLORS, STATUS_DISPLAY_TEXTS } from "../../constants/GasSlipRequestConstants";
 import '../../assets/Style/AdminDesign/GasSlipRequest.css';
-import { useAdminAuth } from "../../hooks/AdminDashboardHooks";
-import { 
-  useGasSlipRequestData, 
-  useFuelRecordActions, 
-  useGasSlipRequestFilters, 
-  useNotifications 
-} from "../../hooks/GasSlipRequestHooks";
-import { NavigationUtils, DataEnhancementUtils } from "../../utils/GasSlipRequestUtils";
 
 function GasSlipRequest() {
+  const [admin, setAdmin] = useState(null);
   const [activeItem, setActiveItem] = useState("fuel");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [fuelRecords, setFuelRecords] = useState([]);
+  const [requestingParties, setRequestingParties] = useState([]);
+  const [employees, setEmployees] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [statusFilter, setStatusFilter] = useState('pending');
+  const [notifications, setNotifications] = useState([]);
   const navigate = useNavigate();
-  
-  // Custom hooks
-  const { admin } = useAdminAuth();
-  const { 
-    isDropdownOpen,
-    dropdownRef,
-    toggleDropdown,
-    closeDropdown
-  } = useDropdown();
-  
-  const { 
-    fuelRecords, 
-    requestingParties, 
-    employees, 
-    isLoading, 
-    fetchAllData, 
-    refetchFuelRecords 
-  } = useGasSlipRequestData();
-  
-  const { searchTerm, setSearchTerm, statusFilter, setStatusFilter } = useGasSlipRequestFilters();
-  const { notifications, addNotification, removeNotification } = useNotifications();
-  const { handleUpdateAmount, handleAcceptRecord, handleRejectRecord } = useFuelRecordActions(refetchFuelRecords, addNotification);
-
-  // Navigation
-  const handleMenuItemClick = NavigationUtils.handleMenuItemClick(setActiveItem, navigate);
 
   useEffect(() => {
-    if (admin) {
-      fetchAllData();
+    const checkAuth = async () => {
+      try {
+        const token = localStorage.getItem("adminToken");
+        if (!token) {
+          navigate("/");
+          return;
+        }
+
+        const response = await axios.get("http://localhost:8000/api/admin/check-auth", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        });
+
+        setAdmin(response.data.admin);
+      } catch (error) {
+        localStorage.removeItem("adminToken");
+        navigate("/");
+      }
+    };
+
+    checkAuth();
+    fetchFuelRecords();
+    fetchRequestingParties();
+    fetchEmployees();
+  }, [navigate]);
+
+  const fetchRequestingParties = async () => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await axios.get("http://localhost:8000/api/admin/requesting-parties", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+
+      if (response.data.success) {
+        setRequestingParties(response.data.requestingParties || []);
+      }
+    } catch (error) {
+      console.error("Error fetching requesting parties:", error);
     }
-  }, [admin, fetchAllData]);
-
-  // Data processing
-  const enhancedFuelRecords = DataEnhancementUtils.enhanceFuelRecords(fuelRecords, requestingParties, employees);
-  const filteredFuelRecords = DataEnhancementUtils.filterFuelRecords(enhancedFuelRecords, searchTerm, statusFilter);
-
-  const handleStatusChange = (status) => {
-    setStatusFilter(status);
-    closeDropdown();
   };
 
-  const getStatusDisplayText = () => STATUS_DISPLAY_TEXTS[statusFilter] || 'All Requests';
-  const getStatusColor = (status) => STATUS_COLORS[status] || '#6b7280';
+  const fetchEmployees = async () => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await axios.get("http://localhost:8000/api/admin/employees", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+
+      if (response.data.success) {
+        setEmployees(response.data.employees || []);
+      }
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    }
+  };
+
+  const fetchFuelRecords = async () => {
+    try {
+      setIsLoading(true);
+      const token = localStorage.getItem("adminToken");
+      const response = await axios.get("http://localhost:8000/api/admin/fuel-requests", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+
+      if (response.data.success) {
+        setFuelRecords(response.data.fuelRequests || []);
+      }
+    } catch (error) {
+      console.error("Error fetching fuel records:", error);
+      setFuelRecords([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Enhanced fuel records with correct position data
+  const enhancedFuelRecords = fuelRecords.map(record => {
+    // For requesting party position
+    let requestingPosition = record.position;
+    if (!requestingPosition) {
+      const requestingParty = requestingParties.find(
+        party => party.full_name === record.requesting_party
+      );
+      requestingPosition = requestingParty ? requestingParty.position : 'N/A';
+    }
+
+    // For approve section position - find by approved_by name instead of withdrawn_by
+    let approveSectionPosition = record.approve_section_position;
+    if (!approveSectionPosition || approveSectionPosition === 'N/A') {
+      const employee = employees.find(
+        emp => emp.name === record.approved_by
+      );
+      approveSectionPosition = employee ? employee.position : 'N/A';
+    }
+
+    return {
+      ...record,
+      position: requestingPosition,
+      approve_section_position: approveSectionPosition
+    };
+  });
+
+  const handleUpdateAmount = async (recordId, newAmount) => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await axios.put(
+        `http://localhost:8000/api/admin/fuel-requests/${recordId}/amount`,
+        { gasoline_amount: newAmount },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+      );
+
+      if (response.data.success) {
+        addNotification("Gasoline amount updated successfully!", "success");
+        fetchFuelRecords();
+      }
+    } catch (error) {
+      addNotification("Error updating gasoline amount: " + (error.response?.data?.message || error.message), "error");
+      throw error;
+    }
+  };
+
+  const handleAcceptRecord = async (recordId) => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await axios.put(
+        `http://localhost:8000/api/admin/fuel-requests/${recordId}/status`,
+        { status: 'approved' },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+      );
+
+      if (response.data.success) {
+        addNotification("Successfully Approved", "success");
+        fetchFuelRecords();
+      }
+    } catch (error) {
+      addNotification("Error approving fuel request: " + (error.response?.data?.message || error.message), "error");
+    }
+  };
+
+  const handleRejectRecord = async (recordId) => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await axios.put(
+        `http://localhost:8000/api/admin/fuel-requests/${recordId}/status`,
+        { status: 'rejected' },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+      );
+
+      if (response.data.success) {
+        addNotification("Successfully Rejected", "success");
+        fetchFuelRecords();
+      }
+    } catch (error) {
+      addNotification("Error rejecting fuel request: " + (error.response?.data?.message || error.message), "error");
+    }
+  };
+
+  const filteredFuelRecords = enhancedFuelRecords.filter(record =>
+    record.model_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    record.plate_no?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    record.requesting_party?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    record.withdrawn_by?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    record.office?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    record.date?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    record.position?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    record.approve_section_position?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Notification functions
+  const addNotification = (message, type = "info") => {
+    const id = Date.now() + Math.random();
+    const newNotification = {
+      id,
+      message,
+      type,
+      timestamp: new Date(),
+    };
+
+    setNotifications(prev => [...prev, newNotification]);
+
+    // Auto remove after 4 seconds
+    setTimeout(() => {
+      removeNotification(id);
+    }, 4000);
+  };
+
+  const removeNotification = (id) => {
+    setNotifications(prev => prev.filter(notification => notification.id !== id));
+  };
+
+  const handleMenuItemClick = (itemName, itemPath) => {
+    setActiveItem(itemName);
+    if (itemPath && itemPath !== "#") {
+      navigate(itemPath);
+    }
+  };
 
   return (
     <AdminSidebar
@@ -76,71 +255,29 @@ function GasSlipRequest() {
 
       <main className="dashboard-content">
         <div className="fuel-tracking-container">
-          <div className="fuel-tracking-filters-modern">
-            {/* Search Bar */}
-            <div className="search-container-modern">
-              <div className="search-input-wrapper">
-                <SearchIcon />
-                <input
-                  type="text"
-                  placeholder="Search fuel records by vehicle, plate, requester..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="search-input-modern"
-                />
-                {searchTerm && (
-                  <button 
-                    className="clear-search-btn"
-                    onClick={() => setSearchTerm('')}
-                  >
-                    <ClearIcon />
-                  </button>
-                )}
-              </div>
+          <div className="fuel-tracking-filters">
+            <div className="search-filter-container">
+              <input
+                type="text"
+                placeholder="Search fuel records..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-input"
+              />
             </div>
-
-            {/* Status Filter Dropdown */}
-            <div className="status-filter-modern" ref={dropdownRef}>
-              <div className="dropdown-container">
-                <button 
-                  className={`dropdown-trigger ${isDropdownOpen ? 'active' : ''}`}
-                  onClick={toggleDropdown}
-                >
-                  <span className="selected-option">
-                    <span 
-                      className="status-dot"
-                      style={{ backgroundColor: getStatusColor(statusFilter) }}
-                    ></span>
-                    {getStatusDisplayText()}
-                  </span>
-                  <ChevronDownIcon />
-                </button>
-                
-                {isDropdownOpen && (
-                  <div className="dropdown-menu">
-                    {Object.entries(STATUS_DISPLAY_TEXTS).map(([status, displayText]) => (
-                      <div 
-                        key={status}
-                        className={`dropdown-item ${statusFilter === status ? 'active' : ''}`}
-                        onClick={() => handleStatusChange(status)}
-                      >
-                        <span className="option-content">
-                          <span 
-                            className="status-dot" 
-                            style={{ backgroundColor: getStatusColor(status) }}
-                          ></span>
-                          {displayText}
-                        </span>
-                        {statusFilter === status && (
-                          <div className="check-indicator">
-                            <CheckIcon />
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+            <div className="status-filter-container">
+              <label htmlFor="status-filter">Filter by Status:</label>
+              <select 
+                id="status-filter"
+                value={statusFilter} 
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="status-filter-select"
+              >
+                <option value="all">All Requests</option>
+                <option value="pending">Pending Only</option>
+                <option value="approved">Approved Only</option>
+                <option value="rejected">Rejected Only</option>
+              </select>
             </div>
           </div>
 

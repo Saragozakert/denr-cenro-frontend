@@ -5,18 +5,32 @@ function AdminCards({ cards, onCardClick }) {
     const difference = count - thisMonth;
     if (trend === "positive") return `+${difference} from last month`;
     if (trend === "negative") return `-${Math.abs(difference)} from last month`;
+    if (trend === "warning") return `+${difference} from last month`;
     return `No change from last month`;
+  };
+
+  // Map colorType to actual CSS class names
+  const getStatusClass = (colorType) => {
+    const colorMap = {
+      primary: "success",
+      info: "info", 
+      warning: "warning",
+      secondary: "secondary",
+      success: "success",
+      danger: "danger"
+    };
+    return colorMap[colorType] || "info";
   };
 
   return (
     <div className="dashboard-grid">
       {cards.map((card, index) => {
-        const cardType = card.colorType;
+        const statusClass = getStatusClass(card.colorType);
         
         return (
           <div 
             key={index} 
-            className={`dashboard-card ${cardType}`}
+            className={`dashboard-card ${card.colorType}`}
             onClick={() => onCardClick(card.title.toLowerCase(), card.path)}
           >
             <div className="card-header">
@@ -31,8 +45,8 @@ function AdminCards({ cards, onCardClick }) {
               <div className="card-main-label">Total Count</div>
               
               <div className="status-indicator">
-                <div className={`status-dot status-${cardType}`}></div>
-                <span className={`status-text status-${cardType}`}>
+                <div className={`status-dot status-${statusClass}`}></div>
+                <span className={`status-text status-${statusClass}`}>
                   {getTrendText(card.trend, card.count, card.thisMonth)}
                 </span>
               </div>
@@ -46,7 +60,7 @@ function AdminCards({ cards, onCardClick }) {
               
               <div className="comparison-item">
                 <span className="comparison-label">Status</span>
-                <div className={`comparison-badge badge-${cardType}`}>
+                <div className={`comparison-badge badge-${statusClass}`}>
                   {card.trend === "positive" ? "On Track" : 
                    card.trend === "warning" ? "Attention" : 
                    card.trend === "negative" ? "Needs Review" : "Stable"}
