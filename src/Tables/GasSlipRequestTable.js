@@ -201,7 +201,7 @@ function GasSlipRequestTable({
                     <tbody>
                         {processedRecords.map((record, index) => (
                             <tr key={record.id}>
-                                <td className="fuel-tracking-table-date highlight-date">
+                                <td className="fuel-tracking-table-date">
                                     {formatDate(record.date)}
                                 </td>
                                 <td className="fuel-tracking-table-model">{record.model_name}</td>

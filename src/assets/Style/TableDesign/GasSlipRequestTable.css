@@ -1,10 +1,53 @@
-/* Fuel Tracking Table Styles - Improved Design */
-.fuel-tracking-container {
+/* Fuel Tracking Table Styles - Improved Design with Proper Borders */
+.fuel-tracking-table-container {
   background: #fff;
-  border-radius: 8px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   border: 1px solid #e2e8f0;
   overflow: hidden;
   margin-top: 20px;
+}
+
+.fuel-tracking-table-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.fuel-tracking-table-results {
+  color: #6c757d;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.fuel-tracking-table-items-per-page {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.fuel-tracking-table-select {
+  padding: 6px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: white;
+  color: #4a5568;
+  font-size: 14px;
+}
+
+.fuel-tracking-table-select:focus {
+  outline: none;
+  border-color: #4C6EF5;
+  box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.1);
+}
+
+.fuel-tracking-table-wrapper {
+  overflow-x: auto;
 }
 
 .fuel-tracking-table {
@@ -34,6 +77,26 @@
 
 .fuel-tracking-table tr:hover {
   background: #f8f9fa;
+}
+
+.fuel-tracking-table-sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+  position: relative;
+  padding-right: 24px !important;
+}
+
+.fuel-tracking-table-sortable:hover {
+  background-color: #edf2f7;
+}
+
+.fuel-tracking-table-sortable span {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
 }
 
 .fuel-tracking-table-number {
@@ -177,70 +240,7 @@
   transform: scale(1.1);
 }
 
-/* Table Controls */
-.fuel-tracking-table-controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 20px;
-  background: #f8f9fa;
-  border-bottom: 1px solid #e9ecef;
-}
-
-.fuel-tracking-table-results {
-  color: #6c757d;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.fuel-tracking-table-items-per-page {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: #6c757d;
-}
-
-.fuel-tracking-table-select {
-  padding: 6px 10px;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  background: white;
-  color: #4a5568;
-  font-size: 14px;
-}
-
-.fuel-tracking-table-select:focus {
-  outline: none;
-  border-color: #4C6EF5;
-  box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.1);
-}
-
-.fuel-tracking-table-wrapper {
-  overflow-x: auto;
-}
-
-.fuel-tracking-table-sortable {
-  cursor: pointer;
-  user-select: none;
-  transition: background-color 0.2s ease;
-  position: relative;
-  padding-right: 24px !important;
-}
-
-.fuel-tracking-table-sortable:hover {
-  background-color: #edf2f7;
-}
-
-.fuel-tracking-table-sortable span {
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 12px;
-}
-
-/* Pagination */
+/* Table Footer */
 .fuel-tracking-table-footer {
   display: flex;
   justify-content: space-between;
@@ -309,6 +309,7 @@
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
 }
 
 .fuel-tracking-table-spinner {
@@ -399,115 +400,6 @@
   box-shadow: 0 0 0 2px rgba(76, 110, 245, 0.1);
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .fuel-tracking-table-controls {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 12px 16px;
-  }
-
-  .fuel-tracking-table-items-per-page {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .fuel-tracking-table-select {
-    width: 80px;
-  }
-
-  .fuel-tracking-table-pagination {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-  }
-
-  .fuel-tracking-table-pagination-info {
-    margin: 0 8px;
-  }
-
-  .fuel-tracking-table-action-group {
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .fuel-tracking-table-action-btn {
-    min-width: 32px;
-    min-height: 32px;
-    justify-content: center;
-  }
-}
-
-/* Purpose Modal Styles (keep existing) */
-.fuel-tracking-purpose-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.fuel-tracking-purpose-modal {
-  background: white;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 600px;
-  max-height: 80vh;
-  overflow: hidden;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-}
-
-.fuel-tracking-purpose-modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 20px;
-  border-bottom: 1px solid #e2e8f0;
-  background: #f7fafc;
-}
-
-.fuel-tracking-purpose-modal-header h3 {
-  margin: 0;
-  color: #2d3748;
-  font-size: 1.25rem;
-}
-
-.fuel-tracking-purpose-modal-close {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: #718096;
-  padding: 4px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.fuel-tracking-purpose-modal-close:hover {
-  background: #edf2f7;
-  color: #4a5568;
-}
-
-.fuel-tracking-purpose-modal-content {
-  padding: 20px;
-  overflow-y: auto;
-  max-height: calc(80vh - 73px);
-}
-
-.fuel-tracking-purpose-modal-content p {
-  margin: 0;
-  line-height: 1.6;
-  color: #4a5568;
-  white-space: pre-wrap;
-}
-
 /* Print button styles - matching GasSlipTable design */
 .fuel-tracking-table-print-btn {
     color: #20c997;
@@ -556,13 +448,6 @@
 
 .fuel-tracking-table-print-btn:hover .fuel-tracking-table-icon-print {
     transform: scale(1.1);
-}
-
-.no-actions-available {
-    color: #6c757d;
-    font-style: italic;
-    font-size: 12px;
-    padding: 8px;
 }
 
 /* Trip Ticket button styles - matching Print button design */
@@ -615,112 +500,67 @@
     transform: scale(1.1);
 }
 
-/* Add to both CSS files */
-.truncate-text {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 200px;
-}
-
-.no-data {
-    color: #999;
+.no-actions-available {
+    color: #6c757d;
     font-style: italic;
+    font-size: 12px;
+    padding: 8px;
 }
 
-.text-view-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    text-align: left;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .fuel-tracking-table-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+  }
+
+  .fuel-tracking-table-items-per-page {
     width: 100%;
-    padding: 4px;
-    border-radius: 4px;
-    transition: background-color 0.2s;
-}
-
-.text-view-btn:hover {
-    background-color: #f5f5f5;
-}
-
-/* Modal styles */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-
-.modal-content {
-    background: white;
-    border-radius: 8px;
-    padding: 0;
-    max-width: 500px;
-    width: 90%;
-    max-height: 80vh;
-    overflow: hidden;
-}
-
-.modal-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid #e5e7eb;
-    display: flex;
     justify-content: space-between;
-    align-items: center;
+  }
+
+  .fuel-tracking-table-select {
+    width: 80px;
+  }
+
+  .fuel-tracking-table-pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .fuel-tracking-table-pagination-info {
+    margin: 0 8px;
+  }
+
+  .fuel-tracking-table-action-group {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .fuel-tracking-table-action-btn {
+    min-width: 32px;
+    min-height: 32px;
+    justify-content: center;
+  }
 }
 
-.modal-header h3 {
-    margin: 0;
-    font-size: 1.1rem;
-    color: #374151;
+@media (max-width: 1024px) {
+  .fuel-tracking-table {
+    min-width: 900px;
+  }
 }
 
-.modal-close {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: #6b7280;
-}
+/* Print Styles */
+@media print {
+  .fuel-tracking-table-actions {
+    display: none;
+  }
 
-.modal-body {
-    padding: 20px;
-    max-height: 50vh;
-    overflow-y: auto;
-}
-
-.modal-body p {
-    margin: 0;
-    white-space: pre-wrap;
-    line-height: 1.5;
-}
-
-.modal-footer {
-    padding: 16px 20px;
-    border-top: 1px solid #e5e7eb;
-    text-align: right;
-}
-
-.modal-ok-btn {
-    background: #3b82f6;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.modal-ok-btn:hover {
-    background: #2563eb;
-}
-
-.fuel-tracking-table-position {
-    min-width: 120px;
-    text-align: left;
+  .fuel-tracking-table-controls,
+  .fuel-tracking-table-footer {
+    display: none;
+  }
 }

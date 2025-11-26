@@ -5,11 +5,11 @@ import "../../assets/Style/AdminDesign/AdminDashboard.css";
 import AdminSidebar from "../../components/Sidebars/AdminSidebar";
 import AdminHeader from "../../components/Headers/AdminHeader";
 import AdminCards from "../../components/cards/AdminCards";
+import AdminGraph from "../../components/Graph/AdminGraph";
 
-function AdminDashboard() {
+function AdminDashboard() { 
   const [admin, setAdmin] = useState(null);
   const [activeItem, setActiveItem] = useState("dashboard");
-  const [statsLoading, setStatsLoading] = useState(true);
   const [gasSlipRequests, setGasSlipRequests] = useState(0);
   const [tripTickets, setTripTickets] = useState(0);
   const [users, setUsers] = useState(0);
@@ -45,16 +45,31 @@ function AdminDashboard() {
 
   const fetchAdminStats = async () => {
     try {
-      setStatsLoading(true);
-      // Replace these with actual API calls for admin stats
       setGasSlipRequests(24);
       setTripTickets(18);
       setUsers(156);
       setPendingApprovals(8);
     } catch (error) {
       console.error("Error fetching admin stats:", error);
-    } finally {
-      setStatsLoading(false);
+    }
+  };
+
+  // ADD THIS FUNCTION FOR ADMIN SIGN OUT
+  const handleSignOut = async () => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      await axios.post("http://localhost:8000/api/admin/logout", {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+      localStorage.removeItem("adminToken");
+      navigate("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+      localStorage.removeItem("adminToken");
+      navigate("/");
     }
   };
 
@@ -69,13 +84,12 @@ function AdminDashboard() {
     handleMenuItemClick(itemName, itemPath);
   };
 
-  // Admin cards data - only the 4 specific cards in the order you want
   const cards = [
     {
       title: "Trip Tickets",
       count: tripTickets,
       icon: "🎫",
-      path: "/admin/trip-tickets",
+      path: "/admin/dashboard/trip-ticket",
       priority: 1,
       thisMonth: 15,
       trend: "positive",
@@ -86,7 +100,7 @@ function AdminDashboard() {
       title: "Gas Slip Requests",
       count: gasSlipRequests,
       icon: "📋",
-      path: "/admin/gas-slip-requests",
+      path: "/admin/dashboard/gas-slip-request",
       priority: 2,
       thisMonth: 20,
       trend: "positive",
@@ -97,7 +111,7 @@ function AdminDashboard() {
       title: "Pending Approvals",
       count: pendingApprovals,
       icon: "⏳",
-      path: "/admin/pending-approvals",
+      path: "",
       priority: 3,
       thisMonth: 5,
       trend: "warning",
@@ -108,7 +122,7 @@ function AdminDashboard() {
       title: "Total Users",
       count: users,
       icon: "👤",
-      path: "/admin/users",
+      path: "/admin/dashboard/user-management",
       priority: 4,
       thisMonth: 150,
       trend: "positive",
@@ -124,10 +138,12 @@ function AdminDashboard() {
       onMenuItemClick={handleMenuItemClick}
     >
       <main className="dashboard-content">
+        {/* PASS THE onSignOut PROP TO AdminHeader */}
         <AdminHeader 
           admin={admin} 
           title="Admin Dashboard"
           subtitle="Overview of system statistics and management"
+          onSignOut={handleSignOut} // ADD THIS LINE
         />
         
         <div className="dashboard-content-main">
@@ -135,6 +151,8 @@ function AdminDashboard() {
             cards={cards} 
             onCardClick={handleCardClick}
           />
+          
+          <AdminGraph />
         </div>
       </main>
     </AdminSidebar>

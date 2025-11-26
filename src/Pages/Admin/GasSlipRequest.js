@@ -6,6 +6,33 @@ import GasSlipRequestTable from '../../Tables/GasSlipRequestTable';
 import GasSlipRequestNotifications from '../../components/Notifications/GasSlipRequestNotifications';
 import '../../assets/Style/AdminDesign/GasSlipRequest.css';
 
+// Modern SVG Icons
+const SearchIcon = () => (
+  <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="11" cy="11" r="8"/>
+    <path d="m21 21-4.3-4.3"/>
+  </svg>
+);
+
+const ClearIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <line x1="18" y1="6" x2="6" y2="18"/>
+    <line x1="6" y1="6" x2="18" y2="18"/>
+  </svg>
+);
+
+const ChevronDown = () => (
+  <svg className="chevron-down" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <polyline points="6 9 12 15 18 9"/>
+  </svg>
+);
+
+const CheckIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <polyline points="20 6 9 17 4 12"/>
+  </svg>
+);
+
 function GasSlipRequest() {
   const [admin, setAdmin] = useState(null);
   const [activeItem, setActiveItem] = useState("fuel");
@@ -15,6 +42,7 @@ function GasSlipRequest() {
   const [employees, setEmployees] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [statusFilter, setStatusFilter] = useState('pending');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const navigate = useNavigate();
 
@@ -213,6 +241,28 @@ function GasSlipRequest() {
     record.approve_section_position?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Filter by status
+  const statusFilteredRecords = statusFilter === 'all' 
+    ? filteredFuelRecords 
+    : filteredFuelRecords.filter(record => record.status === statusFilter);
+
+  // Status options with colors and icons
+  const statusOptions = [
+    { value: 'all', label: 'All Requests', color: '#6b7280', bgColor: '#f3f4f6', textColor: '#6b7280' },
+    { value: 'pending', label: 'Pending Only', color: '#f59e0b', bgColor: '#fef3c7', textColor: '#d97706' },
+    { value: 'approved', label: 'Approved Only', color: '#10b981', bgColor: '#d1fae5', textColor: '#065f46' },
+    { value: 'rejected', label: 'Rejected Only', color: '#ef4444', bgColor: '#fee2e2', textColor: '#dc2626' }
+  ];
+
+  const getCurrentStatusOption = () => {
+    return statusOptions.find(option => option.value === statusFilter) || statusOptions[0];
+  };
+
+  const handleStatusChange = (value) => {
+    setStatusFilter(value);
+    setIsDropdownOpen(false);
+  };
+
   // Notification functions
   const addNotification = (message, type = "info") => {
     const id = Date.now() + Math.random();
@@ -255,34 +305,77 @@ function GasSlipRequest() {
 
       <main className="dashboard-content">
         <div className="fuel-tracking-container">
-          <div className="fuel-tracking-filters">
-            <div className="search-filter-container">
-              <input
-                type="text"
-                placeholder="Search fuel records..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="search-input"
-              />
+          {/* Modern Filters Section */}
+          <div className="fuel-tracking-filters-modern">
+            {/* Modern Search Bar */}
+            <div className="search-container-modern">
+              <div className="search-input-wrapper">
+                <SearchIcon />
+                <input
+                  type="text"
+                  placeholder="Search by model, plate no, requesting party..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="search-input-modern"
+                />
+                {searchTerm && (
+                  <button 
+                    className="clear-search-btn"
+                    onClick={() => setSearchTerm("")}
+                  >
+                    <ClearIcon />
+                  </button>
+                )}
+              </div>
             </div>
-            <div className="status-filter-container">
-              <label htmlFor="status-filter">Filter by Status:</label>
-              <select 
-                id="status-filter"
-                value={statusFilter} 
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="status-filter-select"
-              >
-                <option value="all">All Requests</option>
-                <option value="pending">Pending Only</option>
-                <option value="approved">Approved Only</option>
-                <option value="rejected">Rejected Only</option>
-              </select>
+
+            {/* Modern Status Filter Dropdown */}
+            <div className="status-filter-modern">
+              <div className="dropdown-container">
+                <div 
+                  className={`dropdown-trigger ${isDropdownOpen ? 'active' : ''}`}
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                >
+                  <div className="selected-option">
+                    <span 
+                      className="status-dot"
+                      style={{ backgroundColor: getCurrentStatusOption().color }}
+                    ></span>
+                    <span>{getCurrentStatusOption().label}</span>
+                  </div>
+                  <ChevronDown />
+                </div>
+
+                {isDropdownOpen && (
+                  <div className="dropdown-menu">
+                    {statusOptions.map((option) => (
+                      <div
+                        key={option.value}
+                        className={`dropdown-item ${statusFilter === option.value ? 'active' : ''}`}
+                        onClick={() => handleStatusChange(option.value)}
+                      >
+                        <div className="option-content">
+                          <span 
+                            className="status-dot"
+                            style={{ backgroundColor: option.color }}
+                          ></span>
+                          <span>{option.label}</span>
+                        </div>
+                        {statusFilter === option.value && (
+                          <div className="check-indicator">
+                            <CheckIcon />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
           <GasSlipRequestTable
-            fuelRecords={filteredFuelRecords}
+            fuelRecords={statusFilteredRecords}
             isLoading={isLoading}
             searchTerm={searchTerm}
             statusFilter={statusFilter} 

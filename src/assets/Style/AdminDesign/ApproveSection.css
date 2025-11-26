@@ -292,21 +292,21 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.25);
   height: 48px;
   font-size: 14px;
   white-space: nowrap;
 }
 
 .add-employee-btn-modern:hover {
-  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.35);
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.35);
 }
 
 .add-employee-btn-modern:active {
   transform: translateY(0);
-  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.25);
 }
 
 /* Hide old conservative styles */
@@ -374,7 +374,7 @@
 
 .add-employee-btn-modern:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
 }
 
 /* Smooth transitions */

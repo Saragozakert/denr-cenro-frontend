@@ -1,226 +1,65 @@
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  ArcElement,
-  LineElement,
-  PointElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler,
-} from 'chart.js';
-import { Pie, Bar } from 'react-chartjs-2';
+import { PieChart, Pie, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell, Line, ComposedChart } from 'recharts';
 import '../../assets/Style/GraphDesign/AdminGraph.css';
 
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  ArcElement,
-  LineElement,
-  PointElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler
-);
-
 function AdminGraph() {
-  // Enhanced Pie Chart Data with real-time data simulation
-  const pieData = {
-    labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-    datasets: [
-      {
-        data: [15, 22, 18, 25, 20],
-        backgroundColor: [
-          'rgba(16, 185, 129, 0.9)',
-          'rgba(59, 130, 246, 0.9)',
-          'rgba(245, 158, 11, 0.9)',
-          'rgba(239, 68, 68, 0.9)',
-          'rgba(139, 92, 246, 0.9)',
-        ],
-        borderColor: [
-          'rgba(16, 185, 129, 1)',
-          'rgba(59, 130, 246, 1)',
-          'rgba(245, 158, 11, 1)',
-          'rgba(239, 68, 68, 1)',
-          'rgba(139, 92, 246, 1)',
-        ],
-        borderWidth: 3,
-        hoverBorderWidth: 4,
-        hoverOffset: 15,
-        spacing: 2,
-      },
-    ],
-  };
+  const pieData = [
+    { name: 'Monday', value: 15 },
+    { name: 'Tuesday', value: 22 },
+    { name: 'Wednesday', value: 18 },
+    { name: 'Thursday', value: 25 },
+    { name: 'Friday', value: 20 }
+  ];
 
-  const pieOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'right',
-        labels: {
-          padding: 15,
-          usePointStyle: true,
-          pointStyle: 'circle',
-          font: {
-            size: 12,
-            weight: '500',
-          },
-          color: '#374151'
-        },
-      },
-      title: {
-        display: true,
-        text: 'Weekly Activity Distribution',
-        font: {
-          size: 18,
-          weight: 'bold',
-        },
-        color: '#111827',
-        padding: {
-          bottom: 25,
-        },
-      },
-      tooltip: {
-        backgroundColor: 'rgba(17, 24, 39, 0.9)',
-        titleFont: {
-          size: 13,
-        },
-        bodyFont: {
-          size: 13,
-        },
-        padding: 12,
-        cornerRadius: 8,
-        displayColors: true,
-      },
-    },
-    cutout: '45%',
-    animation: {
-      animateScale: true,
-      animateRotate: true
+  const barData = [
+    { month: 'Jan', revenue: 65, target: 60 },
+    { month: 'Feb', revenue: 59, target: 65 },
+    { month: 'Mar', revenue: 80, target: 75 },
+    { month: 'Apr', revenue: 81, target: 80 },
+    { month: 'May', revenue: 56, target: 70 },
+    { month: 'Jun', revenue: 55, target: 65 },
+    { month: 'Jul', revenue: 70, target: 75 },
+    { month: 'Aug', revenue: 75, target: 80 },
+    { month: 'Sep', revenue: 82, target: 85 },
+    { month: 'Oct', revenue: 78, target: 80 },
+    { month: 'Nov', revenue: 85, target: 85 },
+    { month: 'Dec', revenue: 90, target: 95 }
+  ];
+
+  const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'];
+
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="custom-tooltip" style={{
+          backgroundColor: 'rgba(17, 24, 39, 0.9)',
+          padding: '12px',
+          borderRadius: '8px',
+          color: 'white',
+          fontSize: '13px',
+        }}>
+          <p className="label" style={{ margin: '0 0 8px 0' }}>{`${label}`}</p>
+          {payload.map((entry, index) => (
+            <p key={index} style={{ 
+              color: entry.color,
+              margin: '4px 0',
+              display: 'flex',
+              alignItems: 'center'
+            }}>
+              <span style={{
+                display: 'inline-block',
+                width: '12px',
+                height: '12px',
+                backgroundColor: entry.color,
+                borderRadius: '2px',
+                marginRight: '8px'
+              }}></span>
+              {`${entry.name}: ${entry.value}`}
+            </p>
+          ))}
+        </div>
+      );
     }
-  };
-
-  // Enhanced Bar Chart with gradient effects
-  const barData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-    datasets: [
-      {
-        label: 'Revenue',
-        data: [65, 59, 80, 81, 56, 55, 70, 75, 82, 78, 85, 90],
-        backgroundColor: (context) => {
-          const chart = context.chart;
-          const {ctx, chartArea} = chart;
-          if (!chartArea) return;
-          const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
-          gradient.addColorStop(0, 'rgba(16, 185, 129, 0.3)');
-          gradient.addColorStop(1, 'rgba(16, 185, 129, 0.8)');
-          return gradient;
-        },
-        borderColor: 'rgba(16, 185, 129, 1)',
-        borderWidth: 2,
-        borderRadius: 12,
-        borderSkipped: false,
-        barPercentage: 0.6,
-        categoryPercentage: 0.7,
-      },
-      {
-        label: 'Target',
-        data: [60, 65, 75, 80, 70, 65, 75, 80, 85, 80, 85, 95],
-        type: 'line',
-        borderColor: 'rgba(239, 68, 68, 1)',
-        borderWidth: 3,
-        pointBackgroundColor: 'rgba(239, 68, 68, 1)',
-        pointBorderColor: '#fff',
-        pointBorderWidth: 2,
-        pointRadius: 6,
-        pointHoverRadius: 8,
-        fill: false,
-        tension: 0.4,
-      },
-    ],
-  };
-
-  const barOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'top',
-        labels: {
-          font: {
-            size: 12,
-            weight: '500',
-          },
-          usePointStyle: true,
-          padding: 20,
-        },
-      },
-      title: {
-        display: true,
-        text: 'Monthly Performance Overview',
-        font: {
-          size: 18,
-          weight: 'bold',
-        },
-        color: '#111827',
-        padding: {
-          bottom: 25,
-        },
-      },
-      tooltip: {
-        backgroundColor: 'rgba(17, 24, 39, 0.9)',
-        titleFont: {
-          size: 13,
-        },
-        bodyFont: {
-          size: 13,
-        },
-        padding: 12,
-        cornerRadius: 8,
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        grid: {
-          color: 'rgba(0, 0, 0, 0.08)',
-          drawBorder: false,
-        },
-        ticks: {
-          font: {
-            size: 11,
-          },
-          color: '#6b7280',
-          padding: 8,
-        },
-        border: {
-          dash: [4, 4],
-        },
-      },
-      x: {
-        grid: {
-          display: false,
-          drawBorder: false,
-        },
-        ticks: {
-          font: {
-            size: 11,
-            weight: '500',
-          },
-          color: '#374151',
-        },
-      },
-    },
-    interaction: {
-      intersect: false,
-      mode: 'index',
-    },
+    return null;
   };
 
   return (
@@ -234,7 +73,43 @@ function AdminGraph() {
           </div>
         </div>
         <div className="chart-wrapper">
-          <Pie data={pieData} options={pieOptions} />
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={pieData}
+                cx="50%"
+                cy="50%"
+                innerRadius="45%"
+                outerRadius="80%"
+                paddingAngle={2}
+                dataKey="value"
+                stroke="none"
+              >
+                {pieData.map((entry, index) => (
+                  <Cell 
+                    key={`cell-${index}`} 
+                    fill={COLORS[index]} 
+                    stroke={COLORS[index].replace('0.9', '1')}
+                    strokeWidth={3}
+                  />
+                ))}
+              </Pie>
+              <Tooltip content={<CustomTooltip />} />
+              <Legend 
+                layout="vertical"
+                verticalAlign="middle"
+                align="right"
+                wrapperStyle={{
+                  paddingLeft: '20px',
+                  fontSize: '12px',
+                  fontWeight: '500',
+                  color: '#374151'
+                }}
+                iconType="circle"
+                iconSize={8}
+              />
+            </PieChart>
+          </ResponsiveContainer>
         </div>
       </div>
       
@@ -247,7 +122,73 @@ function AdminGraph() {
           </div>
         </div>
         <div className="chart-wrapper">
-          <Bar data={barData} options={barOptions} />
+          <ResponsiveContainer width="100%" height={300}>
+            <ComposedChart data={barData}>
+              <CartesianGrid 
+                strokeDasharray="3 3" 
+                stroke="rgba(0, 0, 0, 0.08)"
+                vertical={false}
+              />
+              <XAxis 
+                dataKey="month"
+                axisLine={false}
+                tickLine={false}
+                tick={{ 
+                  fontSize: 11, 
+                  fontWeight: '500', 
+                  fill: '#374151' 
+                }}
+              />
+              <YAxis 
+                axisLine={false}
+                tickLine={false}
+                tick={{ 
+                  fontSize: 11, 
+                  fill: '#6b7280' 
+                }}
+                tickMargin={8}
+              />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend 
+                verticalAlign="top"
+                wrapperStyle={{
+                  paddingBottom: '20px',
+                  fontSize: '12px',
+                  fontWeight: '500'
+                }}
+                iconType="circle"
+                iconSize={8}
+              />
+              <Bar 
+                dataKey="revenue" 
+                fill="rgba(16, 185, 129, 0.6)"
+                stroke="rgba(16, 185, 129, 1)"
+                strokeWidth={2}
+                radius={[4, 4, 0, 0]}
+                barSize={40}
+                name="Revenue"
+              />
+              <Line 
+                dataKey="target" 
+                stroke="rgba(239, 68, 68, 1)"
+                strokeWidth={3}
+                dot={{
+                  fill: "rgba(239, 68, 68, 1)",
+                  stroke: "#fff",
+                  strokeWidth: 2,
+                  r: 6
+                }}
+                activeDot={{
+                  r: 8,
+                  fill: "rgba(239, 68, 68, 1)",
+                  stroke: "#fff",
+                  strokeWidth: 2
+                }}
+                name="Target"
+                strokeDasharray="0"
+              />
+            </ComposedChart>
+          </ResponsiveContainer>
         </div>
       </div>
     </div>
