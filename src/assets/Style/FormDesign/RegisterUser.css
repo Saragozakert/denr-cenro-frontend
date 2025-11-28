@@ -239,27 +239,28 @@
   padding: 12px 24px;
   border: none;
   border-radius: 8px;
-  background: #059669;
-  color: white;
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important; /* Force green color */
+  color: white !important;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.25) !important;
 }
 
 .enhanced-submit-btn:hover {
-  background: #047857;
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important; /* Force green hover */
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4);
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.35) !important;
 }
 
 .enhanced-submit-btn:disabled {
   opacity: 0.7;
   cursor: not-allowed;
   transform: none;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.25) !important; /* Keep green when disabled */
 }
 
 .enhanced-spinner {

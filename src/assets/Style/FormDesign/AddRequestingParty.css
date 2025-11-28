@@ -1,204 +1,364 @@
-/* Add Requesting Party Modal Styles */
-.add-requesting-party-modal-overlay {
+.enhanced-requesting-party-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
   padding: 20px;
-  animation: add-requesting-party-fadeIn 0.3s ease;
+  animation: enhanced-requesting-party-fadeIn 0.3s ease;
 }
 
-.add-requesting-party-add-modal {
+.enhanced-requesting-party-modal {
   background: white;
   border-radius: 12px;
   width: 100%;
-  max-width: 500px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  overflow: hidden;
-  animation: add-requesting-party-slideUp 0.3s ease;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  border: 2px solid #e2e8f0;
+  animation: enhanced-requesting-party-slideUp 0.3s ease;
 }
 
-.add-requesting-party-modal-header {
+.enhanced-requesting-party-modal-header {
+  background: #1e293b;
+  color: white;
+  padding: 24px;
+  border-radius: 10px 10px 0 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.enhanced-requesting-party-header-content {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 20px 24px;
-  border-bottom: 1px solid #e5e7eb;
+  gap: 16px;
 }
 
-.add-requesting-party-modal-header h2 {
+.enhanced-requesting-party-header-icon {
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.enhanced-requesting-party-header-text h2 {
   margin: 0;
-  color: #1f2937;
   font-size: 1.5rem;
   font-weight: 600;
 }
 
-.add-requesting-party-close-btn {
+.enhanced-requesting-party-header-text p {
+  margin: 4px 0 0 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+}
+
+.enhanced-requesting-party-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 4px;
+  padding: 8px;
   border-radius: 6px;
-  color: #6b7280;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
 }
 
-.add-requesting-party-close-btn:hover {
-  background: #f3f4f6;
-  color: #374151;
+.enhanced-requesting-party-close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
-.add-requesting-party-close-btn svg {
-  width: 24px;
-  height: 24px;
+.enhanced-requesting-party-modal-content {
+  padding: 0;
 }
 
-.add-requesting-party-modal-content {
+.enhanced-requesting-party-modal {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.enhanced-requesting-party-modal::-webkit-scrollbar {
+  display: none;
+}
+
+.enhanced-requesting-party-form {
+  padding: 0;
+}
+
+.enhanced-requesting-party-form-section {
   padding: 24px;
+  border-bottom: 1px solid #e2e8f0;
 }
 
-/* Form Styles */
-.add-requesting-party-add-form {
+.enhanced-requesting-party-form-section:last-child {
+  border-bottom: none;
+}
+
+.enhanced-requesting-party-section-header {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.enhanced-requesting-party-section-icon {
+  padding: 8px;
+  background: #f1f5f9;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #475569;
+}
+
+.enhanced-requesting-party-section-header h3 {
+  margin: 0;
+  color: #1e293b;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.enhanced-requesting-party-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 20px;
 }
 
-.add-requesting-party-form-section {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.add-requesting-party-form-group {
+.enhanced-requesting-party-form-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.add-requesting-party-form-group label {
+.enhanced-requesting-party-form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.enhanced-requesting-party-form-group label {
   font-weight: 500;
   color: #374151;
   font-size: 0.9rem;
 }
 
-.add-requesting-party-form-input {
+.enhanced-requesting-party-required-field {
+  color: #dc2626;
+}
+
+.enhanced-requesting-party-optional-field {
+  color: #6b7280;
+  font-size: 0.8rem;
+  font-weight: normal;
+  font-style: italic;
+}
+
+.enhanced-requesting-party-form-input {
   padding: 12px 16px;
-  border: 1px solid #e2e8f0;
+  border: 2px solid #e2e8f0;
   border-radius: 8px;
   font-size: 1rem;
   transition: all 0.2s ease;
   background: white;
-  color: #2d3748;
+  color: #1f2937;
   width: 100%;
   box-sizing: border-box;
+  font-family: inherit;
 }
 
-.add-requesting-party-form-input:focus {
+.enhanced-requesting-party-form-input:focus {
   outline: none;
-  border-color: #4299e1;
-  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
   transform: translateY(-1px);
 }
 
-.add-requesting-party-form-input::placeholder {
+.enhanced-requesting-party-form-input::placeholder {
   color: #9ca3af;
 }
 
-.add-requesting-party-form-actions {
+.enhanced-requesting-party-form-input:disabled {
+  background-color: #f8fafc;
+  color: #64748b;
+  cursor: not-allowed;
+  border-color: #e2e8f0;
+}
+
+.enhanced-requesting-party-form-actions {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  margin-top: 16px;
-  padding-top: 20px;
-  border-top: 1px solid #e5e7eb;
+  padding: 24px;
+  background: #f8fafc;
+  border-radius: 0 0 10px 10px;
+  border-top: 1px solid #e2e8f0;
 }
 
-.add-requesting-party-cancel-btn {
-  padding: 10px 20px;
-  border: 1px solid #d1d5db;
+.enhanced-requesting-party-cancel-btn {
+  padding: 12px 24px;
+  border: 2px solid #d1d5db;
   border-radius: 8px;
   background: white;
   color: #374151;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.add-requesting-party-cancel-btn:hover {
+.enhanced-requesting-party-cancel-btn:hover {
   background: #f9fafb;
   border-color: #9ca3af;
 }
 
-.add-requesting-party-submit-btn {
-  padding: 10px 24px;
+.enhanced-requesting-party-submit-btn {
+  padding: 12px 24px;
   border: none;
   border-radius: 8px;
-  background: #4C6EF5;
-  color: white;
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
+  color: white !important;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(76, 110, 245, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.25) !important;
 }
 
-.add-requesting-party-submit-btn:hover {
-  background: #3b5bdb;
+.enhanced-requesting-party-submit-btn:hover {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(76, 110, 245, 0.4);
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.35) !important;
 }
 
-@keyframes add-requesting-party-fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.enhanced-requesting-party-submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.25) !important;
 }
 
-@keyframes add-requesting-party-slideUp {
-  from { 
-    opacity: 0;
-    transform: translateY(20px);
+.enhanced-requesting-party-spinner {
+  animation: enhanced-requesting-party-spin 1s linear infinite;
+}
+
+@keyframes enhanced-requesting-party-spin {
+  from {
+    transform: rotate(0deg);
   }
-  to { 
-    opacity: 1;
-    transform: translateY(0);
+
+  to {
+    transform: rotate(360deg);
   }
 }
 
-.add-requesting-party-error {
-  border-color: #ff4757 !important;
+.enhanced-requesting-party-error {
+  border-color: #dc2626 !important;
 }
 
-.add-requesting-party-error-text {
-  color: #ff4757;
+.enhanced-requesting-party-error-text {
+  color: #dc2626;
   font-size: 12px;
   margin-top: 4px;
   display: block;
 }
 
-/* Responsive adjustments */
-@media (max-width: 640px) {
-  .add-requesting-party-add-modal {
+@keyframes enhanced-requesting-party-fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes enhanced-requesting-party-slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .enhanced-requesting-party-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .enhanced-requesting-party-modal {
     margin: 0;
     border-radius: 0;
     max-height: 100vh;
-    overflow-y: auto;
   }
-  
-  .add-requesting-party-form-actions {
+
+  .enhanced-requesting-party-form-actions {
     flex-direction: column;
   }
-  
-  .add-requesting-party-cancel-btn,
-  .add-requesting-party-submit-btn {
+
+  .enhanced-requesting-party-cancel-btn,
+  .enhanced-requesting-party-submit-btn {
     width: 100%;
+    justify-content: center;
   }
+
+  .enhanced-requesting-party-header-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .enhanced-requesting-party-form-section {
+    padding: 16px;
+  }
+
+  .enhanced-requesting-party-modal-header {
+    padding: 20px;
+  }
+
+  .enhanced-requesting-party-form-actions {
+    padding: 20px;
+  }
+}
+
+.enhanced-requesting-party-modal::-webkit-scrollbar {
+  width: 6px;
+}
+
+.enhanced-requesting-party-modal::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.enhanced-requesting-party-modal::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.enhanced-requesting-party-modal::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
