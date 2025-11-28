@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react"; // ADD useRef
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import UserSidebar from "../../components/Sidebars/UserSidebar";
@@ -29,6 +29,9 @@ function TripTicketUser() {
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
+    // ADD: useRef to track previously seen ticket IDs
+    const previousTicketIds = useRef(new Set());
+
     useEffect(() => {
         const checkAuth = async () => {
             try {
@@ -55,33 +58,46 @@ function TripTicketUser() {
             }
         };
 
-        const fetchTripTickets = async () => {
-            try {
-                setIsLoading(true);
-                const token = localStorage.getItem("userToken");
-                const response = await axios.get("http://localhost:8000/api/user/user-trip-tickets", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        Accept: "application/json",
-                    },
-                });
-
-                if (response.data.success) {
-                    setTripTickets(response.data.tripTickets || []);
-                } else {
-                    setTripTickets([]);
-                }
-            } catch (error) {
-                console.error("Error fetching trip tickets:", error);
-                setTripTickets([]);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
         checkAuth();
         fetchTripTickets();
+        
+        // ADD: Set up interval for polling (no notifications)
+        const intervalId = setInterval(fetchTripTickets, 10000); // Check every 10 seconds
+
+        return () => clearInterval(intervalId); // Cleanup on unmount
     }, [navigate]);
+
+    // UPDATED: fetchTripTickets with polling logic (no notifications)
+    const fetchTripTickets = async () => {
+        try {
+            setIsLoading(true);
+            const token = localStorage.getItem("userToken");
+            const response = await axios.get("http://localhost:8000/api/user/user-trip-tickets", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: "application/json",
+                },
+            });
+
+            if (response.data.success) {
+                const newTripTickets = response.data.tripTickets || [];
+                
+                // POLLING ONLY: Just update the data without showing notifications
+                // The data will automatically refresh in the background
+                
+                // Update the previous ticket IDs for tracking (but no notifications)
+                previousTicketIds.current = new Set(newTripTickets.map(ticket => ticket.id));
+                setTripTickets(newTripTickets);
+            } else {
+                setTripTickets([]);
+            }
+        } catch (error) {
+            console.error("Error fetching trip tickets:", error);
+            setTripTickets([]);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const handleMenuItemClick = (itemName, path) => {
         setActiveItem(itemName);

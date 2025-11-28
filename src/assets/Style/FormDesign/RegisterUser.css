@@ -239,7 +239,7 @@
   padding: 12px 24px;
   border: none;
   border-radius: 8px;
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important; /* Force green color */
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important; 
   color: white !important;
   font-weight: 500;
   cursor: pointer;
@@ -251,7 +251,7 @@
 }
 
 .enhanced-submit-btn:hover {
-  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important; /* Force green hover */
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important; 
   transform: translateY(-1px);
   box-shadow: 0 8px 25px rgba(139, 92, 246, 0.35) !important;
 }
@@ -260,7 +260,7 @@
   opacity: 0.7;
   cursor: not-allowed;
   transform: none;
-  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.25) !important; /* Keep green when disabled */
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.25) !important; 
 }
 
 .enhanced-spinner {

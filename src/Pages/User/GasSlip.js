@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import UserSidebar from "../../components/Sidebars/UserSidebar";
 import GasSlipForm from "../../Forms/GasSlipForm";
 import GasSlipTable from "../../Tables/GasSlipTable";
+import GasSlipNotifications from '../../components/Notifications/GasSlipNotifications';
 import '../../assets/Style/UserDesign/GasSlip.css';
 
 // Modern SVG Icons
@@ -36,6 +37,9 @@ function GasSlip() {
     const [activeItem, setActiveItem] = useState("gasSlip");
     const [searchTerm, setSearchTerm] = useState("");
     const [showGasSlipForm, setShowGasSlipForm] = useState(false);
+    const [notifications, setNotifications] = useState([]);
+    
+    const previousApprovedIds = useRef(new Set());
 
     const [gasSlipFormData, setGasSlipFormData] = useState({
         vehicleType: '',
@@ -62,6 +66,154 @@ function GasSlip() {
     const [gasSlips, setGasSlips] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+
+    const removeNotification = useCallback((id) => {
+        setNotifications(prev => prev.filter(notification => notification.id !== id));
+    }, []);
+
+    const addNotification = useCallback((message, type = "info") => {
+        const id = Date.now() + Math.random();
+        const newNotification = {
+            id,
+            message,
+            type,
+            timestamp: new Date(),
+        };
+
+        setNotifications(prev => [...prev, newNotification]);
+
+        // Auto remove after 4 seconds
+        setTimeout(() => {
+            removeNotification(id);
+        }, 4000);
+    }, [removeNotification]);
+
+    // SIMPLIFIED: Fetch gas slips without polling
+    const fetchGasSlips = useCallback(async () => {
+        try {
+            setIsLoading(true);
+            const token = localStorage.getItem("userToken");
+            const response = await axios.get("http://localhost:8000/api/user/fuel-requests-with-trip-status", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: "application/json",
+                },
+            });
+
+            if (response.data.success) {
+                const gasSlipsData = response.data.fuelRequests || [];
+                
+                // CHECK FOR NEWLY APPROVED REQUESTS (one-time check)
+                if (previousApprovedIds.current.size > 0) {
+                    const newlyApproved = gasSlipsData.filter(record => 
+                        !previousApprovedIds.current.has(record.id) && 
+                        record.status === 'approved'
+                    );
+                    
+                    // Show notification for each newly approved request
+                    newlyApproved.forEach(request => {
+                        addNotification('Your fuel request has been approved!', 'success');
+                    });
+                }
+
+                // Update the previous approved IDs
+                previousApprovedIds.current = new Set(gasSlipsData.map(record => record.id));
+                setGasSlips(gasSlipsData);
+            }
+        } catch (error) {
+            console.error("Error fetching gas slips:", error);
+            // Fallback to original endpoint if new one fails
+            try {
+                const token = localStorage.getItem("userToken");
+                const fallbackResponse = await axios.get("http://localhost:8000/api/user/fuel-requests", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: "application/json",
+                    },
+                });
+
+                if (fallbackResponse.data.success) {
+                    const gasSlipsWithDefault = fallbackResponse.data.fuelRequests.map(slip => ({
+                        ...slip,
+                        has_trip_ticket: false
+                    }));
+                    
+                    // CHECK FOR NEWLY APPROVED IN FALLBACK DATA TOO
+                    if (previousApprovedIds.current.size > 0) {
+                        const newlyApproved = gasSlipsWithDefault.filter(record => 
+                            !previousApprovedIds.current.has(record.id) && 
+                            record.status === 'approved'
+                        );
+                        
+                        newlyApproved.forEach(request => {
+                            addNotification('Your fuel request has been approved!', 'success');
+                        });
+                    }
+                    
+                    // Update the previous approved IDs for fallback data
+                    previousApprovedIds.current = new Set(gasSlipsWithDefault.map(record => record.id));
+                    setGasSlips(gasSlipsWithDefault || []);
+                }
+            } catch (fallbackError) {
+                console.error("Error fetching gas slips from fallback endpoint:", fallbackError);
+                setGasSlips([]);
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    }, [addNotification]);
+
+    const fetchEmployees = useCallback(async () => {
+        try {
+            const token = localStorage.getItem("userToken");
+            const response = await axios.get("http://localhost:8000/api/user/employees", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: "application/json",
+                },
+            });
+
+            if (response.data.success) {
+                const employees = response.data.employees || [];
+                const options = employees.map(employee => ({
+                    value: employee.id,
+                    label: employee.name
+                }));
+                setApprovedByOptions(options);
+            }
+        } catch (error) {
+            console.error("Error fetching employees:", error);
+        }
+    }, []);
+
+    const fetchRequestingParties = useCallback(async () => {
+        try {
+            const token = localStorage.getItem("userToken");
+            const response = await axios.get("http://localhost:8000/api/user/requesting-parties", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: "application/json",
+                },
+            });
+
+            if (response.data.success) {
+                const requestingParties = response.data.requestingParties || [];
+                const options = requestingParties.map(party => ({
+                    value: party.id,
+                    label: party.full_name
+                }));
+                setRequestingPartyOptions(options);
+            }
+        } catch (error) {
+            console.error("Error fetching requesting parties:", error);
+            setRequestingPartyOptions([
+                { value: 'admin', label: 'Admin' },
+                { value: 'operations', label: 'Operations' },
+                { value: 'logistics', label: 'Logistics' },
+                { value: 'maintenance', label: 'Maintenance' }
+            ]);
+        }
+    }, []);
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -93,103 +245,12 @@ function GasSlip() {
         fetchEmployees();
         fetchRequestingParties();
         fetchGasSlips();
-    }, [navigate]);
+        
+        // REMOVED: Polling interval - no more automatic refreshing
+        // const intervalId = setInterval(fetchGasSlips, 10000);
+        // return () => clearInterval(intervalId);
 
-    // UPDATED: Fetch gas slips with trip ticket status
-    const fetchGasSlips = async () => {
-        try {
-            setIsLoading(true);
-            const token = localStorage.getItem("userToken");
-            const response = await axios.get("http://localhost:8000/api/user/fuel-requests-with-trip-status", {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    Accept: "application/json",
-                },
-            });
-
-            if (response.data.success) {
-                setGasSlips(response.data.fuelRequests || []);
-            }
-        } catch (error) {
-            console.error("Error fetching gas slips:", error);
-            // Fallback to original endpoint if new one fails
-            try {
-                const token = localStorage.getItem("userToken");
-                const fallbackResponse = await axios.get("http://localhost:8000/api/user/fuel-requests", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        Accept: "application/json",
-                    },
-                });
-
-                if (fallbackResponse.data.success) {
-                    // Add has_trip_ticket field as false for all (fallback behavior)
-                    const gasSlipsWithDefault = fallbackResponse.data.fuelRequests.map(slip => ({
-                        ...slip,
-                        has_trip_ticket: false
-                    }));
-                    setGasSlips(gasSlipsWithDefault || []);
-                }
-            } catch (fallbackError) {
-                console.error("Error fetching gas slips from fallback endpoint:", fallbackError);
-                setGasSlips([]);
-            }
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const fetchEmployees = async () => {
-        try {
-            const token = localStorage.getItem("userToken");
-            const response = await axios.get("http://localhost:8000/api/user/employees", {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    Accept: "application/json",
-                },
-            });
-
-            if (response.data.success) {
-                const employees = response.data.employees || [];
-                const options = employees.map(employee => ({
-                    value: employee.id,
-                    label: employee.name
-                }));
-                setApprovedByOptions(options);
-            }
-        } catch (error) {
-            console.error("Error fetching employees:", error);
-        }
-    };
-
-    const fetchRequestingParties = async () => {
-        try {
-            const token = localStorage.getItem("userToken");
-            const response = await axios.get("http://localhost:8000/api/user/requesting-parties", {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    Accept: "application/json",
-                },
-            });
-
-            if (response.data.success) {
-                const requestingParties = response.data.requestingParties || [];
-                const options = requestingParties.map(party => ({
-                    value: party.id,
-                    label: party.full_name
-                }));
-                setRequestingPartyOptions(options);
-            }
-        } catch (error) {
-            console.error("Error fetching requesting parties:", error);
-            setRequestingPartyOptions([
-                { value: 'admin', label: 'Admin' },
-                { value: 'operations', label: 'Operations' },
-                { value: 'logistics', label: 'Logistics' },
-                { value: 'maintenance', label: 'Maintenance' }
-            ]);
-        }
-    };
+    }, [navigate, fetchGasSlips, fetchEmployees, fetchRequestingParties]);
 
     const handleMenuItemClick = (itemName, path) => {
         setActiveItem(itemName);
@@ -249,7 +310,9 @@ function GasSlip() {
 
             if (response.data.success) {
                 setShowGasSlipForm(false);
-                alert('Fuel request submitted successfully!');
+                
+                // Show success notification
+                addNotification('Request submitted!', 'success');
 
                 // Reset form data
                 setGasSlipFormData({
@@ -271,10 +334,14 @@ function GasSlip() {
                     issuedBy: ''
                 });
 
-                fetchGasSlips();
+                fetchGasSlips(); // Refresh data manually
             }
         } catch (error) {
             console.error('Error submitting fuel request:', error);
+            
+            // Show error notification
+            addNotification('Failed to submit fuel request. Please try again.', 'error');
+            
             if (error.response?.data?.errors) {
                 setFormErrors(error.response.data.errors);
             } else {
@@ -289,7 +356,7 @@ function GasSlip() {
 
     const handleEditSlip = (slip) => {
         console.log('Edit slip:', slip);
-        alert('Edit functionality will be implemented here');
+        addNotification('Edit functionality will be implemented here', 'info');
     };
 
     const handleDeclineSlip = async (slipId) => {
@@ -304,16 +371,15 @@ function GasSlip() {
                 });
 
                 if (response.data.success) {
-                    alert("Gas slip declined successfully!");
-                    fetchGasSlips();
+                    addNotification("Gas slip declined successfully!", "success");
+                    fetchGasSlips(); 
                 }
             } catch (error) {
-                alert("Error declining gas slip: " + (error.response?.data?.message || error.message));
+                addNotification("Error declining gas slip: " + (error.response?.data?.message || error.message), "error");
             }
         }
     };
 
-    // UPDATED: Filter out gas slips that have trip tickets
     const filteredGasSlips = gasSlips.filter(slip =>
         !slip.has_trip_ticket && ( // EXCLUDE slips with trip tickets
             slip.model_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -331,9 +397,14 @@ function GasSlip() {
             activeItem={activeItem}
             onMenuItemClick={handleMenuItemClick}
         >
+            {/* GasSlipNotifications component */}
+            <GasSlipNotifications
+                notifications={notifications}
+                onRemoveNotification={removeNotification}
+            />
+
             <main className="dashboard-content">
                 <div className="gas-slip-container">
-                    {/* Modern Header Section */}
                     <div className="gas-slip-header-modern">
                         <div className="header-content">
                             <div className="title-section">
@@ -371,6 +442,20 @@ function GasSlip() {
                                 >
                                     <GasSlipIcon />
                                     <span>New Request</span>
+                                </button>
+
+                                {/* ADD MANUAL REFRESH BUTTON */}
+                                <button 
+                                    className="gas-slip-btn-modern refresh-btn"
+                                    onClick={fetchGasSlips}
+                                    title="Refresh data"
+                                >
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M23 4v6h-6"/>
+                                        <path d="M1 20v-6h6"/>
+                                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                                    </svg>
+                                    <span>Refresh</span>
                                 </button>
                             </div>
                         </div>

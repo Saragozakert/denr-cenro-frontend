@@ -1,0 +1,174 @@
+.trip-fuel-notifications-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 380px;
+}
+
+.trip-fuel-notification {
+  background: #4CAF50;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: none;
+  overflow: hidden;
+  animation: trip-fuel-slideInRight 0.3s ease-out;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.trip-fuel-notification-success {
+  background: #4CAF50;
+}
+
+.trip-fuel-notification-error {
+  background: #F44336;
+}
+
+.trip-fuel-notification-info {
+  background: #2196F3;
+}
+
+.trip-fuel-notification-warning {
+  background: #FF9800;
+}
+
+.trip-fuel-notification-content {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  gap: 12px;
+}
+
+.trip-fuel-notification-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.trip-fuel-notification-icon {
+  width: 20px;
+  height: 20px;
+  color: #FFFFFF;
+}
+
+.trip-fuel-notification-message {
+  flex: 1;
+  color: #FFFFFF;
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.trip-fuel-notification-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #FFFFFF;
+  transition: background-color 0.2s ease;
+}
+
+.trip-fuel-notification-close:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.trip-fuel-notification-close svg {
+  width: 16px;
+  height: 16px;
+}
+
+@keyframes trip-fuel-slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes trip-fuel-slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.trip-fuel-notification.exiting {
+  animation: trip-fuel-slideOutRight 0.3s ease-in forwards;
+}
+
+/* Progress bar */
+.trip-fuel-notification-progress {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.7);
+  width: 100%;
+  animation: trip-fuel-progressBar 4s linear forwards;
+}
+
+@keyframes trip-fuel-progressBar {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .trip-fuel-notifications-container {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+  
+  .trip-fuel-notification-content {
+    padding: 14px 16px;
+  }
+  
+  .trip-fuel-notification-message {
+    font-size: 13px;
+  }
+}
+
+/* Additional animation for incoming requests */
+.trip-fuel-notification-incoming {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-left: 4px solid #FFD700;
+}
+
+.trip-fuel-notification-urgent {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  border-left: 4px solid #FF0000;
+  animation: trip-fuel-pulse 4s infinite;
+}
+
+@keyframes trip-fuel-pulse {
+  0% {
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(255, 107, 107, 0.8);
+  }
+  100% {
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+  }
+}

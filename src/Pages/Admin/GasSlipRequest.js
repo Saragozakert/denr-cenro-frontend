@@ -1,35 +1,35 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react"; // ADD useCallback
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AdminSidebar from '../../components/Sidebars/AdminSidebar';
-import GasSlipRequestTable from '../../Tables/GasSlipRequestTable'; 
-import GasSlipRequestNotifications from '../../components/Notifications/GasSlipRequestNotifications';
+import GasSlipRequestTable from '../../Tables/GasSlipRequestTable';
+import TripFuelRequestNotifications from '../../components/Notifications/TripFuelRequestNotifications';
 import '../../assets/Style/AdminDesign/GasSlipRequest.css';
 
 // Modern SVG Icons
 const SearchIcon = () => (
   <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="11" cy="11" r="8"/>
-    <path d="m21 21-4.3-4.3"/>
+    <circle cx="11" cy="11" r="8" />
+    <path d="m21 21-4.3-4.3" />
   </svg>
 );
 
 const ClearIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <line x1="18" y1="6" x2="6" y2="18"/>
-    <line x1="6" y1="6" x2="18" y2="18"/>
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
   </svg>
 );
 
 const ChevronDown = () => (
   <svg className="chevron-down" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="6 9 12 15 18 9"/>
+    <polyline points="6 9 12 15 18 9" />
   </svg>
 );
 
 const CheckIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="20 6 9 17 4 12"/>
+    <polyline points="20 6 9 17 4 12" />
   </svg>
 );
 
@@ -45,6 +45,107 @@ function GasSlipRequest() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const navigate = useNavigate();
+
+  // ADDED: useRef to track previously seen request IDs
+  const previousRequestIds = useRef(new Set());
+
+  // FIXED: Define removeNotification first
+  const removeNotification = useCallback((id) => {
+    setNotifications(prev => prev.filter(notification => notification.id !== id));
+  }, []);
+
+  // FIXED: Added removeNotification to dependencies
+  const addNotification = useCallback((message, type = "info") => {
+    const id = Date.now() + Math.random();
+    const newNotification = {
+      id,
+      message,
+      type,
+      timestamp: new Date(),
+    };
+
+    setNotifications(prev => [...prev, newNotification]);
+
+    // Auto remove after 4 seconds
+    setTimeout(() => {
+      removeNotification(id);
+    }, 4000);
+  }, [removeNotification]); // FIXED: Added removeNotification dependency
+
+  // FIXED: Wrapped in useCallback with proper dependencies
+  const fetchFuelRecords = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const token = localStorage.getItem("adminToken");
+      const response = await axios.get("http://localhost:8000/api/admin/fuel-requests", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+
+      if (response.data.success) {
+        const newFuelRequests = response.data.fuelRequests || [];
+
+        if (previousRequestIds.current.size > 0) {
+          // FIXED: Removed unused 'currentIds' variable
+          const newRequests = newFuelRequests.filter(record =>
+            !previousRequestIds.current.has(record.id) && record.status === 'pending'
+          );
+
+          newRequests.forEach(request => {
+            addNotification(
+              `New fuel request from ${request.withdrawn_by} for ${request.model_name}`,
+              'incoming'
+            );
+          });
+        }
+        previousRequestIds.current = new Set(newFuelRequests.map(record => record.id));
+        setFuelRecords(newFuelRequests);
+      }
+    } catch (error) {
+      console.error("Error fetching fuel records:", error);
+      setFuelRecords([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [addNotification]); // FIXED: Added addNotification dependency
+
+  const fetchRequestingParties = useCallback(async () => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await axios.get("http://localhost:8000/api/admin/requesting-parties", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+
+      if (response.data.success) {
+        setRequestingParties(response.data.requestingParties || []);
+      }
+    } catch (error) {
+      console.error("Error fetching requesting parties:", error);
+    }
+  }, []);
+
+  const fetchEmployees = useCallback(async () => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await axios.get("http://localhost:8000/api/admin/employees", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+
+      if (response.data.success) {
+        setEmployees(response.data.employees || []);
+      }
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    }
+  }, []);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -73,65 +174,12 @@ function GasSlipRequest() {
     fetchFuelRecords();
     fetchRequestingParties();
     fetchEmployees();
-  }, [navigate]);
 
-  const fetchRequestingParties = async () => {
-    try {
-      const token = localStorage.getItem("adminToken");
-      const response = await axios.get("http://localhost:8000/api/admin/requesting-parties", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
+    // ADDED: Set up interval to check for new fuel requests (polling)
+    const intervalId = setInterval(fetchFuelRecords, 10000); // Check every 10 seconds
 
-      if (response.data.success) {
-        setRequestingParties(response.data.requestingParties || []);
-      }
-    } catch (error) {
-      console.error("Error fetching requesting parties:", error);
-    }
-  };
-
-  const fetchEmployees = async () => {
-    try {
-      const token = localStorage.getItem("adminToken");
-      const response = await axios.get("http://localhost:8000/api/admin/employees", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
-
-      if (response.data.success) {
-        setEmployees(response.data.employees || []);
-      }
-    } catch (error) {
-      console.error("Error fetching employees:", error);
-    }
-  };
-
-  const fetchFuelRecords = async () => {
-    try {
-      setIsLoading(true);
-      const token = localStorage.getItem("adminToken");
-      const response = await axios.get("http://localhost:8000/api/admin/fuel-requests", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
-
-      if (response.data.success) {
-        setFuelRecords(response.data.fuelRequests || []);
-      }
-    } catch (error) {
-      console.error("Error fetching fuel records:", error);
-      setFuelRecords([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    return () => clearInterval(intervalId); // Cleanup on unmount
+  }, [navigate, fetchFuelRecords, fetchRequestingParties, fetchEmployees]); // FIXED: Added dependencies
 
   // Enhanced fuel records with correct position data
   const enhancedFuelRecords = fuelRecords.map(record => {
@@ -242,8 +290,8 @@ function GasSlipRequest() {
   );
 
   // Filter by status
-  const statusFilteredRecords = statusFilter === 'all' 
-    ? filteredFuelRecords 
+  const statusFilteredRecords = statusFilter === 'all'
+    ? filteredFuelRecords
     : filteredFuelRecords.filter(record => record.status === statusFilter);
 
   // Status options with colors and icons
@@ -263,28 +311,6 @@ function GasSlipRequest() {
     setIsDropdownOpen(false);
   };
 
-  // Notification functions
-  const addNotification = (message, type = "info") => {
-    const id = Date.now() + Math.random();
-    const newNotification = {
-      id,
-      message,
-      type,
-      timestamp: new Date(),
-    };
-
-    setNotifications(prev => [...prev, newNotification]);
-
-    // Auto remove after 4 seconds
-    setTimeout(() => {
-      removeNotification(id);
-    }, 4000);
-  };
-
-  const removeNotification = (id) => {
-    setNotifications(prev => prev.filter(notification => notification.id !== id));
-  };
-
   const handleMenuItemClick = (itemName, itemPath) => {
     setActiveItem(itemName);
     if (itemPath && itemPath !== "#") {
@@ -298,7 +324,7 @@ function GasSlipRequest() {
       activeItem={activeItem}
       onMenuItemClick={handleMenuItemClick}
     >
-      <GasSlipRequestNotifications 
+      <TripFuelRequestNotifications
         notifications={notifications}
         onRemoveNotification={removeNotification}
       />
@@ -319,7 +345,7 @@ function GasSlipRequest() {
                   className="search-input-modern"
                 />
                 {searchTerm && (
-                  <button 
+                  <button
                     className="clear-search-btn"
                     onClick={() => setSearchTerm("")}
                   >
@@ -332,12 +358,12 @@ function GasSlipRequest() {
             {/* Modern Status Filter Dropdown */}
             <div className="status-filter-modern">
               <div className="dropdown-container">
-                <div 
+                <div
                   className={`dropdown-trigger ${isDropdownOpen ? 'active' : ''}`}
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 >
                   <div className="selected-option">
-                    <span 
+                    <span
                       className="status-dot"
                       style={{ backgroundColor: getCurrentStatusOption().color }}
                     ></span>
@@ -355,7 +381,7 @@ function GasSlipRequest() {
                         onClick={() => handleStatusChange(option.value)}
                       >
                         <div className="option-content">
-                          <span 
+                          <span
                             className="status-dot"
                             style={{ backgroundColor: option.color }}
                           ></span>
@@ -378,7 +404,7 @@ function GasSlipRequest() {
             fuelRecords={statusFilteredRecords}
             isLoading={isLoading}
             searchTerm={searchTerm}
-            statusFilter={statusFilter} 
+            statusFilter={statusFilter}
             handleAcceptRecord={handleAcceptRecord}
             handleRejectRecord={handleRejectRecord}
             handleUpdateAmount={handleUpdateAmount}
