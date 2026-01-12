@@ -17,7 +17,6 @@ function GasSlipRequestTable({
     const [editedAmount, setEditedAmount] = useState('');
     const [isUpdating, setIsUpdating] = useState(false);
 
-    // Filter and sort records
     const processedRecords = useMemo(() => {
         let filtered = fuelRecords.filter(record => {
             const matchesSearch =
@@ -131,13 +130,11 @@ function GasSlipRequestTable({
         }
     };
 
-    // Handle print function for Gas Slip
     const handlePrint = (record) => {
         const { handlePrint } = GasSlipPrint({ slip: record });
         handlePrint();
     };
 
-    // Handle print function for Trip Ticket
     const handleTripTicket = (record) => {
         const { handlePrint } = TripTicketPrint({ slip: record });
         handlePrint();
@@ -147,7 +144,7 @@ function GasSlipRequestTable({
         return (
             <div className="fuel-tracking-table-loading">
                 <div className="fuel-tracking-table-spinner"></div>
-                <p>Loading fuel records...</p>
+                <p>Loading Fuel Records...</p>
             </div>
         );
     }

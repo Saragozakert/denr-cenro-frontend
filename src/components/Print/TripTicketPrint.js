@@ -44,11 +44,40 @@ const TripTicketPrintContent = ({ slip, tripTicketData }) => {
         }
     };
 
+    // Smart number formatting - shows decimals only when needed
+    const formatNumber = (num, decimalPlaces = 2) => {
+        if (num === null || num === undefined || num === '') return '';
+        const number = parseFloat(num);
+        if (isNaN(number)) return '';
+        
+        // Check if it's a whole number
+        if (Number.isInteger(number)) {
+            return number.toString();
+        }
+        
+        // Show up to specified decimal places, removing trailing zeros
+        return number.toFixed(decimalPlaces).replace(/\.?0+$/, '');
+    };
+
+    // For distance, odometer readings - always show as whole numbers
+    const formatWholeNumber = (num) => {
+        if (num === null || num === undefined || num === '') return '';
+        const number = parseFloat(num);
+        if (isNaN(number)) return '';
+        return Math.round(number).toString();
+    };
+
+    // For fuel amounts - show decimals when needed
+    const formatFuelNumber = (num) => {
+        return formatNumber(num, 2); // Show up to 2 decimal places for fuel
+    };
+
     const calculateTotal = () => {
         if (!tripTicketData) return '';
         const issued = parseFloat(tripTicketData.issued_from_stock) || 0;
         const purchased = parseFloat(tripTicketData.gasoline_issued_purchased) || 0;
-        return (issued + purchased).toString();
+        const total = issued + purchased;
+        return formatFuelNumber(total);
     };
 
     const getVehicleDisplay = () => {
@@ -248,7 +277,7 @@ const TripTicketPrintContent = ({ slip, tripTicketData }) => {
                 <div className="distance-traveled">
                     5. Approximate distance traveled to & from:
                     <span className="distance-field underline-field long">
-                        {tripTicketData ? parseFloat(tripTicketData.distance_traveled).toFixed(0) : ''}
+                        {tripTicketData ? formatWholeNumber(tripTicketData.distance_traveled) : ''}
                     </span>
                     <span className="distance-unit">
                         <span className="checkbox">
@@ -269,7 +298,7 @@ const TripTicketPrintContent = ({ slip, tripTicketData }) => {
                 <div className="gasoline-diesel">
                     6. Gasoline/Diesel issued/purchased and used:
                     <span className="fuel-field underline-field long">
-                        {tripTicketData ? parseFloat(tripTicketData.gasoline_issued_purchased).toFixed(0) : ''}
+                        {tripTicketData ? formatFuelNumber(tripTicketData.gasoline_issued_purchased) : ''}
                     </span>
                     <span className="fuel-unit">
                         <span className="checkbox">Liters</span>
@@ -283,7 +312,7 @@ const TripTicketPrintContent = ({ slip, tripTicketData }) => {
                 <div className="issued-office">
                     a. Issued by the office from stock:
                     <span className="issued-field underline-field long">
-                        {tripTicketData ? parseFloat(tripTicketData.issued_from_stock).toFixed(0) : ''}
+                        {tripTicketData ? formatFuelNumber(tripTicketData.issued_from_stock) : ''}
                     </span>
                     <span className="issued-unit">
                         <span className="checkbox">Liters</span>
@@ -293,7 +322,7 @@ const TripTicketPrintContent = ({ slip, tripTicketData }) => {
                 <div className="purchased-trip">
                     b. Add: purchased during the trip (to from):
                     <span className="purchased-field underline-field long">
-                        {tripTicketData ? parseFloat(tripTicketData.gasoline_issued_purchased).toFixed(0) : ''}
+                        {tripTicketData ? formatFuelNumber(tripTicketData.gasoline_issued_purchased) : ''}
                     </span>
                     <span className="purchased-unit">
                         <span className="checkbox">Liters</span>
@@ -313,7 +342,7 @@ const TripTicketPrintContent = ({ slip, tripTicketData }) => {
                 <div className="gear-oil">
                     8. Gear oil used:
                     <span className="gear-field underline-field long">
-                        {tripTicketData && tripTicketData.gear_oil_used ? parseFloat(tripTicketData.gear_oil_used).toFixed(0) : ''}
+                        {tripTicketData && tripTicketData.gear_oil_used ? formatFuelNumber(tripTicketData.gear_oil_used) : ''}
                     </span>
                     <span className="gear-unit">
                         <span className="checkbox">Liters</span>
@@ -323,7 +352,7 @@ const TripTicketPrintContent = ({ slip, tripTicketData }) => {
                 <div className="lubricating-oils">
                     9. Lubricating oils used:
                     <span className="lubricating-field underline-field long">
-                        {tripTicketData && tripTicketData.lubricating_oil_used ? parseFloat(tripTicketData.lubricating_oil_used).toFixed(0) : ''}
+                        {tripTicketData && tripTicketData.lubricating_oil_used ? formatFuelNumber(tripTicketData.lubricating_oil_used) : ''}
                     </span>
                     <span className="lubricating-unit">
                         <span className="checkbox">Liters</span>
@@ -333,7 +362,7 @@ const TripTicketPrintContent = ({ slip, tripTicketData }) => {
                 <div className="grease">
                     10. Grease issued/purchased:
                     <span className="grease-field underline-field long">
-                        {tripTicketData && tripTicketData.grease_issued ? parseFloat(tripTicketData.grease_issued).toFixed(0) : ''}
+                        {tripTicketData && tripTicketData.grease_issued ? formatFuelNumber(tripTicketData.grease_issued) : ''}
                     </span>
                     <span className="grease-unit">
                         <span className="checkbox">Liters</span>
@@ -347,7 +376,7 @@ const TripTicketPrintContent = ({ slip, tripTicketData }) => {
                 <div className="odometer-beginning">
                     - At the beginning of the trip:
                     <span className="beginning-field underline-field long">
-                        {tripTicketData ? parseFloat(tripTicketData.odometer_start).toFixed(0) : ''}
+                        {tripTicketData ? formatWholeNumber(tripTicketData.odometer_start) : ''}
                     </span>
                     <span className="beginning-unit">
                         <span className="checkbox">
@@ -368,7 +397,7 @@ const TripTicketPrintContent = ({ slip, tripTicketData }) => {
                 <div className="odometer-end">
                     - At the end of the trip:
                     <span className="end-field underline-field long">
-                        {tripTicketData ? parseFloat(tripTicketData.odometer_end).toFixed(0) : ''}
+                        {tripTicketData ? formatWholeNumber(tripTicketData.odometer_end) : ''}
                     </span>
                     <span className="end-unit">
                         <span className="checkbox">

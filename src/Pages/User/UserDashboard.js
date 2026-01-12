@@ -7,7 +7,6 @@ import UserCards from "../../components/cards/UserCards";
 import UserHeader from "../../components/Headers/UserHeader";
 
 function UserDashboard() {
-  const [statsLoading, setStatsLoading] = useState(true);
   const [activeItem, setActiveItem] = useState("dashboard");
   const [fuelRequests, setFuelRequests] = useState(0);
   const [pendingApprovals, setPendingApprovals] = useState(0);
@@ -42,14 +41,14 @@ function UserDashboard() {
 
   const fetchUserStats = async () => {
     try {
-      setStatsLoading(true);
+      // Removed setStatsLoading(true) since the variable is no longer used
       setFuelRequests(5);
       setPendingApprovals(2);
       setTripRecords(8);
     } catch (error) {
       console.error("Error fetching user stats:", error);
     } finally {
-      setStatsLoading(false);
+      // Removed setStatsLoading(false) since the variable is no longer used
     }
   };
 

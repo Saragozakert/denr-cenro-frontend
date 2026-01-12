@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import UserSidebar from "../../components/Sidebars/UserSidebar";
@@ -39,7 +39,7 @@ function GasSlip() {
     const [showGasSlipForm, setShowGasSlipForm] = useState(false);
     const [notifications, setNotifications] = useState([]);
     
-    const previousApprovedIds = useRef(new Set());
+    // REMOVED: useRef for tracking previous IDs
 
     const [gasSlipFormData, setGasSlipFormData] = useState({
         vehicleType: '',
@@ -88,7 +88,7 @@ function GasSlip() {
         }, 4000);
     }, [removeNotification]);
 
-    // SIMPLIFIED: Fetch gas slips without polling
+    // SIMPLIFIED: Fetch gas slips without notification tracking
     const fetchGasSlips = useCallback(async () => {
         try {
             setIsLoading(true);
@@ -102,22 +102,6 @@ function GasSlip() {
 
             if (response.data.success) {
                 const gasSlipsData = response.data.fuelRequests || [];
-                
-                // CHECK FOR NEWLY APPROVED REQUESTS (one-time check)
-                if (previousApprovedIds.current.size > 0) {
-                    const newlyApproved = gasSlipsData.filter(record => 
-                        !previousApprovedIds.current.has(record.id) && 
-                        record.status === 'approved'
-                    );
-                    
-                    // Show notification for each newly approved request
-                    newlyApproved.forEach(request => {
-                        addNotification('Your fuel request has been approved!', 'success');
-                    });
-                }
-
-                // Update the previous approved IDs
-                previousApprovedIds.current = new Set(gasSlipsData.map(record => record.id));
                 setGasSlips(gasSlipsData);
             }
         } catch (error) {
@@ -137,21 +121,6 @@ function GasSlip() {
                         ...slip,
                         has_trip_ticket: false
                     }));
-                    
-                    // CHECK FOR NEWLY APPROVED IN FALLBACK DATA TOO
-                    if (previousApprovedIds.current.size > 0) {
-                        const newlyApproved = gasSlipsWithDefault.filter(record => 
-                            !previousApprovedIds.current.has(record.id) && 
-                            record.status === 'approved'
-                        );
-                        
-                        newlyApproved.forEach(request => {
-                            addNotification('Your fuel request has been approved!', 'success');
-                        });
-                    }
-                    
-                    // Update the previous approved IDs for fallback data
-                    previousApprovedIds.current = new Set(gasSlipsWithDefault.map(record => record.id));
                     setGasSlips(gasSlipsWithDefault || []);
                 }
             } catch (fallbackError) {
@@ -161,7 +130,7 @@ function GasSlip() {
         } finally {
             setIsLoading(false);
         }
-    }, [addNotification]);
+    }, []); // REMOVED: addNotification dependency
 
     const fetchEmployees = useCallback(async () => {
         try {
@@ -246,9 +215,7 @@ function GasSlip() {
         fetchRequestingParties();
         fetchGasSlips();
         
-        // REMOVED: Polling interval - no more automatic refreshing
-        // const intervalId = setInterval(fetchGasSlips, 10000);
-        // return () => clearInterval(intervalId);
+        // REMOVED: Polling interval and return cleanup function
 
     }, [navigate, fetchGasSlips, fetchEmployees, fetchRequestingParties]);
 
@@ -435,27 +402,13 @@ function GasSlip() {
                                     </div>
                                 </div>
 
-                                {/* Modern Gas Slip Button */}
+                                {/* Modern Gas Slip Button - REMOVED: Refresh button */}
                                 <button 
                                     className="gas-slip-btn-modern"
                                     onClick={() => setShowGasSlipForm(true)}
                                 >
                                     <GasSlipIcon />
                                     <span>New Request</span>
-                                </button>
-
-                                {/* ADD MANUAL REFRESH BUTTON */}
-                                <button 
-                                    className="gas-slip-btn-modern refresh-btn"
-                                    onClick={fetchGasSlips}
-                                    title="Refresh data"
-                                >
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                        <path d="M23 4v6h-6"/>
-                                        <path d="M1 20v-6h6"/>
-                                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
-                                    </svg>
-                                    <span>Refresh</span>
                                 </button>
                             </div>
                         </div>

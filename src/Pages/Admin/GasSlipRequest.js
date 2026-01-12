@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react"; // ADD useCallback
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AdminSidebar from '../../components/Sidebars/AdminSidebar';
@@ -46,15 +46,10 @@ function GasSlipRequest() {
   const [notifications, setNotifications] = useState([]);
   const navigate = useNavigate();
 
-  // ADDED: useRef to track previously seen request IDs
-  const previousRequestIds = useRef(new Set());
-
-  // FIXED: Define removeNotification first
   const removeNotification = useCallback((id) => {
     setNotifications(prev => prev.filter(notification => notification.id !== id));
   }, []);
 
-  // FIXED: Added removeNotification to dependencies
   const addNotification = useCallback((message, type = "info") => {
     const id = Date.now() + Math.random();
     const newNotification = {
@@ -65,14 +60,11 @@ function GasSlipRequest() {
     };
 
     setNotifications(prev => [...prev, newNotification]);
-
-    // Auto remove after 4 seconds
     setTimeout(() => {
       removeNotification(id);
     }, 4000);
-  }, [removeNotification]); // FIXED: Added removeNotification dependency
+  }, [removeNotification]);
 
-  // FIXED: Wrapped in useCallback with proper dependencies
   const fetchFuelRecords = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -86,30 +78,16 @@ function GasSlipRequest() {
 
       if (response.data.success) {
         const newFuelRequests = response.data.fuelRequests || [];
-
-        if (previousRequestIds.current.size > 0) {
-          // FIXED: Removed unused 'currentIds' variable
-          const newRequests = newFuelRequests.filter(record =>
-            !previousRequestIds.current.has(record.id) && record.status === 'pending'
-          );
-
-          newRequests.forEach(request => {
-            addNotification(
-              `New fuel request from ${request.withdrawn_by} for ${request.model_name}`,
-              'incoming'
-            );
-          });
-        }
-        previousRequestIds.current = new Set(newFuelRequests.map(record => record.id));
         setFuelRecords(newFuelRequests);
       }
     } catch (error) {
       console.error("Error fetching fuel records:", error);
       setFuelRecords([]);
+      addNotification("Error fetching fuel records: " + error.message, "error");
     } finally {
       setIsLoading(false);
     }
-  }, [addNotification]); // FIXED: Added addNotification dependency
+  }, [addNotification]);
 
   const fetchRequestingParties = useCallback(async () => {
     try {
@@ -175,15 +153,10 @@ function GasSlipRequest() {
     fetchRequestingParties();
     fetchEmployees();
 
-    // ADDED: Set up interval to check for new fuel requests (polling)
-    const intervalId = setInterval(fetchFuelRecords, 10000); // Check every 10 seconds
+  
+  }, [navigate, fetchFuelRecords, fetchRequestingParties, fetchEmployees]);
 
-    return () => clearInterval(intervalId); // Cleanup on unmount
-  }, [navigate, fetchFuelRecords, fetchRequestingParties, fetchEmployees]); // FIXED: Added dependencies
-
-  // Enhanced fuel records with correct position data
   const enhancedFuelRecords = fuelRecords.map(record => {
-    // For requesting party position
     let requestingPosition = record.position;
     if (!requestingPosition) {
       const requestingParty = requestingParties.find(
@@ -192,7 +165,7 @@ function GasSlipRequest() {
       requestingPosition = requestingParty ? requestingParty.position : 'N/A';
     }
 
-    // For approve section position - find by approved_by name instead of withdrawn_by
+
     let approveSectionPosition = record.approve_section_position;
     if (!approveSectionPosition || approveSectionPosition === 'N/A') {
       const employee = employees.find(
@@ -224,7 +197,7 @@ function GasSlipRequest() {
 
       if (response.data.success) {
         addNotification("Gasoline amount updated successfully!", "success");
-        fetchFuelRecords();
+        fetchFuelRecords(); 
       }
     } catch (error) {
       addNotification("Error updating gasoline amount: " + (error.response?.data?.message || error.message), "error");
@@ -248,7 +221,7 @@ function GasSlipRequest() {
 
       if (response.data.success) {
         addNotification("Successfully Approved", "success");
-        fetchFuelRecords();
+        fetchFuelRecords(); 
       }
     } catch (error) {
       addNotification("Error approving fuel request: " + (error.response?.data?.message || error.message), "error");
@@ -289,12 +262,11 @@ function GasSlipRequest() {
     record.approve_section_position?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Filter by status
   const statusFilteredRecords = statusFilter === 'all'
     ? filteredFuelRecords
     : filteredFuelRecords.filter(record => record.status === statusFilter);
 
-  // Status options with colors and icons
+
   const statusOptions = [
     { value: 'all', label: 'All Requests', color: '#6b7280', bgColor: '#f3f4f6', textColor: '#6b7280' },
     { value: 'pending', label: 'Pending Only', color: '#f59e0b', bgColor: '#fef3c7', textColor: '#d97706' },
@@ -331,9 +303,7 @@ function GasSlipRequest() {
 
       <main className="dashboard-content">
         <div className="fuel-tracking-container">
-          {/* Modern Filters Section */}
           <div className="fuel-tracking-filters-modern">
-            {/* Modern Search Bar */}
             <div className="search-container-modern">
               <div className="search-input-wrapper">
                 <SearchIcon />
@@ -355,7 +325,6 @@ function GasSlipRequest() {
               </div>
             </div>
 
-            {/* Modern Status Filter Dropdown */}
             <div className="status-filter-modern">
               <div className="dropdown-container">
                 <div

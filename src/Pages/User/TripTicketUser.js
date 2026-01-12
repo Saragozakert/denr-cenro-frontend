@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react"; // ADD useRef
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import UserSidebar from "../../components/Sidebars/UserSidebar";
@@ -6,7 +6,6 @@ import TripTicketUserTable from "../../Tables/TripTicketUserTable";
 import "./../../assets/Style/UserDesign/UserDashboard.css";
 import "./../../assets/Style/UserDesign/TripTicketUser.css";
 
-// Modern SVG Icons
 const SearchIcon = () => (
   <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <circle cx="11" cy="11" r="8"/>
@@ -28,9 +27,6 @@ function TripTicketUser() {
     const [tripTickets, setTripTickets] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
-
-    // ADD: useRef to track previously seen ticket IDs
-    const previousTicketIds = useRef(new Set());
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -60,14 +56,8 @@ function TripTicketUser() {
 
         checkAuth();
         fetchTripTickets();
-        
-        // ADD: Set up interval for polling (no notifications)
-        const intervalId = setInterval(fetchTripTickets, 10000); // Check every 10 seconds
-
-        return () => clearInterval(intervalId); // Cleanup on unmount
     }, [navigate]);
 
-    // UPDATED: fetchTripTickets with polling logic (no notifications)
     const fetchTripTickets = async () => {
         try {
             setIsLoading(true);
@@ -80,14 +70,7 @@ function TripTicketUser() {
             });
 
             if (response.data.success) {
-                const newTripTickets = response.data.tripTickets || [];
-                
-                // POLLING ONLY: Just update the data without showing notifications
-                // The data will automatically refresh in the background
-                
-                // Update the previous ticket IDs for tracking (but no notifications)
-                previousTicketIds.current = new Set(newTripTickets.map(ticket => ticket.id));
-                setTripTickets(newTripTickets);
+                setTripTickets(response.data.tripTickets || []);
             } else {
                 setTripTickets([]);
             }
@@ -108,32 +91,10 @@ function TripTicketUser() {
 
     const handleEditTicket = (ticket) => {
         console.log('Edit ticket:', ticket);
-        // Navigate to trip ticket form or show modal
         if (ticket.status === 'Pending') {
             navigate(`/trip-ticket-form/${ticket.fuel_request_id}`);
         } else {
             alert(`Trip ticket already submitted on ${ticket.date_submitted}`);
-        }
-    };
-
-    const handleRefresh = async () => {
-        try {
-            setIsLoading(true);
-            const token = localStorage.getItem("userToken");
-            const response = await axios.get("http://localhost:8000/api/user/user-trip-tickets", {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    Accept: "application/json",
-                },
-            });
-
-            if (response.data.success) {
-                setTripTickets(response.data.tripTickets || []);
-            }
-        } catch (error) {
-            console.error("Error refreshing trip tickets:", error);
-        } finally {
-            setIsLoading(false);
         }
     };
 
@@ -153,7 +114,6 @@ function TripTicketUser() {
         >
             <main className="dashboard-content">
                 <div className="trip-ticket-container">
-                    {/* Modern Header Section */}
                     <div className="trip-ticket-header-modern">
                         <div className="header-content">
                             <div className="title-section">
@@ -162,7 +122,6 @@ function TripTicketUser() {
                             </div>
                             
                             <div className="actions-section">
-                                {/* Modern Search Bar */}
                                 <div className="search-container-modern">
                                     <div className="search-input-wrapper">
                                         <SearchIcon />
@@ -183,9 +142,6 @@ function TripTicketUser() {
                                         )}
                                     </div>
                                 </div>
-
-                                {/* Modern Refresh Button */}
-                               
                             </div>
                         </div>
                     </div>
@@ -195,7 +151,6 @@ function TripTicketUser() {
                         isLoading={isLoading}
                         searchTerm={searchTerm}
                         handleEditTicket={handleEditTicket}
-                        onRefresh={handleRefresh}
                     />
                 </div>
             </main>
