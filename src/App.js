@@ -14,26 +14,19 @@ import UserManagement from "./Pages/Admin/UserManagement";
 import RequestingParty from "./Pages/Admin/RequestingParty";
 import TypeUnit from "./Pages/Admin/TypeUnit";
 import ApproveSection from "./Pages/Admin/ApproveSection";
-import AdminForm from "./components/Auth/AdminForm";
 import TripTicketAdmin from "./Pages/Admin/TripTicketAdmin";
-
 
 // User Pages
 import UserDashboard from "./Pages/User/UserDashboard";
 import GasSlip from "./Pages/User/GasSlip";
-import UserForm from "./components/Auth/UserForm";
 import TripTicketUser from "./Pages/User/TripTicketUser";
-
-
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* Public Route */}
+        {/* Public Route - Single Login Page */}
         <Route path="/" element={<Mainpage />} />
-        <Route path="/user-portal" element={<UserForm />} />
-        <Route path="/admin-portal" element={<AdminForm />} />
 
         {/* Admin Protected Routes */}
         <Route element={<AdminProtectedRoute/>}>

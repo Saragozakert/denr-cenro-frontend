@@ -3,15 +3,13 @@ import axios from "axios";
 import "../../assets/Style/LandingDesign/Homepage.css";
 import { useNavigate } from "react-router-dom";
 
-function AdminForm({ show, onClose, onSwitchToUser }) {
+function LoginForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // New state for password visibility
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
-  if (!show) return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,28 +17,40 @@ function AdminForm({ show, onClose, onSwitchToUser }) {
     setError("");
 
     try {
-      const response = await axios.post("http://localhost:8000/api/admin/login", {
-        username: username,
-        password: password,
-      }, {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      });
+      try {
+        const adminResponse = await axios.post("http://localhost:8000/api/admin/login", {
+          username: username,
+          password: password,
+        }, {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        });
 
-      localStorage.setItem("adminToken", response.data.token);
-      navigate("/admin/dashboard");
+        localStorage.setItem("adminToken", adminResponse.data.token);
+        navigate("/admin/dashboard");
+        return;
+      } catch (adminError) {
+        const userResponse = await axios.post("http://localhost:8000/api/user/login", {
+          username: username,
+          password: password,
+        }, {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        });
+
+        localStorage.setItem("userToken", userResponse.data.token);
+        localStorage.setItem("userData", JSON.stringify(userResponse.data.user));
+        navigate("/user/dashboard");
+      }
     } catch (err) {
-      setError(err.response?.data?.message || "Invalid credentials");
+      setError(err.response?.data?.message || "Invalid username or password");
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleSwitchToUser = () => {
-    onClose(); // Close admin form
-    onSwitchToUser(); // Open user form
   };
 
   const togglePasswordVisibility = () => {
@@ -54,16 +64,11 @@ function AdminForm({ show, onClose, onSwitchToUser }) {
           <div className="admin-login-header">
             <div className="admin-logo">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path fillRule="evenodd" d="M12.516 2.17a.75.75 0 00-1.032 0 11.209 11.209 0 01-7.877 3.08.75.75 0 00-.722.515A12.74 12.74 0 002.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 01.374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 00-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08zm3.094 8.016a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
+                <path d="M4.5 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM14.25 8.625a3.375 3.375 0 116.75 0 3.375 3.375 0 01-6.75 0zM1.5 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM17.25 19.128l-.001.144a2.25 2.25 0 01-.233.96 10.088 10.088 0 005.06-1.01.75.75 0 00.42-.643 4.875 4.875 0 00-6.957-4.611 8.586 8.586 0 011.71 5.157v.003z" />
               </svg>
             </div>
-            <h2>Admin Portal</h2>
-            <div className="admin-switch-link">
-              <span>Not an admin? </span>
-              <button type="button" onClick={handleSwitchToUser} className="switch-portal-btn">
-                Access User Portal
-              </button>
-            </div>
+            <h2>Login Portal</h2>
+            <p className="portal-subtitle">Enter your credentials to access the system</p>
           </div>
 
           {error && (
@@ -144,7 +149,7 @@ function AdminForm({ show, onClose, onSwitchToUser }) {
               {loading ? (
                 <>
                   <div className="admin-spinner"></div>
-                  Authenticating...
+                  Signing in...
                 </>
               ) : (
                 "Sign In"
@@ -153,7 +158,7 @@ function AdminForm({ show, onClose, onSwitchToUser }) {
           </form>
 
           <div className="admin-footer">
-            <p>Restricted page! <span>Admins only allowed</span></p>
+            <p>Need an account? <span>Contact administrator</span></p>
           </div>
         </div>
       </div>
@@ -161,4 +166,4 @@ function AdminForm({ show, onClose, onSwitchToUser }) {
   );
 }
 
-export default AdminForm;
+export default LoginForm;
