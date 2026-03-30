@@ -1,0 +1,240 @@
+/* UserGraph.css - Matching AdminGraph design */
+
+:root {
+  --white: #ffffff;
+  --gray-light: #e5e7eb;
+  --gray: #6b7280;
+  --gray-dark: #1f2937;
+  --emerald: #10b981;
+  --emerald-dark: #059669;
+  --blue: #3b82f6;
+  --amber: #f59e0b;
+  --red: #ef4444;
+  --purple: #8b5cf6;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --radius: 0.5rem;
+  --radius-lg: 0.75rem;
+  --transition: all 0.3s ease;
+}
+
+/* Enhanced Charts Section */
+.charts-container {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.chart-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: var(--transition);
+  position: relative;
+}
+
+.chart-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.chart-card.full-width {
+  grid-column: 1 / -1;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.chart-header h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--gray-dark);
+}
+
+.budget-summary {
+  display: flex;
+  gap: 1rem;
+  margin-left: auto;
+  margin-right: 1rem;
+}
+
+.budget-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--gray-light);
+  color: var(--gray-dark);
+}
+
+.budget-badge.budget-total {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--blue);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.budget-badge.budget-spent {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--red);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.budget-badge.budget-remaining {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--emerald);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.chart-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.chart-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--gray-light);
+  background: var(--white);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--gray);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.chart-btn.active,
+.chart-btn:hover {
+  background: var(--emerald);
+  color: var(--white);
+  border-color: var(--emerald);
+}
+
+.chart-wrapper {
+  height: 300px;
+  position: relative;
+}
+
+/* Custom Tooltip Styles */
+.custom-tooltip {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
+}
+
+/* Responsive Design for Charts */
+@media (max-width: 1200px) {
+  .charts-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .budget-summary {
+    margin-left: 0;
+    margin-right: 0;
+    order: 3;
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .budget-summary {
+    flex-wrap: wrap;
+  }
+  
+  .chart-actions {
+    align-self: flex-end;
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .chart-wrapper {
+    height: 250px;
+  }
+}
+
+@media (max-width: 480px) {
+  .chart-card {
+    padding: 1rem;
+  }
+  
+  .budget-summary {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .budget-badge {
+    width: fit-content;
+  }
+}
+
+/* Animation for chart cards */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chart-card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.chart-card:nth-child(2) { 
+  animation-delay: 0.2s; 
+}
+
+.chart-card:nth-child(3) { 
+  animation-delay: 0.4s; 
+}
+
+/* Hover effects for bars and lines */
+.recharts-bar-rectangle:hover {
+  filter: brightness(0.95);
+  transition: filter 0.2s ease;
+}
+
+.recharts-line-dot:hover {
+  r: 8;
+  transition: r 0.2s ease;
+}
+
+/* Legend custom styling */
+.recharts-legend-item {
+  cursor: pointer !important;
+}
+
+.recharts-legend-item:hover {
+  opacity: 0.8;
+}
+
+/* Grid line customization */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: rgba(0, 0, 0, 0.05);
+  stroke-dasharray: 3 3;
+}
+
+/* Axis customization */
+.recharts-xAxis .recharts-cartesian-axis-tick-value,
+.recharts-yAxis .recharts-cartesian-axis-tick-value {
+  font-size: 11px;
+  font-weight: 500;
+}

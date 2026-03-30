@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { FiBell } from "react-icons/fi";
+import { MdOutlineAccountBalanceWallet } from 'react-icons/md';
 import {
   TbLayoutDashboard,
   TbGasStation,
@@ -16,7 +17,7 @@ const UserSidebar = ({ children, activeItem, onMenuItemClick }) => {
   const menuItems = [
     {
       name: "dashboard",
-      icon: <TbLayoutDashboard size={20} />, 
+      icon: <TbLayoutDashboard size={20} />,
       label: "Dashboard",
       path: "/user/dashboard"
     },
@@ -31,6 +32,13 @@ const UserSidebar = ({ children, activeItem, onMenuItemClick }) => {
       icon: <TbCar size={20} />,
       label: "Trip Records",
       path: "/user/dashboard/trip-ticket"
+    },
+
+    {
+      name: "",
+      icon: <MdOutlineAccountBalanceWallet size={20} />,
+      label: "Budget Remaining",
+      path: "#"
     }
   ];
 
@@ -111,7 +119,7 @@ const UserSidebar = ({ children, activeItem, onMenuItemClick }) => {
         </div>
       </div>
 
-      
+
       <div className="admin-main-content">
         {children}
       </div>

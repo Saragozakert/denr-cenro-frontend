@@ -1,5 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
+import axios from 'axios';
 import './../assets/Style/TableDesign/TripTicketAdminTable.css';
+import TripTicketPrint from '../components/Print/TripTicketPrint';
 
 function TripTicketAdminTable({
   tripTickets = [],
@@ -53,17 +55,17 @@ function TripTicketAdminTable({
   };
 
   const SortIcon = ({ columnKey }) => {
-    if (sortConfig.key !== columnKey) return <span>↕️</span>;
+    if (sortConfig.key !== columnKey) return <span>↓</span>;
     return sortConfig.direction === 'asc' ? <span>↑</span> : <span>↓</span>;
   };
 
   const formatDate = (dateString) => {
     if (!dateString || dateString === 'Pending') return 'Pending';
-    
+
     try {
       const date = new Date(dateString);
       if (isNaN(date.getTime())) return dateString;
-      
+
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
       const year = date.getFullYear();
@@ -94,11 +96,52 @@ function TripTicketAdminTable({
     return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
   };
 
+  // Add handlePrint function
+  const handlePrint = async (ticket) => {
+    try {
+      const token = localStorage.getItem("adminToken");
+
+      // Fetch complete data
+      const response = await axios.get(
+        `http://localhost:8000/api/admin/trip-tickets-complete/${ticket.fuel_request_id || ticket.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+      );
+
+      if (response.data.success) {
+        const fuelRequest = response.data.fuel_request;
+
+        const slip = {
+          id: fuelRequest.id,
+          model_name: fuelRequest.model_name || '',
+          plate_no: fuelRequest.plate_no || '',
+          withdrawn_by: fuelRequest.withdrawn_by || '',
+          authorized_passengers: fuelRequest.authorized_passengers || '',
+          places_to_visit: fuelRequest.places_to_visit || '',
+          purpose: fuelRequest.purpose || '',
+          requesting_party: fuelRequest.requesting_party || '',
+          position: fuelRequest.position || '',
+          date: fuelRequest.date || '',
+        };
+
+        const { handlePrint } = TripTicketPrint({ slip });
+        handlePrint();
+      }
+    } catch (error) {
+      console.error('Error fetching complete trip ticket:', error);
+      alert('Failed to load trip ticket data for printing');
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="trip-ticket-admin-table-loading">
         <div className="trip-ticket-admin-table-spinner"></div>
-        <p>Loading trip tickets...</p>
+        <p>Loading Trip Tickets</p>
       </div>
     );
   }
@@ -163,15 +206,28 @@ function TripTicketAdminTable({
                 </td>
                 <td className="trip-ticket-admin-table-actions">
                   <div className="trip-ticket-admin-table-action-group">
-                    <button
-                      className="trip-ticket-admin-table-action-btn trip-ticket-admin-table-edit-btn"
-                      onClick={() => handleEditTripTicket(ticket)}
-                      aria-label="View trip ticket details"
-                    >
-                      <svg className="trip-ticket-admin-table-icon-edit" viewBox="0 0 24 24">
-                        <path fill="currentColor" d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
-                      </svg>
-                    </button>
+                    {/* Show print button only for SUBMITTED status */}
+                    {ticket.status?.toLowerCase() === 'submitted' ? (
+                      <button
+                        className="trip-ticket-admin-table-action-btn trip-ticket-admin-table-print-btn"
+                        onClick={() => handlePrint(ticket)}
+                        title="Print Trip Ticket"
+                      >
+                        <svg className="trip-ticket-admin-table-icon-print" viewBox="0 0 24 24">
+                          <path fill="currentColor" d="M18,3H6V7H18M19,12A1,1 0 0,1 18,11A1,1 0 0,1 19,10A1,1 0 0,1 20,11A1,1 0 0,1 19,12M16,19H8V14H16M19,8H5A3,3 0 0,0 2,11V17H6V21H18V17H22V11A3,3 0 0,0 19,8Z" />
+                        </svg>
+                      </button>
+                    ) : (
+                      <button
+                        className="trip-ticket-admin-table-action-btn trip-ticket-admin-table-edit-btn"
+                        onClick={() => handleEditTripTicket(ticket)}
+                        aria-label="View trip ticket details"
+                      >
+                        <svg className="trip-ticket-admin-table-icon-edit" viewBox="0 0 24 24">
+                          <path fill="currentColor" d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
+                        </svg>
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>

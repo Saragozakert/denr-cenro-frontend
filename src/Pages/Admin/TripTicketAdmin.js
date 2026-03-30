@@ -8,15 +8,15 @@ import "./../../assets/Style/AdminDesign/TripTicketAdmin.css";
 // Modern SVG Icons
 const SearchIcon = () => (
   <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="11" cy="11" r="8"/>
-    <path d="m21 21-4.3-4.3"/>
+    <circle cx="11" cy="11" r="8" />
+    <path d="m21 21-4.3-4.3" />
   </svg>
 );
 
 const ClearIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <line x1="18" y1="6" x2="6" y2="18"/>
-    <line x1="6" y1="6" x2="18" y2="18"/>
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
   </svg>
 );
 
@@ -67,7 +67,47 @@ function TripTicketAdmin() {
       });
 
       if (response.data.success) {
-        setTripTickets(response.data.tripTickets || []);
+        const tickets = response.data.tripTickets || [];
+
+        // For each ticket, fetch the complete fuel request details
+        const ticketsWithDetails = await Promise.all(
+          tickets.map(async (ticket) => {
+            try {
+              // Fetch the fuel request details which contain all the needed fields
+              const fuelRequestResponse = await axios.get(
+                `http://localhost:8000/api/admin/fuel-requests/${ticket.fuel_request_id}`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: "application/json",
+                  },
+                }
+              );
+
+              if (fuelRequestResponse.data.success) {
+                const fuelRequest = fuelRequestResponse.data.fuelRequest;
+                return {
+                  ...ticket,
+                  ...fuelRequest, // This adds all fuel request fields
+                  model_name: fuelRequest.model_name,
+                  plate_no: fuelRequest.plate_no,
+                  authorized_passengers: fuelRequest.authorized_passengers,
+                  places_to_visit: fuelRequest.places_to_visit,
+                  purpose: fuelRequest.purpose,
+                  requesting_party: fuelRequest.requesting_party,
+                  position: fuelRequest.position,
+                  date_requested: fuelRequest.date,
+                };
+              }
+              return ticket;
+            } catch (error) {
+              console.error('Error fetching fuel request details:', error);
+              return ticket;
+            }
+          })
+        );
+
+        setTripTickets(ticketsWithDetails);
       }
     } catch (error) {
       console.error("Error fetching trip tickets:", error);
@@ -112,7 +152,7 @@ function TripTicketAdmin() {
                 <h1 className="page-title">Trip Tickets</h1>
                 <p className="page-subtitle">Monitor and manage all trip ticket requests</p>
               </div>
-              
+
               <div className="actions-section">
                 {/* Modern Search Bar */}
                 <div className="search-container-modern">
@@ -126,7 +166,7 @@ function TripTicketAdmin() {
                       className="search-input-modern"
                     />
                     {searchTerm && (
-                      <button 
+                      <button
                         className="clear-search-btn"
                         onClick={() => setSearchTerm("")}
                       >

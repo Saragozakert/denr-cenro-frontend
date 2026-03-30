@@ -54,7 +54,7 @@ function TripTicketForm({
                             <div className="enhanced-form-grid">
                                 <div className="enhanced-form-group">
                                     <label htmlFor="departureTimeOffice">
-                                        Time of Departure from the office/garage <span className="required-field">*</span>
+                                        Departure Time from Office/Garage <span className="required-field">*</span>
                                     </label>
                                     <input
                                         type="time"
@@ -69,7 +69,7 @@ function TripTicketForm({
 
                                 <div className="enhanced-form-group">
                                     <label htmlFor="arrivalTimeDestination">
-                                        Time of arrival at Item No. 4 above <span className="required-field">*</span>
+                                        Time of Arrival <span className="required-field">*</span>
                                     </label>
                                     <input
                                         type="time"
@@ -84,7 +84,7 @@ function TripTicketForm({
 
                                 <div className="enhanced-form-group">
                                     <label htmlFor="departureTimeDestination">
-                                        Time of departure from Item No. 4 above <span className="required-field">*</span>
+                                        Time of Departure <span className="required-field">*</span>
                                     </label>
                                     <input
                                         type="time"
@@ -99,7 +99,7 @@ function TripTicketForm({
 
                                 <div className="enhanced-form-group">
                                     <label htmlFor="arrivalTimeOffice">
-                                        Time of arrival back to the office/garage <span className="required-field">*</span>
+                                        Arrival Time at Office/Garage <span className="required-field">*</span>
                                     </label>
                                     <input
                                         type="time"
@@ -127,7 +127,7 @@ function TripTicketForm({
                             <div className="enhanced-form-grid">
                                 <div className="enhanced-form-group">
                                     <label htmlFor="distanceTraveled">
-                                        Approximate distance traveled to & from <span className="required-field">*</span>
+                                        Approximate Distance Traveled (To & From) <span className="required-field">*</span>
                                     </label>
                                     <div className="distance-input-group">
                                         <input
@@ -157,7 +157,7 @@ function TripTicketForm({
 
                                 <div className="enhanced-form-group">
                                     <label htmlFor="gasolineIssuedPurchased"> 
-                                        Gasoline/Diesel issued/purchased and used <span className="required-field">*</span>
+                                        Fuel Issued/Purchased and Used<span className="required-field">*</span>
                                     </label>
                                     <input
                                         type="number"
@@ -175,7 +175,7 @@ function TripTicketForm({
 
                                 <div className="enhanced-form-group">
                                     <label htmlFor="issuedFromStock">
-                                        Issued by the office from stock <span className="required-field">*</span>
+                                        Fuel Issued from Office Stock <span className="required-field">*</span>
                                     </label>
                                     <input
                                         type="number"

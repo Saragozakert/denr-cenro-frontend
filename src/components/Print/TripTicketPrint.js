@@ -49,12 +49,12 @@ const TripTicketPrintContent = ({ slip, tripTicketData }) => {
         if (num === null || num === undefined || num === '') return '';
         const number = parseFloat(num);
         if (isNaN(number)) return '';
-        
+
         // Check if it's a whole number
         if (Number.isInteger(number)) {
             return number.toString();
         }
-        
+
         // Show up to specified decimal places, removing trailing zeros
         return number.toFixed(decimalPlaces).replace(/\.?0+$/, '');
     };

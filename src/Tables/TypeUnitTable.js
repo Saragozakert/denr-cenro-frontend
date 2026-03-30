@@ -9,9 +9,8 @@ function TypeUnitTable({
   handleEditUnit
 }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; 
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
-
 
   const processedUnits = useMemo(() => {
     let filtered = units.filter(unit =>
@@ -22,7 +21,6 @@ function TypeUnitTable({
       unit.office?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
- 
     if (sortConfig.key) {
       filtered.sort((a, b) => {
         const aValue = a[sortConfig.key] || '';
@@ -36,7 +34,6 @@ function TypeUnitTable({
 
     return filtered;
   }, [units, searchTerm, sortConfig]);
-
 
   const totalPages = Math.ceil(processedUnits.length / itemsPerPage);
   const currentUnits = useMemo(() => {
@@ -52,19 +49,24 @@ function TypeUnitTable({
     setCurrentPage(1);
   };
 
+  const handleItemsPerPageChange = (e) => {
+    setItemsPerPage(Number(e.target.value));
+    setCurrentPage(1);
+  };
+
   const goToPage = (page) => {
     setCurrentPage(Math.max(1, Math.min(page, totalPages)));
   };
 
   const SortIcon = ({ columnKey }) => {
-    if (sortConfig.key !== columnKey) return <span>↕️</span>;
+    if (sortConfig.key !== columnKey) return <span>↓</span>;
     return sortConfig.direction === 'asc' ? <span>↑</span> : <span>↓</span>;
   };
 
   if (isLoading) {
     return (
       <div className="type-unit-table-loading">
-        <div className="type-unit-table-spinner"></div>
+        <div className="modern-spinner"></div>
         <p>Loading units...</p>
       </div>
     );
@@ -88,8 +90,8 @@ function TypeUnitTable({
         <table className="type-unit-table">
           <thead>
             <tr>
-              <th onClick={() => handleSort('id')} className="type-unit-table-sortable">
-                No. <SortIcon columnKey="id" />
+              <th onClick={() => handleSort('no')} className="type-unit-table-sortable">
+                No. <SortIcon columnKey="no" />
               </th>
               <th onClick={() => handleSort('type')} className="type-unit-table-sortable">
                 Type of Vehicle <SortIcon columnKey="type" />
@@ -115,18 +117,25 @@ function TypeUnitTable({
                 <td className="type-unit-table-number">
                   {(currentPage - 1) * itemsPerPage + index + 1}
                 </td>
-                <td className="type-unit-table-type">{unit.type}</td>
-                <td className="type-unit-table-model">{unit.model}</td>
-                <td className="type-unit-table-plate">{unit.plate_code}</td>
-                <td className="type-unit-table-assigned">{unit.assigned_to}</td>
-                <td className="type-unit-table-office">{unit.office}</td>
-
+                <td className="type-unit-table-type">
+                  <span className="type-unit-table-type-badge">{unit.type}</span>
+                </td>
+                <td className="type-unit-table-model">
+                  <div className="type-unit-table-model-info">
+                    {unit.model}
+                  </div>
+                </td>
+                <td className="type-unit-table-plate">
+                  <span className="type-unit-table-plate-badge">{unit.plate_code}</span>
+                </td>
+                <td className="type-unit-table-assigned">{unit.assigned_to || '—'}</td>
+                <td className="type-unit-table-office">{unit.office || '—'}</td>
                 <td className="type-unit-table-actions">
                   <div className="type-unit-table-action-group">
                     <button
                       className="type-unit-table-action-btn type-unit-table-edit-btn"
                       onClick={() => handleEditUnit(unit)}
-                      aria-label="Edit unit"
+                      title="Edit unit"
                     >
                       <svg className="type-unit-table-icon-edit" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
@@ -136,7 +145,7 @@ function TypeUnitTable({
                     <button
                       className="type-unit-table-action-btn type-unit-table-delete-btn"
                       onClick={() => handleDeleteUnit(unit.id)}
-                      aria-label="Delete unit"
+                      title="Delete unit"
                     >
                       <svg className="type-unit-table-icon-delete" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
@@ -150,9 +159,10 @@ function TypeUnitTable({
         </table>
       </div>
 
+      {/* Pagination */}
       <div className="type-unit-table-footer">
         <div className="type-unit-table-rows-info">
-          Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, processedUnits.length)} of {processedUnits.length} units
+          Showing {processedUnits.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0} to {Math.min(currentPage * itemsPerPage, processedUnits.length)} of {processedUnits.length} units
         </div>
 
         <div className="type-unit-table-pagination">
@@ -167,13 +177,13 @@ function TypeUnitTable({
           </button>
 
           <span className="type-unit-table-pagination-info">
-            Page <strong>{currentPage}</strong> of <strong>{totalPages}</strong>
+            Page <strong>{currentPage}</strong> of <strong>{totalPages || 1}</strong>
           </span>
 
           <button
-            className={`type-unit-table-pagination-btn ${currentPage === totalPages ? 'type-unit-table-pagination-disabled' : ''}`}
+            className={`type-unit-table-pagination-btn ${currentPage === totalPages || totalPages === 0 ? 'type-unit-table-pagination-disabled' : ''}`}
             onClick={() => goToPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
+            disabled={currentPage === totalPages || totalPages === 0}
           >
             <svg className="type-unit-table-pagination-icon" viewBox="0 0 24 24">
               <path fill="currentColor" d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />

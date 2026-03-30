@@ -12,6 +12,8 @@ function GasSlipRequestTable({
     handleRejectRecord,
     handleUpdateAmount
 }) {
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
     const [editingId, setEditingId] = useState(null);
     const [editedAmount, setEditedAmount] = useState('');
@@ -50,15 +52,26 @@ function GasSlipRequestTable({
         return filtered;
     }, [fuelRecords, searchTerm, sortConfig, statusFilter]);
 
+    const totalPages = Math.ceil(processedRecords.length / itemsPerPage);
+    const currentRecords = useMemo(() => {
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        return processedRecords.slice(startIndex, startIndex + itemsPerPage);
+    }, [processedRecords, currentPage]);
+
     const handleSort = (key) => {
         setSortConfig(current => ({
             key,
             direction: current.key === key && current.direction === 'asc' ? 'desc' : 'asc'
         }));
+        setCurrentPage(1);
+    };
+
+    const goToPage = (page) => {
+        setCurrentPage(Math.max(1, Math.min(page, totalPages)));
     };
 
     const SortIcon = ({ columnKey }) => {
-        if (sortConfig.key !== columnKey) return <span>↕️</span>;
+        if (sortConfig.key !== columnKey) return <span>↓</span>;
         return sortConfig.direction === 'asc' ? <span>↑</span> : <span>↓</span>;
     };
 
@@ -178,7 +191,7 @@ function GasSlipRequestTable({
                             </th>
                             <th onClick={() => handleSort('section')} className="fuel-tracking-table-sortable">
                                 Section <SortIcon columnKey="section" />
-                            </th>     
+                            </th>
                             <th onClick={() => handleSort('fuel_type')} className="fuel-tracking-table-sortable">
                                 Type of Fuel <SortIcon columnKey="fuel_type" />
                             </th>
@@ -194,16 +207,16 @@ function GasSlipRequestTable({
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    
+
                     <tbody>
-                        {processedRecords.map((record, index) => (
+                        {currentRecords.map((record, index) => (
                             <tr key={record.id}>
                                 <td className="fuel-tracking-table-date">
                                     {formatDate(record.date)}
                                 </td>
                                 <td className="fuel-tracking-table-model">{record.model_name}</td>
                                 <td className="fuel-tracking-table-plate">{record.plate_no}</td>
-                                <td className="fuel-tracking-table-section">{record.section}</td>            
+                                <td className="fuel-tracking-table-section">{record.section}</td>
                                 <td className="fuel-tracking-table-fuel-type">{record.fuel_type}</td>
                                 <td className="fuel-tracking-table-amount">
                                     {editingId === record.id ? (
@@ -298,19 +311,10 @@ function GasSlipRequestTable({
                                                         <path fill="currentColor" d="M18,3H6V7H18M19,12A1,1 0 0,1 18,11A1,1 0 0,1 19,10A1,1 0 0,1 20,11A1,1 0 0,1 19,12M16,19H8V14H16M19,8H5A3,3 0 0,0 2,11V17H6V21H18V17H22V11A3,3 0 0,0 19,8Z" />
                                                     </svg>
                                                 </button>
-                                                <button
-                                                    className="fuel-tracking-table-action-btn fuel-tracking-table-trip-ticket-btn"
-                                                    onClick={() => handleTripTicket(record)}
-                                                    title="Print Trip Ticket"
-                                                >
-                                                    <svg className="fuel-tracking-table-icon-trip-ticket" viewBox="0 0 24 24">
-                                                        <path fill="currentColor" d="M12,2C8.13,2 5,5.13 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9C19,5.13 15.87,2 12,2M12,11.5C10.62,11.5 9.5,10.38 9.5,9C9.5,7.62 10.62,6.5 12,6.5C13.38,6.5 14.5,7.62 14.5,9C14.5,10.38 13.38,11.5 12,11.5Z" />
-                                                    </svg>
-                                                </button>
                                             </>
                                         ) : (
                                             <span className="no-actions-available">
-                                                No actions available
+                                                No actions
                                             </span>
                                         )}
                                     </div>
@@ -319,6 +323,39 @@ function GasSlipRequestTable({
                         ))}
                     </tbody>
                 </table>
+            </div>
+
+            
+            <div className="fuel-tracking-table-footer">
+                <div className="fuel-tracking-table-rows-info">
+                    Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, processedRecords.length)} of {processedRecords.length} fuel records
+                </div>
+
+                <div className="fuel-tracking-table-pagination">
+                    <button
+                        className={`fuel-tracking-table-pagination-btn ${currentPage === 1 ? 'fuel-tracking-table-pagination-disabled' : ''}`}
+                        onClick={() => goToPage(currentPage - 1)}
+                        disabled={currentPage === 1}
+                    >
+                        <svg className="fuel-tracking-table-pagination-icon" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
+                        </svg>
+                    </button>
+
+                    <span className="fuel-tracking-table-pagination-info">
+                        Page <strong>{currentPage}</strong> of <strong>{totalPages}</strong>
+                    </span>
+
+                    <button
+                        className={`fuel-tracking-table-pagination-btn ${currentPage === totalPages ? 'fuel-tracking-table-pagination-disabled' : ''}`}
+                        onClick={() => goToPage(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                    >
+                        <svg className="fuel-tracking-table-pagination-icon" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
     );

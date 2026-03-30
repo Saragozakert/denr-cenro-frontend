@@ -1,3 +1,4 @@
+// UserDashboard.jsx
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -5,12 +6,14 @@ import "../../assets/Style/AdminDesign/AdminDashboard.css";
 import UserSidebar from "../../components/Sidebars/UserSidebar";
 import UserCards from "../../components/cards/UserCards";
 import UserHeader from "../../components/Headers/UserHeader";
+import UserGraph from "../../components/Graph/UserGraph";
 
 function UserDashboard() {
   const [activeItem, setActiveItem] = useState("dashboard");
   const [fuelRequests, setFuelRequests] = useState(0);
   const [pendingApprovals, setPendingApprovals] = useState(0);
   const [tripRecords, setTripRecords] = useState(0);
+  const [userData, setUserData] = useState(null); // Add state for user data
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,12 +25,15 @@ function UserDashboard() {
           return;
         }
 
-        await axios.get("http://localhost:8000/api/user/check-auth", {
+        const response = await axios.get("http://localhost:8000/api/user/check-auth", {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
           },
         });
+        
+        // Store user data from the response
+        setUserData(response.data.user);
 
       } catch (error) {
         localStorage.removeItem("userToken");
@@ -41,14 +47,11 @@ function UserDashboard() {
 
   const fetchUserStats = async () => {
     try {
-      // Removed setStatsLoading(true) since the variable is no longer used
       setFuelRequests(5);
       setPendingApprovals(2);
       setTripRecords(8);
     } catch (error) {
       console.error("Error fetching user stats:", error);
-    } finally {
-      // Removed setStatsLoading(false) since the variable is no longer used
     }
   };
 
@@ -123,12 +126,14 @@ function UserDashboard() {
       onMenuItemClick={handleMenuItemClick}
     >
       <main className="dashboard-content">
-        <UserHeader onSignOut={handleSignOut} />
+        {/* Pass userData to UserHeader */}
+        <UserHeader onSignOut={handleSignOut} userData={userData} />
         <div className="dashboard-content-main">
           <UserCards 
             cards={cards} 
             onCardClick={handleCardClick}
           />
+          <UserGraph />
         </div>
       </main>
     </UserSidebar>

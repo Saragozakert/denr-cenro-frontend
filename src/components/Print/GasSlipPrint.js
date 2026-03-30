@@ -50,9 +50,9 @@ const GasSlipPrintContent = ({ slip }) => {
   const approvedLineWidth = calculateLineWidth(slip.approved_by);
   const issuedLineWidth = calculateLineWidth(slip.issued_by);
 
-  // Helper function to return content or non-breaking space
+
   const getFieldValue = (value) => {
-    return value || '\u00A0'; // \u00A0 is non-breaking space
+    return value || '\u00A0'; 
   };
 
   const SlipComponent = ({ isAdminCopy = false }) => (

@@ -351,32 +351,94 @@
 
 /* Status badges */
 .fuel-tracking-status-badge {
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 5px 6px 12px;
+  border-radius: 30px;
+  font-size: 0.8rem;
   font-weight: 600;
+  letter-spacing: 0.02em;
   text-transform: capitalize;
-  display: inline-block;
-  min-width: 80px;
-  text-align: center;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+  gap: 8px;
+  min-width: 90px;
 }
 
+.fuel-tracking-status-badge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.fuel-tracking-status-badge:hover::before {
+  left: 100%;
+}
+
+.fuel-tracking-status-badge::after {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 0;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+  animation: pulse 2s infinite;
+}
+
+
+
 .fuel-tracking-status-badge.pending {
-  background: rgba(255, 193, 7, 0.15);
-  color: #ffc107;
-  border: 1px solid rgba(255, 193, 7, 0.3);
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #92400e;
+  border-color: #fbbf24;
+}
+
+.fuel-tracking-status-badge.pending::after {
+  background: #f59e0b;
 }
 
 .fuel-tracking-status-badge.approved {
-  background: rgba(40, 167, 69, 0.15);
-  color: #28a745;
-  border: 1px solid rgba(40, 167, 69, 0.3);
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  color: #065f46;
+  border-color: #10b981;
+}
+
+.fuel-tracking-status-badge.approved::after {
+  background: #10b981;
 }
 
 .fuel-tracking-status-badge.rejected {
-  background: rgba(220, 53, 69, 0.15);
-  color: #dc3545;
-  border: 1px solid rgba(220, 53, 69, 0.3);
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  color: #991b1b;
+  border-color: #ef4444;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.2);
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.8);
+  }
+}
+
+.fuel-tracking-status-badge.rejected::after {
+  background: #ef4444;
 }
 
 /* Amount Edit Styles */
@@ -563,4 +625,79 @@
   .fuel-tracking-table-footer {
     display: none;
   }
+}
+
+/* Footer and Pagination */
+.fuel-tracking-table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  background: var(--gray-50);
+  border-top: 1px solid var(--gray-200);
+  font-size: 0.9rem;
+}
+
+.fuel-tracking-table-rows-info {
+  color: var(--gray-500);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.fuel-tracking-table-pagination {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  padding: 4px;
+  border-radius: 12px;
+  border: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-sm);
+}
+
+.fuel-tracking-table-pagination-btn {
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  color: var(--gray-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  min-width: 36px;
+}
+
+.fuel-tracking-table-pagination-btn:hover:not(.fuel-tracking-table-pagination-disabled) {
+  background: var(--gray-100);
+  color: var(--primary-color);
+}
+
+.fuel-tracking-table-pagination-btn.fuel-tracking-table-pagination-active {
+  background: var(--primary-color);
+  color: white;
+}
+
+.fuel-tracking-table-pagination-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.fuel-tracking-table-pagination-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.fuel-tracking-table-pagination-info {
+  font-size: 0.9rem;
+  color: var(--gray-500);
+  padding: 0 12px;
+  font-weight: 500;
+}
+
+.fuel-tracking-table-pagination-info strong {
+  color: var(--gray-700);
+  font-weight: 600;
 }

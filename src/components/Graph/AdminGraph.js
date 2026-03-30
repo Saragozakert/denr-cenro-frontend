@@ -117,8 +117,8 @@ function AdminGraph() {
         <div className="chart-header">
           <h3>Annual Performance</h3>
           <div className="chart-actions">
-            <button className="chart-btn active">2025</button>
-            <button className="chart-btn">2026</button>
+            <button className="chart-btn active">2026</button>
+            <button className="chart-btn">2027</button>
           </div>
         </div>
         <div className="chart-wrapper">

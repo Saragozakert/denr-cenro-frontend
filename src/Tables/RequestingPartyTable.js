@@ -5,7 +5,8 @@ function RequestingPartyTable({
   requestingParties,
   fetchLoading,
   searchTerm,
-  handleDeleteRequestingParty
+  handleDeleteRequestingParty,
+  handleEditRequestingParty
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
@@ -51,15 +52,15 @@ function RequestingPartyTable({
   };
 
   const SortIcon = ({ columnKey }) => {
-    if (sortConfig.key !== columnKey) return <span>↕️</span>;
+    if (sortConfig.key !== columnKey) return <span>↓</span>;
     return sortConfig.direction === 'asc' ? <span>↑</span> : <span>↓</span>;
   };
 
   if (fetchLoading) {
     return (
       <div className="requesting-party-table-loading">
-        <div className="requesting-party-table-spinner"></div>
-        <p>Loading requesting parties...</p>
+        <div className="modern-spinner"></div>
+        <p>Loading Requesting Parties...</p>
       </div>
     );
   }
@@ -82,8 +83,8 @@ function RequestingPartyTable({
         <table className="requesting-party-table">
           <thead>
             <tr>
-              <th onClick={() => handleSort('id')} className="requesting-party-table-sortable">
-                No. <SortIcon columnKey="id" />
+              <th onClick={() => handleSort('no')} className="requesting-party-table-sortable">
+                No. <SortIcon columnKey="no" />
               </th>
               <th onClick={() => handleSort('full_name')} className="requesting-party-table-sortable">
                 Full Name <SortIcon columnKey="full_name" />
@@ -103,16 +104,16 @@ function RequestingPartyTable({
                 <td className="requesting-party-table-number">
                   {(currentPage - 1) * itemsPerPage + index + 1}
                 </td>
-                <td className="requesting-party-table-name">
-                  <div className="requesting-party-table-user-info">
-                    {party.full_name}
-                  </div>
-                </td>
+                <td className="requesting-party-table-name">{party.full_name}</td>
                 <td className="requesting-party-table-division">{party.division_section}</td>
                 <td className="requesting-party-table-position">{party.position}</td>
                 <td className="requesting-party-table-actions">
                   <div className="requesting-party-table-action-group">
-                    <button className="requesting-party-table-action-btn requesting-party-table-edit-btn">
+                    <button
+                      className="requesting-party-table-action-btn requesting-party-table-edit-btn"
+                      onClick={() => handleEditRequestingParty?.(party)}
+                      title="Edit Requesting Party"
+                    >
                       <svg className="requesting-party-table-icon-edit" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
                       </svg>
@@ -121,6 +122,7 @@ function RequestingPartyTable({
                     <button
                       className="requesting-party-table-action-btn requesting-party-table-delete-btn"
                       onClick={() => handleDeleteRequestingParty(party.id)}
+                      title="Delete Requesting Party"
                     >
                       <svg className="requesting-party-table-icon-delete" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />

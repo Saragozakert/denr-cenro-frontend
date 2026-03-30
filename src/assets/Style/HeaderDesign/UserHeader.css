@@ -291,3 +291,90 @@
     display: none;
   }
 }
+
+/* Add to your UserHeader.css file */
+
+/* Enhanced dropdown styles */
+.user-dropdown {
+  width: 240px; /* Increased width to accommodate user info */
+  padding: 0.5rem 0;
+}
+
+.user-dropdown-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background-color: var(--emerald-lighter);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.user-dropdown-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--emerald), var(--emerald-dark));
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.user-dropdown-details {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.user-dropdown-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--gray-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-dropdown-username {
+  font-size: 0.75rem;
+  color: var(--gray);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-dropdown-divider {
+  height: 1px;
+  background-color: var(--emerald-light);
+  margin: 0.5rem 0;
+}
+
+.user-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1rem;
+  border-radius: 0;
+  color: #dc2626; /* Red color for sign out */
+}
+
+.user-dropdown-item:hover {
+  background-color: #fee2e2; /* Light red background on hover */
+  color: #b91c1c; /* Darker red on hover */
+}
+
+/* Update existing user-dropdown-item style */
+.user-dropdown-item {
+  /* Remove the existing color and add icon styling */
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1rem;
+  border-radius: 0;
+  cursor: pointer;
+  transition: var(--transition);
+  font-weight: 500;
+  font-size: 0.85rem;
+}
